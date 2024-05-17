@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Kitchen_Appliances_Backend.DTO;
+using Kitchen_Appliances_Backend.DTO.Role;
 using Kitchen_Appliances_Backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
