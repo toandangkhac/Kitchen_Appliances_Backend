@@ -5,6 +5,7 @@ using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Repositores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers
@@ -33,6 +34,11 @@ namespace Kitchen_Appliances_Backend.Controllers
             }
             return Ok(employees);
         }
-
+        [HttpPost]
+        public async Task<IActionResult> CreateEmployee([FromQuery] CreateEmployeeRequest request)
+        {
+            var res = await _repo.CreateEmployee(request);
+            return Ok(res);
+        }
     }
 }

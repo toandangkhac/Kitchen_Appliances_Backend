@@ -23,6 +23,11 @@ namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
 
         private static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IJwtService, JwtService>()
+                    .AddScoped<IUploadService, UploadService>()
+                    .AddScoped<IOtpService, OtpService>()
+                    .AddScoped<IMailService, MailService>();
+
             services.AddTransient<IRoleRepository, RoleRepository>()
                     .AddTransient<IAccountRepository, AccountRepository>()
                     .AddTransient<IBillRepository, BillRepository>()
@@ -35,9 +40,6 @@ namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
                     .AddTransient<IOrderdetailRepository, OrderdetailRepository>()
                     .AddTransient<IProductpriceRepository, ProductpriceRepository>()
                     .AddTransient<IProductRepository, ProductRepository>();
-
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IAuthService, AuthService>();
 
         }
 

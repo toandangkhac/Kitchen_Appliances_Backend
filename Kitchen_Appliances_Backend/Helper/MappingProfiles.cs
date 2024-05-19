@@ -11,7 +11,11 @@ namespace Kitchen_Appliances_Backend.Helper
         public MappingProfiles()
         {
             CreateMap<Role, RoleDTO>();
+
+            //Employee
             CreateMap<Employee, EmployeeDTO>();
+            CreateMap<CreateEmployeeRequest, Employee>();
+            CreateMap<UpdateEmployeeRequest, Employee>();
         }
     }
 }

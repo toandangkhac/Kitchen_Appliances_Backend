@@ -134,14 +134,17 @@ public partial class DataContext : DbContext
 
             entity.HasIndex(e => e.Id, "UK_EMPLOYEE").IsUnique();
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(x => x.Id)
+                .ValueGeneratedOnAdd()
+                .UseIdentityColumn();
+  
             entity.Property(e => e.Address).HasMaxLength(100);
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Fullname).HasMaxLength(40);
             entity.Property(e => e.Image)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(15)
@@ -257,5 +260,5 @@ public partial class DataContext : DbContext
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
 // command generate scaffold        from database
-//dotnet ef dbcontext scaffold "Data Source=DESKTOP-4EAOBVB;Initial Catalog=BAN_DUNG_CU_NHA_BEP;User ID=sa;Password=sa;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models --context BanDungCuNhaBepContext --context-dir Data
+//dotnet ef dbcontext scaffold "Data Source=DESKTOP-E2I98S5\\SQLEXPRESS;Initial Catalog=BAN_DUNG_CU_NHA_BEP;User ID=sa;Password=1234;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models --context BanDungCuNhaBepContext --context-dir Data
 // link: https://learn.microsoft.com/en-us/ef/core/cli/dotnet

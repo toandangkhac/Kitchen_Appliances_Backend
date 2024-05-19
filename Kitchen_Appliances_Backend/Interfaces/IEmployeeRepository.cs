@@ -9,8 +9,10 @@ namespace Kitchen_Appliances_Backend.Interfaces
 
         Task<int> CreateEmployee(CreateEmployeeRequest request);
 
-        Task<int> UpdateEmployee(UpdateEmployeeRequest request);
+        Task<int> UpdateEmployee(int productId ,UpdateEmployeeRequest request);
 
         Task<int> DeleteEmployee(int id);
+
+        Task<ICollection<Employee>> PagingEmployee(int? page, int? size);
     }
 }
