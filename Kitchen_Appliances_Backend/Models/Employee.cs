@@ -21,5 +21,5 @@ public partial class Employee
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual ICollection<Productprice> Productprices { get; set; } = new List<Productprice>();
+    //public virtual ICollection<Productprice> Productprices { get; set; } = new List<Productprice>();
 }

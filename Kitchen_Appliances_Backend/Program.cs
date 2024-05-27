@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddConfigureApplication();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 //AutoMapper
 //Get all classes that implement IAutoMapperProfile and register them
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

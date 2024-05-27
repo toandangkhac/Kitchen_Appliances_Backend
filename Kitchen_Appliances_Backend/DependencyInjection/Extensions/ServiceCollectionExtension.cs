@@ -26,7 +26,8 @@ namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
             services.AddScoped<IJwtService, JwtService>()
                     .AddScoped<IUploadService, UploadService>()
                     .AddScoped<IOtpService, OtpService>()
-                    .AddScoped<IMailService, MailService>();
+                    .AddScoped<IMailService, MailService>()
+                    .AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddTransient<IRoleRepository, RoleRepository>()
                     .AddTransient<IAccountRepository, AccountRepository>()

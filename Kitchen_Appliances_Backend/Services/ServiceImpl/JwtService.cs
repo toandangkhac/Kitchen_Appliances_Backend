@@ -33,7 +33,7 @@ namespace Kitchen_Appliances_Backend.Services.ServiceImpl
                 new ("Email", account.Email),
             };
 
-            claims.Add(new Claim("Role", role.Name));
+            claims.Add(new Claim(ClaimTypes.Role, role.Name));
 
             var jwtOptions = new JwtConfigOptions();
             _configuration.GetSection(nameof(JwtConfigOptions)).Bind(jwtOptions);
@@ -75,7 +75,8 @@ namespace Kitchen_Appliances_Backend.Services.ServiceImpl
             };
 
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out SecurityToken validatedToken);
-            if (validatedToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            if (validatedToken is not JwtSecurityToken jwtSecurityToken 
+                || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 return null;
 
             return principal;
