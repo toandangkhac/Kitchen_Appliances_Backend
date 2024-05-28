@@ -23,7 +23,7 @@ public partial class Product
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
-    public virtual ICollection<Orderdetail> Orderdetails { get; set; } = new List<Orderdetail>();
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual ICollection<Productprice> Productprices { get; set; } = new List<Productprice>();
+    public virtual ICollection<ProductPrice> ProductPrices { get; set; } = new List<ProductPrice>();
 }

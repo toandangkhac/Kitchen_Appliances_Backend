@@ -1,7 +1,10 @@
 using Kitchen_Appliances_Backend.Data;
+using Kitchen_Appliances_Backend.DependencyInjection.Extensions;
 using Kitchen_Appliances_Backend.Helper;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Repositores;
+using Kitchen_Appliances_Backend.Services;
+using Kitchen_Appliances_Backend.Services.ServiceImpl;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,18 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddTransient<IRoleRepository, RoleRepository>();
-builder.Services.AddTransient<IAccountRepository, AccountRepository>();
-builder.Services.AddTransient<IBillRepository, BillRepository>();
-builder.Services.AddTransient<ICartDetailRepository, CartDetailRepository>();
-builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
-builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddTransient<IImageRepository, ImageRepository>();
-builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-builder.Services.AddTransient<IOrderdetailRepository, OrderdetailRepository>();
-builder.Services.AddTransient<IProductpriceRepository, ProductpriceRepository>();
-builder.Services.AddTransient<IProductRepository, ProductRepository>();
+
+builder.Services.AddConfigureApplication();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddHttpContextAccessor();
+
 //AutoMapper
 //Get all classes that implement IAutoMapperProfile and register them
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -1,0 +1,20 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/employee",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/employee",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:7178"
+  }
+}

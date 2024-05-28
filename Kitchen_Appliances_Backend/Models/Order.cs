@@ -23,5 +23,5 @@ public partial class Order
 
     public virtual Employee? Employee { get; set; }
 
-    public virtual ICollection<Orderdetail> Orderdetails { get; set; } = new List<Orderdetail>();
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

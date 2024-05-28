@@ -17,5 +17,7 @@ public partial class Account
 
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
+    public virtual ICollection<AppUserToken> AppUserTokens { get; set; } = new List<AppUserToken>();
+
     public virtual Role Role { get; set; } = null!;
 }

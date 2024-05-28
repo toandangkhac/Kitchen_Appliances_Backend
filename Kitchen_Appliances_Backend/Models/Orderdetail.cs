@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kitchen_Appliances_Backend.Models;
 
-public partial class Orderdetail
+public partial class OrderDetail
 {
     public int Id { get; set; }
 

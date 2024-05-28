@@ -1,4 +1,4 @@
-﻿namespace Kitchen_Appliances_Backend.DTO
+﻿namespace Kitchen_Appliances_Backend.DTO.Role
 {
     public class RoleDTO
     {

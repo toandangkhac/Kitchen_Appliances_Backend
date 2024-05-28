@@ -1,0 +1,116 @@
+{
+  "Routes": [
+    //Employee API
+    {
+      "DownstreamPathTemplate": "/api/employee",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/employee",
+      "UpstreamHttpMethod": [ "Post", "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/employee/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/employee/{id}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
+    },
+
+    //Account API
+    {
+      "DownstreamPathTemplate": "/api/account/find-email/{email}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/find-email/{email}",
+      "UpstreamHttpMethod": [ "Post", "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/login",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/forgot-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/forgot-password",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/change-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/change-password",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/reset-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/reset-password",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+
+    //Category API
+    {
+      "DownstreamPathTemplate": "/api/category",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/category",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7178"
+  }
+}
