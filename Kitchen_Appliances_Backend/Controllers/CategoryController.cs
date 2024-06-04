@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Kitchen_Appliances_Backend.DTO.Category;
+using Kitchen_Appliances_Backend.DTO.Role;
 using Kitchen_Appliances_Backend.Interfaces;
+using Kitchen_Appliances_Backend.Repositores;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +20,10 @@ namespace Kitchen_Appliances_Backend.Controllers
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
-
         [HttpGet]
-        public IActionResult GetAllCategories() 
+        public async Task<IActionResult> GetAllCategories() 
         {
-            return Ok(_categoryRepository.GetAllCategories());
+            return Ok(await _categoryRepository.GetAllCategories());
         }
 
         [HttpGet("{id}")]
@@ -35,6 +36,10 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             return Ok(await _categoryRepository.CreateCategory(request)); 
         }
 

@@ -8,7 +8,8 @@
 
         public string Address { get; set; }
 
-        public IFormFile Image { get; set; }
+        //Không thể sử dụng IFormFile vì cái này chỉ để test api
+        public string Image { get; set; }
 
         public string Email { get; set; }
 

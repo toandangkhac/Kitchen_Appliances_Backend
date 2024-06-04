@@ -1,5 +1,8 @@
-﻿using Kitchen_Appliances_MVC.Abstractions;
+﻿using Kitchen_Appliances_Backend.Commons.Responses;
+using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.DTO;
+using Kitchen_Appliances_MVC.ViewModels.Employee;
+using Kitchen_Appliances_MVC.ViewModels.Product;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,27 +10,33 @@ namespace Kitchen_Appliances_MVC.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeClient _client;
-        public EmployeeController(IEmployeeClient client) 
+        private readonly ICustomerServiceClient _customerServiceClient;
+
+        public EmployeeController(ICustomerServiceClient customerServiceClient)
         {
-            _client = client;
+            _customerServiceClient = customerServiceClient;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<EmployeeDTO> employees = _client.GetListAll().Result; 
-            foreach (EmployeeDTO employee in employees)
-            {
-                Console.WriteLine(employee.Email);
-            }
+            var res = await _customerServiceClient.ListCustomer();
+            Console.WriteLine(res.Message);
             return View();
         }
 
         //ContentResult , ViewResult, JsonResult
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            EmployeeDTO employee = _client.GetEmployeeById(id).Result;
-            Console.WriteLine(employee.Email);
+            var request = new UpdateProductRequest()
+            {
+                Name = null,
+                Description = null,
+                Price = null,
+                Quantity = 23
+            };
+
+            var res = await _customerServiceClient.DeleteCustomer(id);
+            Console.WriteLine(res.Message + " Code: " + res.Status);
             return View();
         }
 

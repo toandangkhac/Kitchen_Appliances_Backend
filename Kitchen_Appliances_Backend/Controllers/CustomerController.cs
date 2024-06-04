@@ -20,7 +20,7 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> ListCustomer()
         {
-            return Ok(_customerRepository.ListCustomer());
+            return Ok(await _customerRepository.ListCustomer());
         }
 
         [HttpGet("{id}")]
@@ -40,7 +40,13 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
         {
-            return Ok(await _customerRepository.DeleteCustomer(id));
+            return Ok(await _customerRepository.DeleteCustomerById(id));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCustomer([FromRoute] int id,[FromForm] UpdateCustomerRequest request)
+        {
+            return Ok(await _customerRepository.UpdateCustomer(id,request));
         }
     }
 }

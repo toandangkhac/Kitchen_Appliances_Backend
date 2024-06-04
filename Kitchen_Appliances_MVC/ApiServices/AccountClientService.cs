@@ -49,7 +49,6 @@ namespace Kitchen_Appliances_MVC.ApiServices
             {
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 var authDto = JsonConvert.DeserializeObject<AuthDTO>(jsonResponse);
-                Console.WriteLine($"Trả về từ server: {authDto.AccessToken}");
                 return authDto;
             }
             else
@@ -89,5 +88,11 @@ namespace Kitchen_Appliances_MVC.ApiServices
                 return false;
             }
         }
-    }
+
+		public Task<bool> CheckEmail(string Email)
+		{
+
+			throw new NotImplementedException();
+		}
+	}
 }

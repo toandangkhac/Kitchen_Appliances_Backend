@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
 using Kitchen_Appliances_Backend.DTO.Account;
+using Kitchen_Appliances_Backend.DTO.CartItem;
 using Kitchen_Appliances_Backend.DTO.Category;
+using Kitchen_Appliances_Backend.DTO.Customer;
 using Kitchen_Appliances_Backend.DTO.Employee;
+using Kitchen_Appliances_Backend.DTO.Image;
+using Kitchen_Appliances_Backend.DTO.Order;
 using Kitchen_Appliances_Backend.DTO.Product;
+using Kitchen_Appliances_Backend.DTO.ProductPrice;
 using Kitchen_Appliances_Backend.DTO.Role;
 using Kitchen_Appliances_Backend.Models;
 
@@ -30,6 +35,31 @@ namespace Kitchen_Appliances_Backend.Helper
 
             //Product
             CreateMap<Product, ProductDTO>();
+            CreateMap<UpdateProductRequest, Product>();
+            CreateMap<CreateProductRequest, Product>();
+
+            //Image
+            CreateMap<Image, ImageDTO>();
+            CreateMap<CreateImageRequest, Image>();
+            CreateMap<UpdateImageRequest, Image>();
+
+
+            //Customer
+            CreateMap<Customer, CustomerDTO>();
+            CreateMap<CreateCustomerRequest, Customer>();
+            CreateMap<UpdateCustomerRequest, Customer>();
+
+            //CartDetail
+            CreateMap<CartDetail, CartDetailDTO>();
+            CreateMap<CreateCartDetailRequest, CartDetail>();
+
+            //ProductPrice
+            CreateMap<ProductPrice, ProductPriceDTO>();
+            CreateMap<UpdateProductPriceRequest, ProductPrice>();
+
+            //Order
+            CreateMap<Order, OrderDTO>();
+
         }
     }
 }

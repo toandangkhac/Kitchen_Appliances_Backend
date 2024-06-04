@@ -356,6 +356,7 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.ProductPrice", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AppliedDate")

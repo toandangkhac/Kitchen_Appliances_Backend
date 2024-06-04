@@ -250,8 +250,9 @@ public partial class DataContext : DbContext
 
             entity.HasIndex(e => new { e.AppliedDate, e.ProductId }, "UK_PRODUCTPRICE").IsUnique();
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.AppliedDate)
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+			entity.Property(e => e.AppliedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");

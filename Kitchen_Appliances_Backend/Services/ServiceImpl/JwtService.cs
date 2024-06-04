@@ -31,6 +31,7 @@ namespace Kitchen_Appliances_Backend.Services.ServiceImpl
             var claims = new List<Claim>()
             {
                 new ("Email", account.Email),
+                new ("Password", account.Password)
             };
 
             claims.Add(new Claim(ClaimTypes.Role, role.Name));

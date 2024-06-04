@@ -1,4 +1,6 @@
 ﻿using Kitchen_Appliances_Backend.DTO.Account;
+using Kitchen_Appliances_Backend.Models;
+using System.Security.Claims;
 
 namespace Kitchen_Appliances_Backend.Interfaces
 {
@@ -7,6 +9,8 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<List<AccountDTO>> listAccount();
 
         Task<AccountDTO> findAccount(string email);
+
+        Task<string> validateExpiredJwt(string token);
 
         Task<AuthDTO> Authenticate(LoginAuthRequest request);
 

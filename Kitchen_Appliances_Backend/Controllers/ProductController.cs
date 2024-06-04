@@ -24,11 +24,11 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts() 
         {
-            return Ok( _productRepository.GetAllProducts());
+            return Ok(await _productRepository.GetAllProducts());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductRequest request)
+        public async Task<IActionResult> CreateProduct([FromQuery] CreateProductRequest request)
         {
             return Ok( await _productRepository.CreateProduct(request));
         }
@@ -43,6 +43,12 @@ namespace Kitchen_Appliances_Backend.Controllers
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             return Ok(await _productRepository.DeleteProduct(id));
+        }
+
+        [HttpGet("category/{id}")]
+        public async Task<IActionResult> ListProductByCategory([FromRoute] int id)
+        {
+            return Ok(await _productRepository.ListProductByCategory(id));
         }
     }
 }

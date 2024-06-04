@@ -1,19 +1,29 @@
 ﻿using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.DTO;
+using Kitchen_Appliances_MVC.Options;
 using Kitchen_Appliances_MVC.ViewModels.Account;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Kitchen_Appliances_MVC.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAccountClient _accountClient;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(IAccountClient accountClient)
+        public AccountController(IAccountClient accountClient, IConfiguration configuration)
         {
             _accountClient = accountClient;
+            _configuration = configuration;
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             LoginAuthRequest request = new LoginAuthRequest()
@@ -21,11 +31,60 @@ namespace Kitchen_Appliances_MVC.Controllers
                 Email = "chientran@gmail.com",
                 Password = "1234"
             };
-            AuthDTO authDTO = _accountClient.login(request).Result;
-            Console.WriteLine(authDTO);
+           
             return View();
         }
-                
+
+        [HttpPost]
+        public IActionResult Login(LoginAuthRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ModelState);
+            }
+            AuthDTO authDTO = _accountClient.login(request).Result;
+            Response.Cookies.Append("jwt-token", authDTO.AccessToken, new CookieOptions()
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTime.Now.AddMinutes(60)
+            });
+            Console.WriteLine(authDTO);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt-token");
+            return View();
+        }
+        
+        //Get data from token
+        private ClaimsPrincipal ValidateToken(string token)
+        {
+			IdentityModelEventSource.ShowPII = true;
+
+			var jwtOptions = new JwtConfigOptions();
+			_configuration.GetSection(nameof(JwtConfigOptions)).Bind(jwtOptions);
+
+			TokenValidationParameters validationParameters = new()
+			{
+				ValidateLifetime = false,
+				ValidateIssuerSigningKey = true,
+				ValidAudience = jwtOptions.Issuer,
+				ValidIssuer = jwtOptions.Issuer,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey))
+			};
+
+			ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+			if (validatedToken is not JwtSecurityToken jwtSecurityToken
+				|| !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+				return null;
+
+			return principal;
+		}
+
         public IActionResult ForgotPassword()
         {
             ForgotPasswordRequest request = new ForgotPasswordRequest()

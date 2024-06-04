@@ -12,6 +12,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 
 builder.Services.AddScoped<IEmployeeClient, EmployeeClientService>();
 builder.Services.AddScoped<IAccountClient, AccountClientService>();
+builder.Services.AddScoped<ICustomerServiceClient, CustomerClientService>();
+builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
 
 var app = builder.Build();
 
