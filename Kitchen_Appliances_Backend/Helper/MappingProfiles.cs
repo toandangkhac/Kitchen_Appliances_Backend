@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Kitchen_Appliances_Backend.DTO.Account;
+using Kitchen_Appliances_Backend.DTO.Bill;
 using Kitchen_Appliances_Backend.DTO.CartItem;
 using Kitchen_Appliances_Backend.DTO.Category;
 using Kitchen_Appliances_Backend.DTO.Customer;
@@ -59,6 +60,8 @@ namespace Kitchen_Appliances_Backend.Helper
 
             //Order
             CreateMap<Order, OrderDTO>();
+            //Bill
+            CreateMap<CreateBillRequest, Bill>();
 
         }
     }

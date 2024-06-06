@@ -14,7 +14,9 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<List<OrderDTO>>> ListOrderConfirmed();
 
         
-        Task<ApiResponse<bool>> CreateOrder(CreateOrderRequest request);
+        Task<ApiResponse<bool>> CreateOrder(int Id);
+        Task<ApiResponse<bool>> ConfirmOrder(int employeeId, int orderId);
+
 
         //Hủy order đưa trạng thái về false
         Task<ApiResponse<bool>> CancelOrder(int orderId);
