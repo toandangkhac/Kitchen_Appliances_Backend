@@ -1,7 +1,11 @@
-﻿namespace Kitchen_Appliances_Backend.DTO.Order
+﻿using Kitchen_Appliances_Backend.DTO.OrderDetail;
+
+namespace Kitchen_Appliances_Backend.DTO.Order
 {
     public class CreateOrderRequest
     {
-        public List<int> CartDetailIds { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int CustomerId { get; set; }
+        public List<OrderDetailRequest> OrderDetailRequests { get; set; }
     }
 }
