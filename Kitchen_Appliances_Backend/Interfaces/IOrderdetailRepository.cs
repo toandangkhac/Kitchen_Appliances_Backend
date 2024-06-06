@@ -2,5 +2,8 @@
 {
     public interface IOrderdetailRepository
     {
+        Task<bool> CreateOrderDetails(List<int> cartDetailIds);
+
+
     }
 }

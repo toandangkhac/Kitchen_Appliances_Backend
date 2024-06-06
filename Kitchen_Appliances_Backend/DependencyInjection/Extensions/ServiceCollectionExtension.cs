@@ -39,7 +39,7 @@ namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
                     .AddTransient<IImageRepository, ImageRepository>()
                     .AddTransient<IOrderRepository, OrderRepository>()
                     .AddTransient<IOrderdetailRepository, OrderdetailRepository>()
-                    .AddTransient<IProductpriceRepository, ProductpriceRepository>()
+                    .AddTransient<IProductPriceRepository, ProductPriceRepository>()
                     .AddTransient<IProductRepository, ProductRepository>();
 
         }

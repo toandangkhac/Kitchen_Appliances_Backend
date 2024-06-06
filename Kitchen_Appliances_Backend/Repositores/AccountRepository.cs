@@ -9,6 +9,7 @@ using Kitchen_Appliances_Backend.Models;
 using Kitchen_Appliances_Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
+using System.Security.Claims;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -80,7 +81,7 @@ namespace Kitchen_Appliances_Backend.Repositores
         }
         public async Task<List<AccountDTO>> listAccount()
         {
-            var accounts = _mapper.Map<List<AccountDTO>>(_context.Accounts);
+            var accounts = _mapper.Map<List<AccountDTO>>(_context.Accounts.ToList());
             return accounts;
         }
 
@@ -212,6 +213,16 @@ namespace Kitchen_Appliances_Backend.Repositores
                 throw new InvalidRequestException("OTP is expired");
             }
             return true;
+        }
+
+        public async Task<string> validateExpiredJwt(string token)
+        {
+            if(token == null)
+            {
+                throw new InvalidRequestException("");
+            }    
+            var claims = _jwtService.validateExpiredJwt(token);
+            return claims.FindFirstValue("Email");
         }
     }
 }

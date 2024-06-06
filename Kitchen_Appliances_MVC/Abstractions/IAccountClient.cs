@@ -14,5 +14,7 @@ namespace Kitchen_Appliances_MVC.Abstractions
         Task<bool>ResetPassword(ResetPasswordRequest request);
 
         Task<bool> ChangePassword(ChangePasswordRequest request);
+
+        Task<bool> CheckEmail(string Email);
     }
 }
