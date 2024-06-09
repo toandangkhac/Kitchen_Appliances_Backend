@@ -17,14 +17,13 @@ namespace Kitchen_Appliances_Backend.Controllers
             this._mapper = mapper;
         }
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var roles = _mapper.Map<List<RoleDTO>>(_roleRepository.GetRoles());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(roles);
+            return Ok(await _roleRepository.GetRoles());
         }
     }
 }

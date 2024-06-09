@@ -3,6 +3,7 @@ using Kitchen_Appliances_Backend.DTO.Category;
 using Kitchen_Appliances_Backend.DTO.Role;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Repositores;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace Kitchen_Appliances_Backend.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
+		public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
@@ -29,8 +30,8 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
         {
-            var category = await _categoryRepository.GetCategoryById(id);
-            return Ok(_mapper.Map<CategoryDTO>(category));
+            var result = await _categoryRepository.GetCategoryById(id);
+            return Ok(result);
         }
 
         [HttpPost]

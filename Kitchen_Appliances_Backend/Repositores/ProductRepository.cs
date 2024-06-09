@@ -4,6 +4,7 @@ using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Product;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
+using Kitchen_Appliances_Backend.Services;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -11,12 +12,13 @@ namespace Kitchen_Appliances_Backend.Repositores
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private readonly IUploadService _uploadService;
 
-
-        public ProductRepository(DataContext context, IMapper mapper)
+        public ProductRepository(DataContext context, IMapper mapper, IUploadService uploadService)
         {
             _context = context;
             _mapper = mapper;
+            _uploadService = uploadService;
         }
 
         public async Task<ApiResponse<bool>> CreateProduct(CreateProductRequest request)
@@ -45,6 +47,15 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
         }
 
+        private async void DeleteImage(int id)
+        {
+			var image = _context.Images.Find(id);
+            //Xóa ảnh trên cloud
+			await _uploadService.DeleteFile(image.Url);
+			_context.Images.Remove(image);
+            await _context.SaveChangesAsync();
+		}
+
         public async Task<ApiResponse<bool>> DeleteProduct(int id)
         {
             try
@@ -59,9 +70,32 @@ namespace Kitchen_Appliances_Backend.Repositores
                         Data = false
                     };
                 }
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-                return new ApiResponse<bool>() { Status = 200, Message = "Xóa product thành công", Data = true};
+
+               //check product đã có trong giỏ hàng nào hay chưa
+               var carts = _context.CartDetails.Where(x => x.ProductId == id).ToList();
+                if(carts.Count > 0)
+                {
+                    return new ApiResponse<bool>()
+                    {
+                        Status = 400,
+                        Message = "Không thể xóa product vì đã có trong giỏ hàng",
+                        Data = true
+                    };
+                }
+
+               // Xóa tất cả ảnh bên thuộc product
+               var images =  _context.Images.Where(x => x.ProductId == id).ToList();
+               if(images.Count != 0)
+                {
+                    foreach(var image in images)
+                    {
+                        DeleteImage(image.Id);
+                    }
+                }
+                
+               _context.Products.Remove(product);
+               await _context.SaveChangesAsync();
+               return new ApiResponse<bool>() { Status = 200, Message = "Xóa product thành công", Data = true};
             }
             catch (Exception)
             {

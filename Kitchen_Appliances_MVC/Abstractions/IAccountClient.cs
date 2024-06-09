@@ -1,5 +1,5 @@
-﻿using Kitchen_Appliances_MVC.DTO;
-using Kitchen_Appliances_MVC.ViewModels.Account;
+﻿using Kitchen_Appliances_MVC.ViewModels.Account;
+using Kitchen_Appliances_MVC.ViewModels.Customer;
 
 namespace Kitchen_Appliances_MVC.Abstractions
 {

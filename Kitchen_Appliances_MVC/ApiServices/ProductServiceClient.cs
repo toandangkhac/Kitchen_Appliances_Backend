@@ -1,6 +1,5 @@
 ﻿using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.ViewModels.Product;
 
 namespace Kitchen_Appliances_MVC.ApiServices
@@ -10,6 +9,8 @@ namespace Kitchen_Appliances_MVC.ApiServices
         private readonly HttpClient _httpClient;
 
         public const string BaseUrl = "/gateway/product";
+
+        //Đã test
 
         public ProductServiceClient(HttpClient httpClient)
         {

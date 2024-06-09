@@ -19,7 +19,7 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetListProductPrice([FromRoute] int id) 
         {
-            return Ok(_productPriceRepository.ListProductImageByProduct(id));
+            return Ok(await _productPriceRepository.ListProductImageByProduct(id));
         }
 
         [HttpPost]

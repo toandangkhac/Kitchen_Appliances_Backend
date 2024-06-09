@@ -7,6 +7,7 @@ using Kitchen_Appliances_Backend.DTO.Customer;
 using Kitchen_Appliances_Backend.DTO.Employee;
 using Kitchen_Appliances_Backend.DTO.Image;
 using Kitchen_Appliances_Backend.DTO.Order;
+using Kitchen_Appliances_Backend.DTO.OrderDetail;
 using Kitchen_Appliances_Backend.DTO.Product;
 using Kitchen_Appliances_Backend.DTO.ProductPrice;
 using Kitchen_Appliances_Backend.DTO.Role;
@@ -60,8 +61,13 @@ namespace Kitchen_Appliances_Backend.Helper
 
             //Order
             CreateMap<Order, OrderDTO>();
+
             //Bill
+            CreateMap<Bill, ListBillDto>();
             CreateMap<CreateBillRequest, Bill>();
+
+            //Order Detail
+            CreateMap<OrderDetail, OrderDetailDTO>();
 
         }
     }

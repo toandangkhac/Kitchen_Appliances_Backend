@@ -90,7 +90,9 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
                 Token = otp,
                 Type = TOKEN_TYPE.REGISTER_OTP,
-                ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES)
+                ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES),
+                AccountId = employee.Email,
+                Account = account
             };
 
             _dataContext.AppUserTokens.Add(userToken);

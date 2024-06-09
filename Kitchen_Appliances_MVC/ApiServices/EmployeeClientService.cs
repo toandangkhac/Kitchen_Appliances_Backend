@@ -1,6 +1,5 @@
 ﻿using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.ViewModels.Employee;
 
 namespace Kitchen_Appliances_MVC.ApiServices
@@ -14,6 +13,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
             _httpClient = httpClient;
         }
 
+        //Đã test
         public async Task<APIResponse<EmployeeDTO>> GetEmployeeById(int id)
         {
             return await _httpClient.GetFromJsonAsync<APIResponse<EmployeeDTO>>("/gateway/employee/" + $"{id}");

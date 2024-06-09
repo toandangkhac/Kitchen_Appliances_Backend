@@ -5,6 +5,13 @@ namespace Kitchen_Appliances_Backend.Interfaces
 {
     public interface IBillRepository
     {
-        Task<ApiResponse<bool>> savePaymentInfor(CreateBillRequest billRequest);
+        //Tạo bill hóa đơn cho đơn hàng
+        Task<ApiResponse<bool>> savePaymentInfor(int orderId);
+
+        //In ra thông tin hóa đơn
+        Task<ApiResponse<BillDto>> GetBillInformation(int billId);
+
+        //In danh sách hóa đơn
+        Task<ApiResponse<List<ListBillDto>>> GetAllBill();
     }
 }

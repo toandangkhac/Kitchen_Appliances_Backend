@@ -1,8 +1,182 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿﻿ @using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "Home Page";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	//string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	string IdUser = "";
 }
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+@model Kitchen_Appliances_MVC.ViewModelData.Home.HomeViewModels
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Sidebar ================================================== -->
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3">
+				<div class="well well-small">
+					<a id="myOrder" asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">
+						<img src="~/themes/images/ico-cart.png" alt="cart"> View your Order  <span class="badge badge-warning pull-right">
+							VIEW
+						</span>
+					</a>
+				</div>
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<div class="span9">
+				<div class="well well-small">
+					<h4>Featured Products <small class="pull-right">@Model.Products.Count featured products</small></h4>
+					<div class="row-fluid">
+						<div id="featured" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<ul class="thumbnails">
+										@{
+											int size = @Model.Products.Count / 4;
+										}
+										@for (int j = 0; j <= size; j++)
+										{
+											@for (int i = j * 4; i < @Model.Products.Count || i < size * 4; i++)
+											{
+												<li class="span3">
+													<div class="thumbnail">
+														<i class="tag"></i>
+														<a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"><img src=@Model.Images[i].Url alt=""></a>
+														<div class="caption">
+															@{
+																string truncatedName = Model.Products[i].Name.Length > 22
+																? Model.Products[i].Name.Substring(0, 22) + "..."
+																: Model.Products[i].Name;
+															}
+															<h5>@truncatedName</h5>
+															<h4><a class="btn" asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id">VIEW</a> <span class="pull-right">$@Model.Products[i].Price.ToString("F0")</span></h4>
+														</div>
+													</div>
+												</li>
+											}
+										}
+									</ul>
+								</div>
+							</div>
+							<a class="left carousel-control" href="#featured" data-slide="prev">‹</a>
+							<a class="right carousel-control" href="#featured" data-slide="next">›</a>
+						</div>
+					</div>
+				</div>
+				<h4>Latest Products </h4>
+				<ul class="thumbnails">
+					@for (int i = 0; i < Model.Products.Count; i++)
+					{
+						<li class="span3">
+							<div class="thumbnail">
+								<a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"><img src=@Model.Images[i].Url alt="" /></a>
+								<div class="caption">
+									@* @{
+								string truncatedName = Model.Products[i].Name.Length > 22
+								? Model.Products[i].Name.Substring(0, 22) + "..."
+								: Model.Products[i].Name;
+								string truncatedDes = Model.Products[i].Description.Length > 30
+								? Model.Products[i].Description.Substring(0, 30) + "..."
+								: Model.Products[i].Description;
+								}
+								<h5>@truncatedName</h5>
+								<p>
+								@truncatedDes
+								</p> *@
+
+									<h4 style="text-align:center">
+										<a class="btn" asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"> <i class="icon-zoom-in"></i></a>
+										<a class="ajax-add-to-cart btn" data-productid=@Model.Products[i].Id data-customerid=@IdUser>Add to <i class="icon-shopping-cart"></i></a>
+										<a class="btn btn-primary" href="#">$@Model.Products[i].Price.ToString("F0")</a>
+									</h4>
+								</div>
+							</div>
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
+<!-- Sidebar end=============================================== -->
+@section Scripts {
+
+	<script>
+		$(document).ready(function () {
+			$(".ajax-add-to-cart").click(function () {
+				var customerId = $(this).data("customerid");
+				if (customerId) {
+					$.ajax({
+						url: '@Url.Action("AddToCart", "Cart")',
+						type: 'POST',
+						data: {
+							ProductId: $(this).data("productid"),
+							CustomerId: $(this).data("customerid"),
+							Quantity: 1
+						},
+						success: function (data) {
+							console.log(data);
+							Swal.fire({
+								position: "center",
+								icon: "success",
+								title: "Thêm vào giỏ hàng thành công",
+								showConfirmButton: false,
+								timer: 1500
+							});
+							$("#Cart_count").html("[ " + data.count + "] in your cart");
+						},
+						error: function () {
+							Swal.fire({
+								icon: "error",
+								title: "Oops...",
+								text: "Thêm vào giỏ hàng thất bại",
+								footer: '<a href="#">Reload lại trang?</a>'
+							});
+						}
+					});
+				}else{
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+				}
+
+			});
+			document.getElementById('myOrder').addEventListener('click', function (event) {
+				var Id = '@IdUser';
+				console.log(Id);
+				if (!Id) {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để xem thông tin này",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+					event.preventDefault();
+				}
+			});
+		});
+
+	</script>
+}

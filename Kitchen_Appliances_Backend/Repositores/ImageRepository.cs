@@ -78,7 +78,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                     return new ApiResponse<bool>()
                     {
                         Status = 404,
-                        Message = "Không tìm thấy product",
+                        Message = "Không tìm thấy image",
                         Data = false
                     };
                 }
