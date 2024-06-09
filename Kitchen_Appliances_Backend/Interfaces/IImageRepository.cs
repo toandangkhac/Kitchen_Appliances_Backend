@@ -11,7 +11,7 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<bool>> CreateImage(CreateImageRequest request);
 
         Task<ApiResponse<bool>> UpdateImage(int id, UpdateImageRequest request);
-
+        
         Task<ApiResponse<bool>> SetImageDefault(int id);
 
         Task<ApiResponse<bool>> DeleteImage(int id);

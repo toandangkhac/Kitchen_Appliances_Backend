@@ -24,7 +24,7 @@ namespace Kitchen_Appliances_Backend.Controllers
             return Ok(carts);
         }
 
-        [HttpPost]
+        [HttpPost("")]
         public async Task<IActionResult> AddCartDetailToCart(CreateCartDetailRequest request)
         {
             return Ok(await _cartDetailRepository.AddCartDetailToCart(request));
@@ -36,7 +36,7 @@ namespace Kitchen_Appliances_Backend.Controllers
             return Ok(await _cartDetailRepository.GetCartDetail(request));
         }
 
-        [HttpDelete]
+        [HttpPut("delete")]
         public async Task<IActionResult> DeleteCartDetail(GetCartDetailRequest request)
         {
             return Ok(await _cartDetailRepository.DeleteCartDetail(request));

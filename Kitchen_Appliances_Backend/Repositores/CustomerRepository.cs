@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Kitchen_Appliances_Backend.Commons.Enums;
 using Kitchen_Appliances_Backend.Commons.Exceptions;
 using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Customer;
+using Kitchen_Appliances_Backend.DTO.Mail;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
+using Kitchen_Appliances_Backend.Services;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -12,11 +16,15 @@ namespace Kitchen_Appliances_Backend.Repositores
     {
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
+		private readonly IMailService _mail;
+		private readonly IOtpService _otp;
 
-        public CustomerRepository(DataContext dataContext, IMapper mapper)
+		public CustomerRepository(DataContext dataContext, IMapper mapper, IOtpService otp, IMailService mail)
         {
             _mapper = mapper;
             _dataContext = dataContext;
+            _mail = mail;
+            _otp = otp;
         }
 
         public async Task<ApiResponse<bool>> CreateCustomer(CreateCustomerRequest request)
@@ -36,11 +44,41 @@ namespace Kitchen_Appliances_Backend.Repositores
                     Status = false
                 };
 
-                account.Customers.Add(customer);
-                _dataContext.Accounts.Add(account);
-                _dataContext.Customers.Add(customer);
-                await _dataContext.SaveChangesAsync();
-                return new ApiResponse<bool>(200, "Tạo customer thành công", true);
+               
+
+				var otp = _otp.GenerateOTP();
+
+				//save register otp 
+				var userToken = new AppUserToken()
+				{
+					Token = otp,
+					Type = TOKEN_TYPE.REGISTER_OTP,
+					ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES),
+					AccountId = customer.Email,
+					Account = account
+				};
+
+				_dataContext.AppUserTokens.Add(userToken);
+
+				account.Customers.Add(customer);
+				_dataContext.Accounts.Add(account);
+				_dataContext.Customers.Add(customer);
+
+				await _dataContext.SaveChangesAsync();
+
+				//Send mail confirm
+				var title = "Xác nhận đăng ký tài khoản";
+				var name = customer.Fullname;
+				_mail.sendMail(new CreateMailRequest()
+				{
+					Email = account.Email,
+					Name = name,
+					OTP = otp,
+					Title = title,
+					Type = MAIL_TYPE.REGISTATION
+				});
+
+				return new ApiResponse<bool>(200, "Tạo customer thành công", true);
             }
             catch (Exception)
             {

@@ -1,6 +1,5 @@
 ﻿using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
 
 namespace Kitchen_Appliances_MVC.ApiServices
@@ -9,7 +8,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "/gateway/customer";
-
+        //Đã TEST 
         public CustomerClientService(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -28,15 +27,14 @@ namespace Kitchen_Appliances_MVC.ApiServices
         public async Task<APIResponse<bool>> CreateCustomer(CreateCustomerRequest request)
         {
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(BaseUrl, request);
-
-            APIResponse<bool> result = await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
-            return result;
+            return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
         }
 
-        public Task<APIResponse<bool>> UpdateCustomer(int id, UpdateCustomerRequest request)
+        public async Task<APIResponse<bool>> UpdateCustomer(int id, UpdateCustomerRequest request)
         {
-            throw new NotImplementedException();
-        }
+			HttpResponseMessage response = await _httpClient.PutAsJsonAsync(BaseUrl + $"/{id}", request);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+		}
 
         public async Task<APIResponse<bool>> DeleteCustomer(int id)
         {

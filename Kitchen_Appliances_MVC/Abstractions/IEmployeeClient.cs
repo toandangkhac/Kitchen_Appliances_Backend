@@ -1,5 +1,4 @@
 ﻿using Kitchen_Appliances_Backend.Commons.Responses;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.ViewModels.Employee;
 
 namespace Kitchen_Appliances_MVC.Abstractions

@@ -4,13 +4,15 @@ using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.DTO.Account;
 using Kitchen_Appliances_Backend.DTO.Employee;
 using Kitchen_Appliances_Backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+
+   
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _repo;
@@ -27,9 +29,9 @@ namespace Kitchen_Appliances_Backend.Controllers
         {
             request.Type = TOKEN_TYPE.REGISTER_OTP;
             return Ok(await _repo.ActiveAccount(request));
-        }
-
-        [HttpGet]
+		}
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
         public async Task<IActionResult> GetListAll()
         {
             if (!ModelState.IsValid)

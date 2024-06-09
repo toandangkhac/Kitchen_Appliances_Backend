@@ -1,24 +1,37 @@
-﻿using Kitchen_Appliances_Backend.DTO.Bill;
-using Kitchen_Appliances_Backend.Interfaces;
+﻿using Kitchen_Appliances_Backend.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BillController : Controller
-    {
-        private readonly IBillRepository _billRepository;
-        public BillController(IBillRepository billRepository)
-        {
-            this._billRepository = billRepository;
-        }
+	[Route("api/[controller]")]
+	[ApiController]
+	public class BillController : ControllerBase
+	{
+		private readonly IBillRepository _billRepository;
+		public BillController(IBillRepository billRepository)
+		{
+			this._billRepository = billRepository;
+		}
 
-        [HttpPost("save-payment-info")]
-        public async Task<IActionResult> savePaymentInfor(CreateBillRequest billRequest)
-        {
-            var res = _billRepository.savePaymentInfor(billRequest);
-            return Ok(res);
-        }
-    }
+		[HttpGet("save/{orderId}")]
+		public async Task<IActionResult> savePaymentInfor(int orderId)
+		{
+			var res = await _billRepository.savePaymentInfor(orderId);
+			return Ok(res);
+		}
+
+		[HttpGet("get/{billId}")]
+		public async Task<IActionResult> GetBillInformation(int billId)
+		{
+			var result = await _billRepository.GetBillInformation(billId);
+			return Ok(result);
+		}
+
+		[HttpGet("list")]
+		public async Task<IActionResult> GetAllBill()
+		{
+			return Ok(await _billRepository.GetAllBill());
+		}
+	}
 }

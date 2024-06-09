@@ -1,11 +1,12 @@
-﻿using Kitchen_Appliances_Backend.DTO.ProductPrice;
+﻿using Kitchen_Appliances_Backend.Commons.Responses;
+using Kitchen_Appliances_Backend.DTO.ProductPrice;
 
 namespace Kitchen_Appliances_Backend.Interfaces
 {
     public interface IProductPriceRepository
     {
-        List<ProductPriceDTO> ListProductImageByProduct(int productId);
+        Task<ApiResponse<List<ProductPriceDTO>>> ListProductImageByProduct(int productId);
 
-        Task<int> UpdateProductPrice(UpdateProductPriceRequest request);
+        Task<ApiResponse<bool>> UpdateProductPrice(UpdateProductPriceRequest request);
     }
 }

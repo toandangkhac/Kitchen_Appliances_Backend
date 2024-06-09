@@ -1,3 +1,4 @@
+using Kitchen_Appliances_Backend.Commons.Middleware;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DependencyInjection.Extensions;
 using Kitchen_Appliances_Backend.Helper;
@@ -44,7 +45,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+//Register 
+//app.UseMiddleware<UnauthorizedMiddleware>();
 
 app.MapControllers();
 

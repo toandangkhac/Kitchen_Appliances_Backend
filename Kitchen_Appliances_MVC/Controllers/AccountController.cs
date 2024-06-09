@@ -1,7 +1,7 @@
 ﻿using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.Options;
 using Kitchen_Appliances_MVC.ViewModels.Account;
+using Kitchen_Appliances_MVC.ViewModels.Customer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;

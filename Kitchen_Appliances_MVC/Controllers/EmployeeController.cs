@@ -1,25 +1,31 @@
 ﻿using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
-using Kitchen_Appliances_MVC.ViewModels.Employee;
+using Kitchen_Appliances_MVC.ViewModels.CartDetail;
+using Kitchen_Appliances_MVC.ViewModels.Category;
 using Kitchen_Appliances_MVC.ViewModels.Product;
-using Microsoft.AspNetCore.Http;
+using Kitchen_Appliances_MVC.ViewModels.ProductPrice;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_MVC.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly ICustomerServiceClient _customerServiceClient;
+        private readonly IBillServiceClient test;
 
-        public EmployeeController(ICustomerServiceClient customerServiceClient)
+        public EmployeeController(IBillServiceClient cartDetailServiceClient)
         {
-            _customerServiceClient = customerServiceClient;
+            test = cartDetailServiceClient;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var res = await _customerServiceClient.ListCustomer();
+            //Khi check luôn nhớ async await
+            var cart = new GetCartDetailRequest()
+            {
+                CustomerId = 2,
+                ProductId = 14,
+            };
+            var res = await test.GetAllBill();
             Console.WriteLine(res.Message);
             return View();
         }
@@ -27,16 +33,9 @@ namespace Kitchen_Appliances_MVC.Controllers
         //ContentResult , ViewResult, JsonResult
         public async Task<IActionResult> Detail(int id)
         {
-            var request = new UpdateProductRequest()
-            {
-                Name = null,
-                Description = null,
-                Price = null,
-                Quantity = 23
-            };
-
-            var res = await _customerServiceClient.DeleteCustomer(id);
-            Console.WriteLine(res.Message + " Code: " + res.Status);
+            var res = await test.GetBillInformation(id);
+            var a = res.Data;
+            Console.WriteLine("Mã hóa đơn : " + a.OrderId + " Total: " + a.Total);
             return View();
         }
 

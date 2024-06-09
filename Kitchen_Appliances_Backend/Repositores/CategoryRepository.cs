@@ -50,7 +50,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                 var products = _dataContext.Products.Where(x => x.CategoryId == id);
                 if (!products.IsNullOrEmpty())
                 {
-                    throw new InvalidRequestException("No delete category because it exist product");
+                    return new ApiResponse<object>(400,"No delete category because it exist product", false);
                 }
                 _dataContext.Categories.Remove(category);
                 await _dataContext.SaveChangesAsync();

@@ -1,9 +1,9 @@
 ﻿using Kitchen_Appliances_MVC.Abstractions;
-using Kitchen_Appliances_MVC.DTO;
 using Kitchen_Appliances_MVC.ViewModels.Account;
 using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
+using Kitchen_Appliances_MVC.ViewModels.Customer;
 
 namespace Kitchen_Appliances_MVC.ApiServices
 {
