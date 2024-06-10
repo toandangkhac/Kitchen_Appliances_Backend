@@ -42,7 +42,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                 return new ApiResponse<AuthDTO>()
                 {
                     Status = 404,
-                    Message = "",
+                    Message = "Sai mật khẩu",
                     Data = null
                 };
             }
@@ -52,7 +52,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                 return new ApiResponse<AuthDTO>()
                 {
                     Status = 500,
-                    Message = "",
+                    Message = "Tài khoản đã bị khóa",
                     Data = null
                 };
             }
@@ -74,8 +74,6 @@ namespace Kitchen_Appliances_Backend.Repositores
             // Yêu cầu phải đăng nhập trước mới có thể thay đổi mật khẩu
             //string username = _currentUserService.UserName;
 
-            string username = "chientran@gmail.com";
-
             if(!request.NewPassword.Equals(request.ConfirmPassword))
             {
                 return new ApiResponse<bool>()
@@ -86,7 +84,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                 };
             }
 
-            var account = _context.Accounts.FirstOrDefault(x => x.Email == username);
+            var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
             //?? throw new NotFoundException("Not find account by email, try again!!!");
             if(account == null)
             {
@@ -163,8 +161,6 @@ namespace Kitchen_Appliances_Backend.Repositores
 				};
 			}    
 
-            var employee = _context.Employees.FirstOrDefault(x => x.Email.Equals(request.Email))
-                ?? throw new NotFoundException("Không tìm thấy email này trong hệ thống");
 
             var userToken = _context.AppUserTokens.FirstOrDefault(x => x.Type == 
                         TOKEN_TYPE.FORGOT_PASSWORD_OTP && x.AccountId == account.Email);
@@ -192,7 +188,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             _mailService.sendMail(new DTO.Mail.CreateMailRequest()
             {
                 Email = account.Email,
-                Name = employee.Fullname,
+                Name = "Khách hàng",
                 OTP = otp,
                 Title = "Quên mật khẩu",
                 Type = MAIL_TYPE.FORGOT_PASSWORD
@@ -230,7 +226,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
 				return new ApiResponse<bool>()
 				{
-					Status = 404,
+					Status = 500,
 					Message = "You need to perform forgot password feature for your account before, invalid request",
 					Data = false
 				};
@@ -261,15 +257,27 @@ namespace Kitchen_Appliances_Backend.Repositores
         public async Task<ApiResponse<bool>> ResetPassword(ResetPasswordRequest request)
         {
 
-            await VerifyOTP(new VerifyOTPRequest()
+            var result = await VerifyOTP(new VerifyOTPRequest()
             {
                 Email = request.Email,
                 OTP = request.OTP,
                 Type = TOKEN_TYPE.FORGOT_PASSWORD_OTP
             });
+            if(result.Data == false)
+            {
+                return result;
+            }    
 
             var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
-
+            if(account.Status == false)
+            {
+                return new ApiResponse<bool>()
+                {
+                    Status = 400,
+                    Message = "Tài khoản đã bị khóa",
+                    Data = false
+                };
+            }    
             account.Password = request.Password;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
@@ -301,7 +309,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
 				return new ApiResponse<bool>()
 				{
-					Status = 404,
+					Status = 400,
 					Message = "YOTP is invalid",
 					Data = false
 				};
@@ -311,7 +319,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
 				return new ApiResponse<bool>()
 				{
-					Status = 404,
+					Status = 400,
 					Message = "OTP is expired",
 					Data = false
 				};
@@ -320,7 +328,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 			{
 				Status = 200,
 				Message = "Verify OTP thành công",
-				Data = false
+				Data = true
 			};
 		}
 
@@ -331,11 +339,12 @@ namespace Kitchen_Appliances_Backend.Repositores
                 throw new InvalidRequestException("");
             }    
             var claims = _jwtService.validateExpiredJwt(token);
-			return new ApiResponse<string>()
-			{
-				Status = 404,
-				Message = "validate expired jwt",
-				Data = claims.FindFirstValue("Email")
+            return new ApiResponse<string>()
+            {
+                Status = 200,
+                Message = "validate expired jwt",
+                //Data = claims.FindFirstValue("Email")
+                Data = claims.FindFirstValue(ClaimTypes.Role)
 			};
         }
     }

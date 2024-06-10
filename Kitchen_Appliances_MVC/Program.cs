@@ -22,6 +22,16 @@ builder.Services.AddScoped<IRoleServiceClient, RoleServiceClient>();
 builder.Services.AddScoped<IBillServiceClient, BillServiceClient>();
 builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
 
+builder.Services.AddScoped<IVNPayClientService, VNPayServiceClient>();
+
+builder.Services.AddSession(options =>
+{
+    // Configure session options here
+    options.Cookie.Name = "YourSessionCookieName";
+    options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+    // Add other session options as needed
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,7 +46,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
