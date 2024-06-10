@@ -410,7 +410,22 @@
       ],
       "UpstreamPathTemplate": "/gateway/order/cancel-order/{orderId}",
       "UpstreamHttpMethod": [ "Put" ]
+    },
+
+    //THANH TOÁN
+    {
+      "DownstreamPathTemplate": "/api/VNPay",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/VNPay",
+      "UpstreamHttpMethod": [ "Get" ]
     }
+
 
   ],
   "GlobalConfiguration": {

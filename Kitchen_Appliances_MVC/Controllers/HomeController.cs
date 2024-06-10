@@ -1,7 +1,9 @@
-using Kitchen_Appliances_MVC.Abstractions;
+﻿using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.Models;
+using Kitchen_Appliances_MVC.ViewModelData.Account;
 using Kitchen_Appliances_MVC.ViewModelData.Header;
 using Kitchen_Appliances_MVC.ViewModelData.Home;
+using Kitchen_Appliances_MVC.ViewModels.Account;
 using Kitchen_Appliances_MVC.ViewModels.Category;
 using Kitchen_Appliances_MVC.ViewModels.Image;
 using Kitchen_Appliances_MVC.ViewModels.Product;
@@ -16,14 +18,16 @@ namespace Kitchen_Appliances_MVC.Controllers
         private readonly ICategoryServiceClient _categoryServiceClient;
         private readonly IProductServiceClient _productServiceClient;
         private readonly IImageServiceClient _imageServiceClient;
+        private readonly IAccountClient _accountClient;
 
         public HomeController(ILogger<HomeController> logger, ICategoryServiceClient categoryServiceClient,
-            IProductServiceClient productServiceClient, IImageServiceClient imageServiceClient)
+            IProductServiceClient productServiceClient, IImageServiceClient imageServiceClient, IAccountClient accountClient)
         {
             _productServiceClient = productServiceClient;
             _logger = logger;
             _categoryServiceClient = categoryServiceClient;
             _imageServiceClient = imageServiceClient;
+            _accountClient = accountClient;
         }
 
         public async Task<IActionResult> Index()
@@ -45,8 +49,6 @@ namespace Kitchen_Appliances_MVC.Controllers
 			{
                 var dataImages = await _imageServiceClient.GetAllImagesByProduct(product.Id);
                 List<ImageDTO> imagesTemp = dataImages.Data;
-				//if (imagesTemp != null && imagesTemp.Count > 0)
-				//	images.Add(imagesTemp[0]);
 				if (imagesTemp != null && imagesTemp.Count > 0)
 				{
 					images.Add(imagesTemp[0]);

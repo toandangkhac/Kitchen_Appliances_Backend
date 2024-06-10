@@ -1,17 +1,12 @@
 
-﻿ @using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http;
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-	// string Fullname = HttpContextAccessor.HttpContext.Session.GetString("Fullname");
-	// string Username = HttpContextAccessor.HttpContext.Session.GetString("Username");
-	// string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
-	// string Cartcount = HttpContextAccessor.HttpContext.Session.GetString("Cartcount");
-	// string cartDisplay = string.IsNullOrEmpty(Fullname) ? "[ 0 ] in your cart" : $"[ {Cartcount} ] in your cart";
-	string Fullname = "";
-	string Username = "";
-	string IdUser = "";
-	string Cartcount = "";
-	string cartDisplay = "";
+	string Fullname = HttpContextAccessor.HttpContext.Session.GetString("Fullname");
+	string Username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	string Cartcount = HttpContextAccessor.HttpContext.Session.GetString("Cartcount");
+	string cartDisplay = string.IsNullOrEmpty(Fullname) ? "[ 0 ] in your cart" : $"[ {Cartcount} ] in your cart";
 }
 ﻿@using Kitchen_Appliances_MVC.ViewModels.Category
 @model Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel
@@ -65,32 +60,6 @@
 					{
 						<li class=""><a href="@Url.Action("Login", "Account")" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a></li>
 					}
-						@* <div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-								<h3>Login Block</h3>
-							</div>
-							<a href="@Url.Action("Login", "Account")">Login</a>
-							<div class="modal-body">
-								
-								<form class="form-horizontal loginFrm" asp-controller="Account" method="get" asp-action="Login">
-									<div class="control-group">
-										<input type="text" id="inputEmail" placeholder="Email">
-									</div>
-									<div class="control-group">
-										<input type="password" id="inputPassword" placeholder="Password">
-									</div>
-									<div class="control-group">
-										<label class="checkbox">
-											<input type="checkbox"> Remember me
-										</label>
-									</div>
-									<button type="submit" class="btn btn-success">Sign in</button>
-									<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-								</form>
-								
-							</div>
-						</div> *@
 				</ul>
 			</div>
 		</div>
