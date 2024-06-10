@@ -28,7 +28,7 @@ namespace Kitchen_Appliances_MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var dataCategories = await _categoryServiceClient.GetAllCategories();
+			var dataCategories = await _categoryServiceClient.GetAllCategories();
             if(dataCategories.Status != 200)
             {
                 Console.WriteLine(dataCategories.Message);
@@ -78,9 +78,62 @@ namespace Kitchen_Appliances_MVC.Controllers
 			return View(Models);
 		}
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> ByCategory(int id)
         {
-            return View();
+			var dataCategories = await _categoryServiceClient.GetAllCategories();
+			if (dataCategories.Status != 200)
+			{
+				Console.WriteLine(dataCategories.Message);
+			}
+			List<CategoryDTO> categories = dataCategories.Data;
+			var category = await _categoryServiceClient.GetCategoryById(id);
+			if (category.Status != 200) {
+				Console.WriteLine(category.Message);
+			}
+			CategoryDTO cate = category.Data;
+			var dataProducts = await _productServiceClient.ListProductByCategory(id);
+			if (dataProducts.Status != 200)
+			{
+				Console.WriteLine(dataProducts.Message);
+			}
+			List<ProductDTO> products = dataProducts.Data;
+			List<ImageDTO> images = new List<ImageDTO>();
+			foreach (ProductDTO product in products)
+			{
+				var dataImages = await _imageServiceClient.GetAllImagesByProduct(product.Id);
+				List<ImageDTO> imagesTemp = dataImages.Data;
+				//if (imagesTemp != null && imagesTemp.Count > 0)
+				//	images.Add(imagesTemp[0]);
+				if (imagesTemp != null && imagesTemp.Count > 0)
+				{
+					images.Add(imagesTemp[0]);
+				}
+				else
+				{
+					var Image = new ImageDTO()
+					{
+						Id = 0,
+						ProductId = product.Id,
+						Url = "https://png.pngtree.com/background/20210715/original/pngtree-white-border-texture-textured-background-picture-image_1290377.jpg"
+					};
+					images.Add(Image);
+				}
+			}
+
+			var headerViewModel = new HeaderViewModel()
+			{
+				Categories = categories
+			};
+			ViewBag.HeaderData = headerViewModel;
+			HomeViewModels Models = new HomeViewModels
+			{
+				Categories = categories,
+				Products = products,
+				Images = images,
+				Category = cate
+			
+			};
+			return View(Models);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,0 +1,211 @@
+﻿@using Kitchen_Appliances_MVC.ViewModels.Product
+@inject IHttpContextAccessor HttpContextAccessor
+@model Kitchen_Appliances_MVC.ViewModelData.CartDetail.CartDetailViewModel
+@{
+	ViewData["Title"] = "Cart Detail";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	int totalPrice = 0;
+	foreach (ProductDTO pr in Model.Products)
+	{
+		totalPrice += (int)pr.Price * @Model.CartDetails.FirstOrDefault(cd => cd.ProductId == pr.Id).Quantity;
+	}
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+<!-- Sidebar ================================================== -->
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3">
+				<div class="well well-small">
+					<a id="myOrder" asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">
+						<img src="~/themes/images/ico-cart.png" alt="cart"> View your Order  <span class="badge badge-warning pull-right">
+							VIEW
+						</span>
+					</a>
+				</div>
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<!-- Main show=============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
+					<li class="active"> SHOPPING CART</li>
+				</ul>
+				<h3>  SHOPPING CART [ <small>@Model.CartDetails.Count Item(s) </small>]<a asp-controller="Product" asp-action="index" asp-route-input='' asp-route-option="All" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>
+				<hr class="soft" />
+				<table class="table table-bordered">
+					<tr><th> THÔNG TIN KHÁCH HÀNG  </th></tr>
+					<tr>
+						<td>
+								<div class="control-group">
+									<label class="control-label" for="inputUsername">FullName</label>
+									<div class="controls">
+										<span type="text">@Model.Customer.Fullname</span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="inputPassword1">PhoneNumber</label>
+									<div class="controls">
+										<span type="text">@Model.Customer.PhoneNumber</span>
+									</div>
+								</div>
+							    <div class="control-group">
+							    	<label class="control-label" for="inputPassword1">Address</label>
+							    	<div class="controls">
+							    		<span type="text">@Model.Customer.Address</span>
+							    	</div>
+							    </div>
+							    <div class="control-group">
+							    	<label class="control-label" for="inputPassword1">Email</label>
+							    	<div class="controls">
+							    		<span type="text">@Model.Customer.Email</span>
+							    	</div>
+							    </div>
+								<div class="control-group">
+									<div class="controls">
+										<a asp-controller="Account" asp-action="ChangeInfo" asp-route-id="@IdUser" class="btn">Change Your Info</a>
+									</div>
+								</div>
+						</td>
+					</tr>
+				</table>
+				<!-- show table product=============================================== -->
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Description</th>
+							<th>Quantity/Update</th>
+							<th>Price</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (ProductDTO pr in Model.Products)
+						{
+							<tr>
+								<td> <img width="60" src=@Model.Images[@pr.Id] alt="" /></td>
+								<td>@pr.Name <br/>@pr.Description.Substring(0,20)</td>
+								<td>
+									<div class="input-append"><input class="span1" style="max-width:34px" placeholder="1" id="appendedInputButtons" size="16" type="text">
+										<button class="btn btn-danger ajax-remove" data-productId=@pr.Id data-customerid=@IdUser type="button"><i class="icon-remove icon-white"></i></button>
+									</div>
+								</td>
+								<td>$@pr.Price</td>
+								<td>$@(@Model.CartDetails.FirstOrDefault(cd => cd.ProductId == pr.Id).Quantity * @pr.Price)</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="6" style="text-align:right"><strong>TOTAL = @totalPrice</strong></td>
+							<td class="label label-important btn" style="display:block" id="buyBtn"><a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Customer.Id"><strong> BUY </strong></a></td>
+						</tr>
+					</tbody>
+
+				</table>
+					<!-- show table product end=============================================== -->
+			</div>
+			<!-- Main show end=============================================== -->
+		</div>
+	</div>
+</div>
+<!--scripts-->
+@section Scripts {
+	<script>
+		document.getElementById('buyBtn').addEventListener('click', function () {
+			var totalPrice = @totalPrice;
+			if (totalPrice !== 0) {
+				Swal.fire({
+					position: 'center',
+					icon: 'success',
+					title: 'Mua hàng thành công',
+					showConfirmButton: false,
+					timer: 1500
+				});
+			}else{
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Không có sản phẩm để đặt mua'
+				});
+				event.preventDefault();
+			}	
+		});
+		document.getElementById('myOrder').addEventListener('click', function (event) {
+			var Id = '@IdUser';
+			console.log(Id);
+			if (!Id) {
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: "Bạn cần đăng nhập để xem thông tin này",
+					footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+				});
+				event.preventDefault();
+			}
+		});
+		$(".ajax-remove").click(function () {
+			var customerId = $(this).data("customerid");
+			if (customerId) {
+				$.ajax({
+					url: '@Url.Action("DeleteCart", "Cart")',
+					type: 'POST',
+					data: {
+						ProductId: $(this).data("productid"),
+						CustomerId: customerId,
+					},
+					success: function (data) {
+						console.log(data);
+						Swal.fire({
+							position: "center",
+							icon: "success",
+							title: "Xóa sản phẩm thành công",
+							showConfirmButton: false,
+							timer: 1500
+						}).then(() => {
+							// Reload lại trang sau khi thông báo Swal kết thúc
+							location.reload();
+						});
+						$("#Cart_count").html("[ " + data.count + "] in your cart");
+					},
+					error: function () {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Sửa giỏ hàng thất bại",
+							footer: '<a href="#">Reload lại trang?</a>'
+						});
+					}
+				});
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+					footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+				});
+			}
+
+		});
+	</script>
+}
