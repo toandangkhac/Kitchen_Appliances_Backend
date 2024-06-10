@@ -41,5 +41,10 @@ namespace Kitchen_Appliances_Backend.Controllers
         {
             return Ok(await _cartDetailRepository.DeleteCartDetail(request));
         }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCartDetail(UpdateCartDetailRequest request)
+        {
+            return Ok(await _cartDetailRepository.UpdateCartItemQuantity(request));
+        }
     }
 }

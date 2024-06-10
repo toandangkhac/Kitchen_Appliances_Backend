@@ -47,5 +47,12 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<CartDetailDTO>>> (BaseUrl + $"/{customerId}");
 		}
+
+		public async Task<APIResponse<bool>> UpdateCartDetail(UpdateCartDetailRequest request)
+		{
+			HttpResponseMessage response = await _httpClient.PutAsJsonAsync("gateway/cartdetail/update", request);
+			APIResponse<bool> result = await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+			return result;
+		}
 	}
 }

@@ -7,7 +7,7 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<bool>> AddCartDetailToCart(CreateCartDetailRequest request);
 
         // không cần upload
-        Task<ApiResponse<long>> UpdateCartItemQuantity(UpdateCartDetailRequest request);
+        Task<ApiResponse<bool>> UpdateCartItemQuantity(UpdateCartDetailRequest request);
 
         Task<ApiResponse<bool>> DeleteCartDetail(GetCartDetailRequest request);
 

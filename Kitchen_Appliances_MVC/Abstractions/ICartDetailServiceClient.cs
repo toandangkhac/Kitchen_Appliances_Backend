@@ -12,5 +12,6 @@ namespace Kitchen_Appliances_MVC.Abstractions
 		Task<APIResponse<bool>> AddCartDetailToCart(CreateCartDetailRequest request);
 
 		Task<APIResponse<List<CartDetailDTO>>> GetCartDetailByCustomer(int customerId);
+		Task<APIResponse<bool>> UpdateCartDetail(UpdateCartDetailRequest request);
 	}
 }

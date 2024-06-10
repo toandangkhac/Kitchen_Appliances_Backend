@@ -1,0 +1,135 @@
+﻿@using Kitchen_Appliances_MVC.ViewModels.Order
+@inject IHttpContextAccessor HttpContextAccessor
+@model Kitchen_Appliances_MVC.ViewModelData.Order.OrderViewModel
+@{
+	ViewData["Title"] = "List Order";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+<!-- Sidebar ================================================== -->
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
+					<li class="active"> LIST ORDER</li>
+				</ul>
+				<h3>  LIST ORDER [ <small>@Model.Orders.Count Item(s) </small>]<a asp-controller="Product" asp-action="index" asp-route-input='' asp-route-option="All" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>
+				<hr class="soft" />
+				<table class="table table-bordered">
+					<tr><th> THÔNG TIN KHÁCH HÀNG  </th></tr>
+					<tr>
+						<td>
+							<div class="control-group">
+								<label class="control-label" for="inputUsername">FullName</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Fullname</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">PhoneNumber</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.PhoneNumber</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">Address</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Address</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">Email</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Email</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									<a asp-controller="Account" asp-action="ChangeInfo" asp-route-id="@Model.Customer.Id.ToString()" class="btn">Change Your Info</a>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<!-- show table product=============================================== -->
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Create At</th>
+							<th>Status</th>
+							<th>Price State</th>
+							@* <th>Employee</th> *@
+							<th> Order Info</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (OrderDTO o in Model.Orders)
+						{
+							<tr>
+								<td> <strong> @o.Id </strong> </td>
+								<td> @o.CreateAt </td>
+								@if (o.Status == 9)
+								{
+									<td>Chưa xác nhận</td>
+								}
+								else
+								{
+									<td>Đã xác nhận</td>
+								}
+								@if (o.PaymentStatus == true)
+								{
+									<td>Đã thanh toán</td>
+								}
+								else
+								{
+									<td>Chưa thanh toán</td>
+								}
+								@* @if (o.EmployeeId == null)
+								{
+									<td>Chưa xác thực</td>
+								}
+								else
+								{
+									<td>@Model.Employees.Where(e => e.Id == o.EmployeeId).FirstOrDefault().Fullname</td>
+								} *@
+								<td class="label label-important btn-info">
+									<a asp-controller="Order" asp-action="OrderDetail" asp-route-id="@o.Id" asp-route-idcustomer="@IdUser"><strong> View </strong></a>
+								</td>
+							</tr>
+						}
+					</tbody>
+
+				</table>
+				<!-- show table product end=============================================== -->
+			</div>
+			<!-- Main show end=============================================== -->
+		</div>
+	</div>
+</div>

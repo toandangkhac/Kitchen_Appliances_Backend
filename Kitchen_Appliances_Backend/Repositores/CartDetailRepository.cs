@@ -239,10 +239,64 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
         }
 
-        public Task<ApiResponse<long>> UpdateCartItemQuantity(UpdateCartDetailRequest request)
+        public async Task<ApiResponse<bool>> UpdateCartItemQuantity(UpdateCartDetailRequest request)
         {
-            
-            throw new NotImplementedException();
+            try
+            {
+				var product = await _context.Products.FindAsync(request.ProductId);
+				if (product == null)
+				{
+					return new ApiResponse<bool>()
+					{
+						Status = 404,
+						Message = "Không tìm thấy product",
+						Data = false
+					};
+				}
+				var customer = _context.Customers.FirstOrDefault(x => x.Id == request.CustomerId);
+				if (customer == null)
+				{
+					return new ApiResponse<bool>()
+					{
+						Status = 404,
+						Message = "Không tìm thấy người dùng",
+						Data = false
+					};
+				}
+
+				var cartDetail = _context.CartDetails
+				   .FirstOrDefault(x => x.Product == product && x.Customer == customer);
+				if (cartDetail == null)
+				{
+					return new ApiResponse<bool>()
+					{
+						Status = 404,
+						Message = "Không tìm thấy cartdetail",
+						Data = false
+					};
+				}
+				product.Quantity += cartDetail.Quantity;
+                product.Quantity -= request.Quantity;
+                cartDetail.Quantity = request.Quantity;
+				_context.Products.Update(product);
+				_context.CartDetails.Update(cartDetail);
+				await _context.SaveChangesAsync();
+				return new ApiResponse<bool>()
+				{
+					Status = 200,
+					Message = "Sửa CartDetail thành công",
+					Data = true
+				};
+			}
+            catch (Exception ex)
+            {
+				return new ApiResponse<bool>()
+				{
+					Status = 400,
+					Message = "Sửa CartDetail bị lỗi, vui lòng thử lại",
+					Data = false
+				};
+			}
         }
 
         public Task<ApiResponse<bool>> DeleteListCartDetail(List<int> ids)
