@@ -51,7 +51,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
 
 		public async Task<APIResponse<List<OrderDTO>>> ListOrderByCustomer(int customerId)
 		{
-			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/{customerId}");
+			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/get-order-by-customer/{customerId}");
 		}
 
 		public Task<APIResponse<List<OrderDTO>>> ListOrderConfirmed()

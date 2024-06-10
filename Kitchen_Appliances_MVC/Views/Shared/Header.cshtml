@@ -49,7 +49,7 @@
 				</form>
 				<ul id="topMenu" class="nav pull-right">
 					<li class=""><a href="special_offer.html">Specials Offer</a></li>
-					<li class=""><a href="normal.html">Delivery</a></li>
+					<li class="" id="edit"><a href="~/Admin/Index">Back Admin</a></li>
 
 					<li class=""><a href="~/Home/Contact">Contact</a></li>
 					@if (@Username != null)
@@ -67,23 +67,58 @@
 </div>
 <!-- Header End====================================================================== -->
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-		var cartLink = document.getElementById("cartLink");
-		var idUser = cartLink.getAttribute("data-iduser");
-
-		cartLink.addEventListener("click", function (event) {
-			if (!idUser) {
-				event.preventDefault(); // Ngăn chặn điều hướng nếu IdUser là null hoặc rỗng
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Bạn cần đăng nhập để truy cập vào giỏ hàng",
-					footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
-				});
-			} else {
-				// Nếu idUser không null thì điều hướng đến href của thẻ <a>
-				window.location.href = this.href;
-			}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			var cartLink = document.getElementById("cartLink");
+			var idUser = cartLink.getAttribute("data-iduser");
+			var roleId = cartLink.getAttribute("data-roleid");
+			cartLink.addEventListener("click", function (event) {
+				if (!idUser||idUser==="") {
+					event.preventDefault(); // Ngăn chặn điều hướng nếu IdUser là null hoặc rỗng
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để truy cập vào giỏ hàng",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+				} else {
+					if (roleId === "1") {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Addmin không thể truy cập giỏ hàng",
+							//timer: 1500
+						});
+						event.preventDefault();
+					} else {
+						// Nếu idUser không null thì điều hướng đến href của thẻ <a>
+						window.location.href = this.href;
+					}
+				}
+			});
+			edit.addEventListener("click", function (event) {
+				if (!idUser) {
+					event.preventDefault(); // Ngăn chặn điều hướng nếu IdUser là null hoặc rỗng
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để truy cập vào giỏ hàng",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+				} else {
+					if (roleId !== "1") {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Chỉ nhân viên mới có thể vào",
+							//timer: 1500
+						});
+						event.preventDefault();
+					} else {
+						// Nếu idUser không null thì điều hướng đến href của thẻ <a>
+						window.location.href = this.href;
+					}
+				}
+			});
 		});
-	});
 </script>

@@ -1,0 +1,400 @@
+﻿@using Kitchen_Appliances_MVC.ViewModels.Image
+@using Kitchen_Appliances_MVC.ViewModels.Product
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "Proudct Detail";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	 string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	 string RoleId = HttpContextAccessor.HttpContext.Session.GetString("RoleId");
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+@model Kitchen_Appliances_MVC.ViewModelData.Product.ProductViewModel
+<!-- Sidebar ================================================== -->
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3">
+				<div class="well well-small">
+					<a id="myOrder" asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">
+						<img src="~/themes/images/ico-cart.png" alt="cart"> View your Order  <span class="badge badge-warning pull-right">
+							VIEW
+						</span>
+					</a>
+				</div>
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					@* <li><a href="index.html">Home</a> <span class="divider">/</span></li> *@
+					<li><a asp-controller="Product" asp-action="index" asp-route-input='' asp-route-option="All">Products</a> <span class="divider">/</span></li>
+					<li class="active">product Details</li>
+				</ul>
+				<div class="row">
+					<div id="gallery" class="span3">
+						<a href=@Model.ImagesForProduct[0].Url title=@Model.Product.Name>
+							<img src=@Model.ImagesForProduct[0].Url style="width:100%" alt=@Model.Product.Name />
+						</a>
+						<div id="differentview" class="moreOptopm carousel slide">
+
+							<div class="carousel-inner" style="display:flex; align-items: flex-start;">
+								@* @{
+								string url1 = "";
+								for (int i = 0; i < Model.ImagesForProduct.Count && i < 3; i++)
+								{
+								url1 = @Model.ImagesForProduct[0].Url;
+								<div class="item active">
+								<a target="_blank" href=@url1> <img style="width:40%" src=@url1 alt="" /></a>
+								</div>
+								<div class="item">
+								<a href=@url1> <img style="width:20%" src=@url1 alt="" /></a>
+								</div>
+								}
+
+
+								// url1 = @Model.ImagesForProduct[0].Url;
+								// url2 = @Model.ImagesForProduct[1].Url;
+								// url3 = @Model.ImagesForProduct[2].Url;
+								} *@
+								<div class="item active">
+									@foreach (ImageDTO img in Model.ImagesForProduct)
+									{
+										<a target="_blank" href=@img.Url> <img style="width:20%" src=@img.Url alt="" /></a>
+									}
+								</div>
+								<div class="item">
+									@foreach (ImageDTO img in Model.ImagesForProduct)
+									{
+										<a href=@img.Url> <img style="width:20%" src=@img.Url alt="" /></a>
+									}
+								</div>
+							</div>
+						</div>
+
+						<div class="btn-toolbar">
+							<div class="btn-group">
+								<span class="btn"><i class="icon-envelope"></i></span>
+								<span class="btn"><i class="icon-print"></i></span>
+								<span class="btn"><i class="icon-zoom-in"></i></span>
+								<span class="btn"><i class="icon-star"></i></span>
+								<span class="btn"><i class=" icon-thumbs-up"></i></span>
+								<span class="btn"><i class="icon-thumbs-down"></i></span>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<h3> @Model.Product.Name </h3>
+						@* <small>- (14MP, 18x Optical Zoom) 3-inch LCD</small> *@
+						<hr class="soft" />
+						<form class="form-horizontal qtyFrm">
+							<div class="control-group">
+								<label class="control-label"><span> $@Model.Product.Price </span></label>
+								<div class="controls">
+									<input type="number" class="span1" id="cartQuantity" placeholder="Qty." min="0" max=@Model.Product.Quantity value="0" />
+									<button type="button" class="ajax-add-to-cart-main btn btn-large btn-primary pull-right"
+											data-productid=@Model.Product.Id data-customerid=@IdUser>
+										Add to cart <i class=" icon-shopping-cart"></i>
+									</button>
+								</div>
+							</div>
+						</form>
+
+						<hr class="soft" />
+						<h4> @Model.Product.Quantity items in stock</h4>
+						@* <form class="form-horizontal qtyFrm pull-right">
+						<div class="control-group">
+						<label class="control-label"><span>Color</span></label>
+						<div class="controls">
+						<select class="span2">
+						<option>Black</option>
+						<option>Red</option>
+						<option>Blue</option>
+						<option>Brown</option>
+						</select>
+						</div>
+						</div>
+						</form> *@
+						<hr class="soft clr" />
+						<p>
+							@Model.Product.Description
+
+						</p>
+						<a class="btn btn-small pull-right" href="#detail">More Details</a>
+						<br class="clr" />
+						<a href="#" name="detail"></a>
+						<hr class="soft" />
+					</div>
+
+					<div class="span9">
+						<ul id="productDetail" class="nav nav-tabs">
+							<li class="active"><a href="#home" data-toggle="tab">Product Details</a></li>
+							<li><a href="#profile" data-toggle="tab">Related Products</a></li>
+						</ul>
+						<div id="myTabContent" class="tab-content">
+							<div class="tab-pane fade active in" id="home">
+								@* <h4>Product Information</h4>
+								<table class="table table-bordered">
+								<tbody>
+								<tr class="techSpecRow"><th colspan="2">Product Details</th></tr>
+								<tr class="techSpecRow"><td class="techSpecTD1">Brand: </td><td class="techSpecTD2">Fujifilm</td></tr>
+								<tr class="techSpecRow"><td class="techSpecTD1">Model:</td><td class="techSpecTD2">FinePix S2950HD</td></tr>
+								<tr class="techSpecRow"><td class="techSpecTD1">Released on:</td><td class="techSpecTD2"> 2011-01-28</td></tr>
+								<tr class="techSpecRow"><td class="techSpecTD1">Dimensions:</td><td class="techSpecTD2"> 5.50" h x 5.50" w x 2.00" l, .75 pounds</td></tr>
+								<tr class="techSpecRow"><td class="techSpecTD1">Display size:</td><td class="techSpecTD2">3</td></tr>
+								</tbody>
+								</table>
+
+								<h5>Features</h5>
+								<p>
+								14 Megapixels. 18.0 x Optical Zoom. 3.0-inch LCD Screen. Full HD photos and 1280 x 720p HD movie capture. ISO sensitivity ISO6400 at reduced resolution. Tracking Auto Focus. Motion Panorama Mode. Face Detection technology with Blink detection and Smile and shoot mode. 4 x AA batteries not included. WxDxH 110.2 ×81.4x73.4mm. Weight 0.341kg (excluding battery and memory card). Weight 0.437kg (including battery and memory card).<br />
+								OND363338
+								</p>
+
+								<h4>Editorial Reviews</h4>
+								<h5>Manufacturer's Description </h5>
+								<p>
+								With a generous 18x Fujinon optical zoom lens, the S2950 really packs a punch, especially when matched with its 14 megapixel sensor, large 3.0" LCD screen and 720p HD (30fps) movie capture.
+								</p>
+
+								<h5>Electric powered Fujinon 18x zoom lens</h5>
+								<p>
+								The S2950 sports an impressive 28mm – 504mm* high precision Fujinon optical zoom lens. Simple to operate with an electric powered zoom lever, the huge zoom range means that you can capture all the detail, even when you're at a considerable distance away. You can even operate the zoom during video shooting. Unlike a bulky D-SLR, bridge cameras allow you great versatility of zoom, without the hassle of carrying a bag of lenses.
+								</p>
+								<h5>Impressive panoramas</h5>
+								<p>
+								With its easy to use Panoramic shooting mode you can get creative on the S2950, however basic your skills, and rest assured that you will not risk shooting uneven landscapes or shaky horizons. The camera enables you to take three successive shots with a helpful tool which automatically releases the shutter once the images are fully aligned to seamlessly stitch the shots together in-camera. It's so easy and the results are impressive.
+								</p>
+
+								<h5>Sharp, clear shots</h5>
+								<p>
+								Even at the longest zoom settings or in the most challenging of lighting conditions, the S2950 is able to produce crisp, clean results. With its mechanically stabilised 1/2 3", 14 megapixel CCD sensor, and high ISO sensitivity settings, Fujifilm's Dual Image Stabilisation technology combines to reduce the blurring effects of both hand-shake and subject movement to provide superb pictures.
+								</p> *@
+							</div>
+							<div class="tab-pane fade" id="profile">
+								<div id="myTab" class="pull-right">
+									<a href="#listView" data-toggle="tab"><span class="btn btn-large"><i class="icon-list"></i></span></a>
+									<a href="#blockView" data-toggle="tab"><span class="btn btn-large btn-primary"><i class="icon-th-large"></i></span></a>
+								</div>
+								<br class="clr" />
+								<hr class="soft" />
+								<div class="tab-content">
+									<div class="tab-pane active" id="listView">
+										@for (int i = 0; i < Model.Products.Count; i++)
+										{
+											<div class="row">
+												<div class="span2">
+													<img src=@Model.Images[i].Url alt="" />
+												</div>
+												<div class="span4">
+													<h3>New | Available</h3>
+													<hr class="soft" />
+													<h5>@Model.Products[i].Name </h5>
+													<p>
+														@Model.Products[i].Description
+													</p>
+													<a class="btn btn-small pull-right" asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id">View Details</a>
+													<br class="clr" />
+												</div>
+												<div class="span3 alignR">
+													<form class="form-horizontal qtyFrm">
+														<h3>$@Model.Products[i].Price</h3>
+														<label class="checkbox">
+															<input type="checkbox">  Adds product to compair
+														</label><br />
+														<div class="btn-group">
+															@* <a href="~/" class="btn btn-large btn-primary"> Add to <i class=" icon-shopping-cart"></i></a> *@
+															<a class="ajax-add-to-cart btn btn-large btn-primary" data-productid=@Model.Products[i].Id data-customerid=@IdUser>Add to <i class="icon-shopping-cart"></i></a>
+															<a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id" class="btn btn-large"><i class="icon-zoom-in"></i></a>
+														</div>
+													</form>
+												</div>
+											</div>
+											<hr class="soft" />
+										}
+									</div>
+
+									<!--block view-->
+									<div class="tab-pane" id="blockView">
+										<ul class="thumbnails">
+											@for (int i = 0; i < Model.Products.Count; i++)
+											{
+												<li class="span3">
+													<div class="thumbnail">
+														<a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"><img src=@Model.Images[i].Url alt="" /></a>
+														<div class="caption">
+															<h5>@Model.Products[i].Name</h5>
+															@{
+																string truncatedDes = Model.Products[i].Description.Length > 40
+																? Model.Products[i].Description.Substring(0, 40) + "..."
+																: Model.Products[i].Description;
+															}
+															<p>
+																@truncatedDes
+															</p>
+															<h4 style="text-align:center">
+																<a class="btn" asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"> <i class="icon-zoom-in"></i></a>
+																<a class="ajax-add-to-cart btn" data-productid=@Model.Products[i].Id data-customerid=@IdUser>Add to <i class="icon-shopping-cart"></i></a>
+																<a class="btn btn-primary" href="#">$@Model.Products[i].Price.ToString("F0") </a>
+															</h4>
+														</div>
+													</div>
+												</li>
+											}
+										</ul>
+										<hr class="soft" />
+									</div>
+								</div>
+								<br class="clr">
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--scripts-->
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$(".ajax-add-to-cart").click(function () {
+				var customerId = $(this).data("customerid");
+				if (customerId) {
+					$.ajax({
+						url: '@Url.Action("AddToCart", "Cart")',
+						type: 'POST',
+						data: {
+							ProductId: $(this).data("productid"),
+							CustomerId: $(this).data("customerid"),
+							Quantity: 1
+						},
+						success: function (data) {
+							console.log(data);
+							Swal.fire({
+								position: "center",
+								icon: "success",
+								title: "Thêm vào giỏ hàng thành công",
+								showConfirmButton: false,
+								timer: 1500
+							});
+							$("#Cart_count").html("[ " + data.count + "] in your cart");
+						},
+						error: function () {
+							Swal.fire({
+								icon: "error",
+								title: "Oops...",
+								text: "Thêm vào giỏ hàng thất bại",
+								footer: '<a href="#">Reload lại trang?</a>'
+							});
+						}
+					});
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+				}
+
+			});
+			//main add to cart
+			$(".ajax-add-to-cart-main").click(function () {
+				var customerId = $(this).data("customerid");
+				var quantity = $('#cartQuantity').val();
+				if (customerId && (quantity > 0)) {
+					$.ajax({
+						url: '@Url.Action("AddToCart", "Cart")',
+						type: 'POST',
+						data: {
+							ProductId: $(this).data("productid"),
+							CustomerId: $(this).data("customerid"),
+							Quantity: quantity
+						},
+						success: function (data) {
+							console.log(data);
+							Swal.fire({
+								position: "center",
+								icon: "success",
+								title: "Thêm vào giỏ hàng thành công",
+								showConfirmButton: false,
+								timer: 1500
+							});
+							$("#Cart_count").html("[ " + data.count + "] in your cart");
+						},
+						error: function () {
+							Swal.fire({
+								icon: "error",
+								title: "Oops...",
+								text: "Thêm vào giỏ hàng thất bại",
+								footer: '<a href="#">Reload lại trang?</a>'
+							});
+						}
+					});
+				} else {
+					if (!customerId) {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+							footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+						});
+					} else {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Rất xin lỗi! Số lương trong kho của sản phẩm này không đủ đáp ứng",
+							footer: '<a href="/Home/Index">Lựa chọn sản phẩm khác</a>'
+						});
+					}
+				}
+
+			});
+			document.getElementById('myOrder').addEventListener('click', function (event) {
+				var Id = '@IdUser';
+				var roleId = '@RoleId';
+				console.log(Id);
+				if (!Id) {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để xem thông tin này",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+					event.preventDefault();
+				} else {
+					if (roleId === "1") {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Addmin không thể truy cập ",
+							//timer: 1500
+						});
+						event.preventDefault();
+					}
+				}
+			});
+		});
+	</script>
+}

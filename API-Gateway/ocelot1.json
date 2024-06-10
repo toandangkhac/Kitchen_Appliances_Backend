@@ -326,7 +326,21 @@
       "UpstreamPathTemplate": "/gateway/cartdetail",
       "UpstreamHttpMethod": [ "Post" ]
     },
+    // Sửa số lượng cart detail
+    {
+      "DownstreamPathTemplate": "/api/cartdetail/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
 
+      "UpstreamPathTemplate": "/gateway/cartdetail/update",
+      "UpstreamHttpMethod": [ "Put" ]
+      //vì tôi muốn truyền một object request gồm hai thuộc tính customerId, productId từ client về server không nên sử dụng phương thức post để truyền object request
+    },
     //BILL SERVICE
     //api tạo bill
     {
