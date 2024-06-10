@@ -26,32 +26,58 @@ namespace Kitchen_Appliances_MVC.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            LoginAuthRequest request = new LoginAuthRequest()
-            {
-                Email = "chientran@gmail.com",
-                Password = "1234"
-            };
-           
             return View();
         }
-
         [HttpPost]
-        public IActionResult Login(LoginAuthRequest request)
+        public async Task<IActionResult> Login(LoginAuthRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return View(ModelState);
+                ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
+                return View();
             }
-            AuthDTO authDTO = _accountClient.login(request).Result;
-            Response.Cookies.Append("jwt-token", authDTO.AccessToken, new CookieOptions()
+            var dataLogin = await _accountClient.login(request);
+            if(dataLogin.Status != 200)
             {
-                HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.Now.AddMinutes(60)
-            });
-            Console.WriteLine(authDTO);
-            return RedirectToAction("Index", "Home");
+                ViewBag.error = dataLogin.Message;
+                return View();
+            }
+            AuthDTO authDTO = dataLogin.Data;
+            ClaimsPrincipal claims = ValidateToken(authDTO.AccessToken);
+            string username = claims.FindFirstValue("Email");
+            string role = claims.FindFirstValue(ClaimTypes.Role);
+            string FullName = claims.FindFirstValue("FullName");
+            
+            HttpContext.Session.SetString("Username", username);
+            HttpContext.Session.SetString("Fullname", FullName);
+            if (role == "Quản trị viên")
+            {
+                return View();
+            }  
+            else if(role == "Khách hàng")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return null;
         }
+
+        //[HttpPost]
+        //public IActionResult Login(LoginAuthRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(ModelState);
+        //    }
+        //    AuthDTO authDTO = _accountClient.login(request).Result;
+        //    Response.Cookies.Append("jwt-token", authDTO.AccessToken, new CookieOptions()
+        //    {
+        //        HttpOnly = true,
+        //        Secure = true,
+        //        Expires = DateTime.Now.AddMinutes(60)
+        //    });
+        //    Console.WriteLine(authDTO);
+        //    return RedirectToAction("Index", "Home");
+        //}
 
         [HttpGet]
         public IActionResult Logout()
@@ -84,25 +110,53 @@ namespace Kitchen_Appliances_MVC.Controllers
 
 			return principal;
 		}
-
+        
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
-            ForgotPasswordRequest request = new ForgotPasswordRequest()
-            {
-                Email = "chientran.nt196@gmail.com"
-            };
-            var res  = _accountClient.ForgotPassword(request);
-            Console.WriteLine(res.Result);
             return View();
         }
 
-        public IActionResult Detail()
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
-            string email = "chientran@gmail.com";
-            AccountDTO user = _accountClient.findAccount(email).Result;
-            Console.WriteLine(user.Email);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
+                return View();
+            }
+            var forgotPassword  = await _accountClient.ForgotPassword(request);
+            if(forgotPassword.Status != 200)
+            {
+                ViewBag.error = forgotPassword.Message;
+                return View();
+            }    
+            
+            return RedirectToAction("ResetPassword", "Account");
+        }
+
+        [HttpGet] 
+        public IActionResult ResetPassword()
+        {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
+                return View();
+            }
+            var resetPassword = await _accountClient.ResetPassword(request);
+            if (resetPassword.Status != 200)
+            {
+                ViewBag.error = resetPassword.Message;
+                return View();
+            }
+            return View();
+        }
+
         // muốn change password phải đăng nhập login trước , phải xử lý đăng nhập 
         public IActionResult ChangePassword()
         {
@@ -117,13 +171,6 @@ namespace Kitchen_Appliances_MVC.Controllers
             var res = _accountClient.ChangePassword(request);
             Console.WriteLine(res.Result);
             return View();
-        }
-
-        public IActionResult ResetPassword()
-        {
-            ResetPasswordRequest request = new ResetPasswordRequest();
-            var res = _accountClient.ResetPassword(request);
-            return View(res);
         }
 
         public IActionResult Index()
