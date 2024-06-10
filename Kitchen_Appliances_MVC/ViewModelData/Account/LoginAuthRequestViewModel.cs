@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace Kitchen_Appliances_Backend.DTO.Account
+namespace Kitchen_Appliances_MVC.ViewModelData.Account
 {
-    public class ResetPasswordRequest
+    public class LoginAuthRequestViewModel
     {
         [Display(Name = "Email Address")]
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Email is required")]
         public string? Email { get; set; }
+
         [Required]
+        [DataType(DataType.Password)]
         public string? Password { get; set; }
-        [Required]
-        public string? OTP { get; set; }
     }
 }

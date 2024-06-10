@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
+using Kitchen_Appliances_Backend.Commons.Responses;
 
 namespace Kitchen_Appliances_MVC.ApiServices
 {
@@ -19,77 +20,90 @@ namespace Kitchen_Appliances_MVC.ApiServices
             _httpClient = httpClient;
         }
 
-        public async Task<AccountDTO> findAccount(string email)
+        public async Task<APIResponse<AccountDTO>> findAccount(string email)
         {
-            var account =  await _httpClient.GetFromJsonAsync<AccountDTO>(Api + "/find-email" + $"/{email}");
+            var account =  await _httpClient.GetFromJsonAsync<APIResponse<AccountDTO>>(Api + "/find-email" + $"/{email}");
             return account;
         }
 
-        public async Task<bool> ForgotPassword(ForgotPasswordRequest request)
+        public async Task<APIResponse<bool>> ForgotPassword(ForgotPasswordRequest request)
         {
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync<ForgotPasswordRequest>(Api + "/forgot-password", request);
-            
             if(response.IsSuccessStatusCode )
             {
                 Console.WriteLine($"Gửi thành công HTTP: ");
-                return true;
+                return new APIResponse<bool>()
+                {
+                    Status = 200,
+                    Message = "Gửi email quên mật khẩu",
+                    Data = true
+                };
             }
             else
             {
                 Console.WriteLine($"Lỗi HTTP: ");
-                return false;
+                return new APIResponse<bool>()
+                {
+                    Status = 200,
+                    Message = "Gửi email quên mật khẩu",
+                    Data = true
+                };
             }
         }
 
-        public async Task<AuthDTO> login(LoginAuthRequest request)
+        public async Task<APIResponse<AuthDTO>> login(LoginAuthRequest request)
         {
 
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(Api+ "/login", request);
-            if (response.IsSuccessStatusCode)
-            {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                var authDto = JsonConvert.DeserializeObject<AuthDTO>(jsonResponse);
-                return authDto;
-            }
-            else
-            {
-                Console.WriteLine($"Lỗi HTTP: ");
-                return null;
-            }
+
+            return await response.Content.ReadFromJsonAsync<APIResponse<AuthDTO>>();
+
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    string jsonResponse = await response.Content.ReadAsStringAsync();
+            //    var authDto = JsonConvert.DeserializeObject<AuthDTO>(jsonResponse);
+            //    return authDto;
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"Lỗi HTTP: ");
+            //    return null;
+            //}
         }
 
-        public async Task<bool> ResetPassword(ResetPasswordRequest request)
+        public async Task<APIResponse<bool>> ResetPassword(ResetPasswordRequest request)
         {
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync<ResetPasswordRequest>(Api + "/reset-password", request);
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Gửi HTTP thành công !!!");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine($"Lỗi HTTP: ");
-                return false;
-            }
+            return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    Console.WriteLine($"Gửi HTTP thành công !!!");
+            //    return true;
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"Lỗi HTTP: ");
+            //    return false;
+            //}
         }
 
-        public async Task<bool> ChangePassword(ChangePasswordRequest request)
+        public async Task<APIResponse<bool>> ChangePassword(ChangePasswordRequest request)
         {
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync<ChangePasswordRequest>(Api + "/change-password", request);
-            
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Gửi HTTP thành công !!!");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine($"Lỗi HTTP: ");
-                return false;
-            }
+            return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    Console.WriteLine($"Gửi HTTP thành công !!!");
+            //    return true;
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"Lỗi HTTP: ");
+            //    return false;
+            //}
         }
 
-		public Task<bool> CheckEmail(string Email)
+		public Task<APIResponse<bool>> CheckEmail(string Email)
 		{
 
 			throw new NotImplementedException();
