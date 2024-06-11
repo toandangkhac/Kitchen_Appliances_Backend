@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Kitchen_Appliances_Backend.Commons.Enums;
-using Kitchen_Appliances_Backend.Commons.Exceptions;
+using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Account;
 using Kitchen_Appliances_Backend.DTO.Employee;
@@ -8,8 +8,7 @@ using Kitchen_Appliances_Backend.DTO.Mail;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
 using Kitchen_Appliances_Backend.Services;
-using Microsoft.EntityFrameworkCore;
-using static System.Net.WebRequestMethods;
+
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -33,25 +32,36 @@ namespace Kitchen_Appliances_Backend.Repositores
             _accountRepository = accountRepository;
         }
 
-        public async Task<bool> ActiveAccount(VerifyOTPRequest request)
+        public async Task<ApiResponse<object>> ActiveAccount(VerifyOTPRequest request)
         {
             await _accountRepository.VerifyOTP(request);
-
+            var res = new ApiResponse<object>();
             var account = _dataContext.Accounts.FirstOrDefault(x => x.Email == request.Email);
+            if(account == null)
+            {
+                res.Status = 404;
+                res.Message = "Kích hoạt tài khoản không thành công";
+                res.Data = false;
+                return res;
+            }
 
             account.Status = true;
 
             _dataContext.Accounts.Update(account);
             _dataContext.SaveChanges();
 
-            return true;
+            res.Status = 200;
+            res.Message = "Kích hoạt tài khoản thành công";
+            res.Data = true;
+
+            return res;
         }
 
-        public async Task<bool> CreateEmployee(CreateEmployeeRequest request)
+        public async Task<ApiResponse<object>> CreateEmployee(CreateEmployeeRequest request)
         {
             Employee employee = _mapper.Map<Employee>(request);
             // Quản trị viên, Khách hàng, Nhân viên
-            var roleEmployee = await _dataContext.Roles.FindAsync(3);
+            var roleEmployee = await _dataContext.Roles.FindAsync(1);
             var account = new Account()
             {
                 Email = request.Email,
@@ -61,11 +71,11 @@ namespace Kitchen_Appliances_Backend.Repositores
                 Status = false
             };
             // image dưới database có lỗi cần đưa về nvarchar(100) để có thể lưu ảnh
-            if(request.Image != null)
-            {
-                employee.Image = await _upload.UploadFile(request.Image);
-            }
-
+            //if(request.Image != null)
+            //{
+            //    employee.Image = await _upload.UploadFile(request.Image);
+            //}
+            //employee.Image = null;
             employee.EmailNavigation = account;
             account.Employees.Add(employee);
 
@@ -80,7 +90,9 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
                 Token = otp,
                 Type = TOKEN_TYPE.REGISTER_OTP,
-                ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES)
+                ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES),
+                AccountId = employee.Email,
+                Account = account
             };
 
             _dataContext.AppUserTokens.Add(userToken);
@@ -97,48 +109,89 @@ namespace Kitchen_Appliances_Backend.Repositores
                 Title = title,
                 Type = MAIL_TYPE.REGISTATION
             });
-            return true;
+            return new ApiResponse<object>(200, "Thực hiện thành công", true);
         }
 
-        public async Task<bool> DeleteEmployee(int id)
+        public async Task<ApiResponse<object>> DeleteEmployee(int id)
         {
-            var employee = await _dataContext.Employees.FindAsync(id)
-                ?? throw new NotFoundException("Khong tim thay employee by " + id);
+            var employee = await _dataContext.Employees.FindAsync(id);
+
+            var res = new ApiResponse<object>();
+
+            if (employee == null)
+            {
+                res = new ApiResponse<object>(404, "Không tìm thấy Employee", false);
+                return res;
+            }
 
             var account = _dataContext.Accounts.FirstOrDefault(x => x.Email == employee.Email);
             account.Status = false;
             _dataContext.Accounts.Update(account);
             _dataContext.SaveChanges();
-            return true;
-        }
 
-        public async Task<Employee> GetEmployeeById(int id)
-        {
-            var res = await  _dataContext.Employees.FindAsync(id);
-            if (res == null)
-                throw new NotFoundException("Not find employee with id: " + id);
+            res = new ApiResponse<object>(200, "Xóa employee thành công", true);
             return res;
         }
 
-        public ICollection<Employee> ListEmployee()
+        public async Task<ApiResponse<object>> GetEmployeeById(int id)
         {
-            return _dataContext.Employees.ToList();
+            var employee = await  _dataContext.Employees.FindAsync(id);
+
+            var res = new ApiResponse<object>();
+            if (employee == null)
+            {
+                res = new ApiResponse<object>(404, "Không tìm thấy Employee", null);
+                return res;
+            }
+
+            var employeeDto = _mapper.Map<DTO.Employee.EmployeeDTO>(employee);
+
+            res = new ApiResponse<object>(200, "Lấy thành công", employeeDto);
+
+            return res;
         }
 
-        public Task<ICollection<Employee>> PagingEmployee(int? page, int? size)
+        public async Task<ApiResponse<object>> ListEmployee()
         {
-            int pageIndex = page ?? 1;
-            int pageSize = size ?? 5;
+            // _dataContext.Employees.ToList();
+            var employees = _dataContext.Employees.ToList();
 
-            throw new NotImplementedException();
+            var employeeDtos = new List<EmployeeDTO>();
+            employees.ForEach(x => employeeDtos.Add(_mapper.Map<DTO.Employee.EmployeeDTO>(x)));
+
+            var res = new ApiResponse<object>();
+
+            if(employees == null)
+            {
+                res = new ApiResponse<object>(404,"Danh sách Employee trống", employeeDtos);
+            }
+
+            res = new ApiResponse<object>(200, "Lấy Danh sách thành công", employeeDtos);
+            return res;
         }
 
-        public async Task<bool> UpdateEmployee(int productId, UpdateEmployeeRequest request)
+        public async Task<ApiResponse<object>> UpdateEmployee(int productId, UpdateEmployeeRequest request)
         {
-            var employee = await _dataContext.Employees.FindAsync(productId)
-                ?? throw new NotFoundException("Khong tim thay san pham by " + productId);
+            var employee = await _dataContext.Employees.FindAsync(productId);
 
-            employee = _mapper.Map(request, employee);
+            if(employee == null)
+            {
+                 return new ApiResponse<object>(404, "Không tìm thấy employee", null);
+            }
+
+            if(request.Fullname != null)
+            {
+                employee.Fullname = request.Fullname;
+            }    
+            if(request.PhoneNumber != null)
+            {
+                employee.PhoneNumber = request.PhoneNumber;
+            }    
+
+            if(request.Address  != null)
+            {
+                employee.Address = request.Address;
+            }
 
             if(request.Image != null)
             {
@@ -146,7 +199,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
             _dataContext.Employees.Update(employee);
             _dataContext.SaveChanges();
-            return true;
+            return new ApiResponse<object>(200, "Update thành công", true);
         }
     }
 }

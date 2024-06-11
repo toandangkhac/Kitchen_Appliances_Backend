@@ -5,5 +5,7 @@
         Task<string> UploadFile(IFormFile file);
 
         Task DeleteFile(string url);
+
+        //Task<IFormFile> ConvertIFormFile()
     }
 }

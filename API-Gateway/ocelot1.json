@@ -107,8 +107,325 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/category",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/category/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/category/{id}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+    },
+
+    //Product API
+    {
+      "DownstreamPathTemplate": "/api/product",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/product",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/product/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/product/{id}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/product/category/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/product/category/{id}",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    //Role API
+    {
+      "DownstreamPathTemplate": "/api/role",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/role",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    //Customer API
+    {
+      "DownstreamPathTemplate": "/api/customer",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/customer",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/customer/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/customer/{id}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+    },
+    // Product price
+    {
+      "DownstreamPathTemplate": "/api/productprice",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/productprice",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/productprice/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/productprice/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+
+    // Image APi
+    {
+      "DownstreamPathTemplate": "/api/image",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/image",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/image/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/image/{id}",
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/image/product/{productId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/image/product/{productId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+
+    //CART DETAIL
+    {
+      "DownstreamPathTemplate": "/api/cartdetail/delete",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/cartdetail/delete",
+      "UpstreamHttpMethod": [ "Put" ]
+      //vì tôi muốn truyền một object request gồm hai thuộc tính customerId, productId từ client về server không nên sử dụng phương thức post để truyền object request
+    },
+    {
+      "DownstreamPathTemplate": "/api/cartdetail/find-by-id",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/cartdetail/find-by-id",
+      "UpstreamHttpMethod": [ "Post" ]
+      //muốn truyền một object request 
+    },
+    {
+      "DownstreamPathTemplate": "/api/cartdetail/{customerId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/cartdetail/{customerId}",
+      "UpstreamHttpMethod": [ "Get" ]
+      //muốn truyền một object request 
+    },
+    //Tạo cart detail
+    {
+      "DownstreamPathTemplate": "/api/cartdetail",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/cartdetail",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    // Sửa số lượng cart detail
+    {
+      "DownstreamPathTemplate": "/api/cartdetail/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/cartdetail/update",
+      "UpstreamHttpMethod": [ "Put" ]
+      //vì tôi muốn truyền một object request gồm hai thuộc tính customerId, productId từ client về server không nên sử dụng phương thức post để truyền object request
+    },
+    //BILL SERVICE
+    //api tạo bill
+    {
+      "DownstreamPathTemplate": "/api/bill/save/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/bill/save/{orderId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    // xuất dữ liệu 1 hóa đơn
+    {
+      "DownstreamPathTemplate": "/api/bill/get/{billId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/bill/get/{billId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    //Xuất dữ liệu danh sách hóa đơn
+    {
+      "DownstreamPathTemplate": "/api/bill/list",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/bill/list",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+
+    //ORDER SERVICE
+    //Lấy danh sách đơn hàng của khách hàng có mã là id
+    {
+      "DownstreamPathTemplate": "/api/order/get-order-by-customer/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/get-order-by-customer/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    // Chuyển tất cả Cart Detail của customer sang Order
+    {
+      "DownstreamPathTemplate": "/api/order/create-order-by-customer",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/create-order-by-customer",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    //Hủy đơn hàng
+    {
+      "DownstreamPathTemplate": "/api/order/cancel-order/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/cancel-order/{orderId}",
+      "UpstreamHttpMethod": [ "Put" ]
     }
+
   ],
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:7178"

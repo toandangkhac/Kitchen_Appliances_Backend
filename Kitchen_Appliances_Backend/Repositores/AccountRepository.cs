@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Kitchen_Appliances_Backend.Commons.Enums;
 using Kitchen_Appliances_Backend.Commons.Exceptions;
+using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Account;
 using Kitchen_Appliances_Backend.DTO.Mail;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
 using Kitchen_Appliances_Backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json.Linq;
+using System.Security.Claims;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -32,76 +32,135 @@ namespace Kitchen_Appliances_Backend.Repositores
             _currentUserService = currentUserService;
         }
 
-        public async Task<AuthDTO> Authenticate(LoginAuthRequest request)
+        public async Task<ApiResponse<AuthDTO>> Authenticate(LoginAuthRequest request)
         {
             var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email)
                 ?? throw new NotFoundException("Not find account by email, try again!!!");
 
             if (!account.Password.Equals(request.Password))
             {
-                throw new NotFoundException("Password not match, try again!!!");
+                return new ApiResponse<AuthDTO>()
+                {
+                    Status = 404,
+                    Message = "Sai mật khẩu",
+                    Data = null
+                };
             }
 
             if (!account.Status)
             {
-                throw new InvalidRequestException("Your account has been lockout");
+                return new ApiResponse<AuthDTO>()
+                {
+                    Status = 500,
+                    Message = "Tài khoản đã bị khóa",
+                    Data = null
+                };
             }
 
             string access_token = await _jwtService.CreateJWT(account.Email);
             string refresh_token = _jwtService.CreateRefreshToken();
 
-            return new AuthDTO() { AccessToken = access_token, RefreshToken = refresh_token };
+            var response =  new AuthDTO() { AccessToken = access_token, RefreshToken = refresh_token };
+            return new ApiResponse<AuthDTO>()
+            {
+                Status = 200,
+                Message = "Login thành công",
+                Data = response
+            };
         }
         
-        public async Task<bool> ChangePassword(ChangePasswordRequest request)
+        public async Task<ApiResponse<bool>> ChangePassword(ChangePasswordRequest request)
         {
             // Yêu cầu phải đăng nhập trước mới có thể thay đổi mật khẩu
             //string username = _currentUserService.UserName;
 
-            string username = "chientran@gmail.com";
-
             if(!request.NewPassword.Equals(request.ConfirmPassword))
             {
-                throw new InvalidRequestException("");
+                return new ApiResponse<bool>()
+                {
+                    Status = 409,
+                    Message = "Mật khẩu xác thực không trùng với mật khẩu mới",
+                    Data = false
+                };
             }
 
-            var account = _context.Accounts.FirstOrDefault(x => x.Email == username)
-                ?? throw new NotFoundException("Not find account by email, try again!!!");
+            var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
+            //?? throw new NotFoundException("Not find account by email, try again!!!");
+            if(account == null)
+            {
+				return new ApiResponse<bool>()
+				{
+					Status = 404,
+					Message = "Không tìm thấy tài khoản",
+					Data = false
+				};
+			}    
 
             if(!account.Password.Equals(request.OldPassword))
             {
-                throw new InvalidRequestException("Old password isn't match");
-            }    
+				return new ApiResponse<bool>()
+				{
+					Status = 400,
+					Message = "Mật khẩu cũ bạn nhập không đúng",
+					Data = false
+				};
+			}    
 
             account.Password = request.NewPassword;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
-            return true;
-        }
-        public async Task<List<AccountDTO>> listAccount()
+			return new ApiResponse<bool>()
+			{
+				Status = 200,
+				Message = "Đổi mật khẩu mới thành công",
+				Data = true
+			};
+		}
+        public async Task<ApiResponse<List<AccountDTO>>> listAccount()
         {
-            var accounts = _mapper.Map<List<AccountDTO>>(_context.Accounts);
-            return accounts;
-        }
+            var accounts = _mapper.Map<List<AccountDTO>>(_context.Accounts.ToList());
+			return new ApiResponse<List<AccountDTO>>()
+			{
+				Status = 200,
+				Message = "Lấy danh sách tài khoản thành công",
+				Data = accounts
+			};
+		}
 
-        public async Task<AccountDTO> findAccount(string email)
+        public async Task<ApiResponse<AccountDTO>> findAccount(string email)
         {
             var account = _context.Accounts.FirstOrDefault(x => x.Email == email);
             if (account == null)
             {
-                throw new NotFoundException("Can't find account by email");
-            }
-            return _mapper.Map<AccountDTO>(account);
-        }
-        [Authorize]
-        public async Task<bool> ForgotPassword(ForgotPasswordRequest request)
+                return new ApiResponse<AccountDTO>()
+                {
+                    Status = 404,
+                    Message = "Không tìm thấy tài khoản với email đấy",
+                    Data = null
+				};
+			}
+			return new ApiResponse<AccountDTO>()
+			{
+				Status = 404,
+				Message = "Lấy tài khoản thành công",
+				Data = _mapper.Map<AccountDTO>(account)
+		    };
+		}
+
+        public async Task<ApiResponse<bool>> ForgotPassword(ForgotPasswordRequest request)
         {
 
-            var account = _context.Accounts.FirstOrDefault(x => x.Email.Equals(request.Email))
-                ?? throw new NotFoundException("Không tìm thấy email này trong hệ thống");
+            var account = _context.Accounts.FirstOrDefault(x => x.Email.Equals(request.Email));
+            if(account == null)
+            {
+				return new ApiResponse<bool>()
+				{
+					Status = 404,
+					Message = "Không tìm thấy email này trong hệ thống",
+					Data = false
+				};
+			}    
 
-            var employee = _context.Employees.FirstOrDefault(x => x.Email.Equals(request.Email))
-                ?? throw new NotFoundException("Không tìm thấy email này trong hệ thống");
 
             var userToken = _context.AppUserTokens.FirstOrDefault(x => x.Type == 
                         TOKEN_TYPE.FORGOT_PASSWORD_OTP && x.AccountId == account.Email);
@@ -122,7 +181,6 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
                 userToken.Token = otp;
                 userToken.ExpiredAt = DateTime.Now.AddMinutes(TOKEN_TYPE.OTP_EXPIRY_MINUTES);
-
             }
             
             _context.AppUserTokens.Update(userToken);
@@ -130,31 +188,49 @@ namespace Kitchen_Appliances_Backend.Repositores
             _mailService.sendMail(new DTO.Mail.CreateMailRequest()
             {
                 Email = account.Email,
-                Name = employee.Fullname,
+                Name = "Khách hàng",
                 OTP = otp,
                 Title = "Quên mật khẩu",
                 Type = MAIL_TYPE.FORGOT_PASSWORD
             });
-            return true;
-        }
+			return new ApiResponse<bool>()
+			{
+				Status = 200,
+				Message = "Forgot password thành công",
+				Data = true
+			};
+		}
 
         // 
-        public Task<AuthDTO> RefreshToken(RefreshTokenRequest request)
+        public Task<ApiResponse<AuthDTO>> RefreshToken(RefreshTokenRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> ResendOTP(ResendOTPRequest request)
+        public async Task<ApiResponse<bool>> ResendOTP(ResendOTPRequest request)
         {
             var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
             var userToken = _context.AppUserTokens.FirstOrDefault(x => x.Type == request.Type && x.AccountId == request.Email);
 
             if (userToken == null && request.Type == TOKEN_TYPE.REGISTER_OTP)
-                throw new InvalidRequestException("This user hasn't been signed up before, invalid request");
+            {
+				return new ApiResponse<bool>()
+				{
+					Status = 404,
+					Message = "This user hasn't been signed up before, invalid request",
+					Data = false
+				};
+			}
 
             if (userToken == null && request.Type == TOKEN_TYPE.FORGOT_PASSWORD_OTP)
-                throw new InvalidRequestException("You need to perform forgot password feature for your account before, invalid request");
-
+            {
+				return new ApiResponse<bool>()
+				{
+					Status = 500,
+					Message = "You need to perform forgot password feature for your account before, invalid request",
+					Data = false
+				};
+			}    
             var otp = _otpService.GenerateOTP();
             
             userToken.Token = otp;
@@ -170,33 +246,60 @@ namespace Kitchen_Appliances_Backend.Repositores
             });
             _context.AppUserTokens.Update(userToken);
             await _context.SaveChangesAsync();
-            return true;
-        }
+			return new ApiResponse<bool>()
+			{
+				Status = 200,
+				Message = "Gửi lại mã OTP thành công",
+				Data = true
+			};
+		}
 
-        public async Task<bool> ResetPassword(ResetPasswordRequest request)
+        public async Task<ApiResponse<bool>> ResetPassword(ResetPasswordRequest request)
         {
 
-            await VerifyOTP(new VerifyOTPRequest()
+            var result = await VerifyOTP(new VerifyOTPRequest()
             {
                 Email = request.Email,
                 OTP = request.OTP,
                 Type = TOKEN_TYPE.FORGOT_PASSWORD_OTP
             });
+            if(result.Data == false)
+            {
+                return result;
+            }    
 
             var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
-
+            if(account.Status == false)
+            {
+                return new ApiResponse<bool>()
+                {
+                    Status = 400,
+                    Message = "Tài khoản đã bị khóa",
+                    Data = false
+                };
+            }    
             account.Password = request.Password;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
-            return true;
-        }
+			return new ApiResponse<bool>()
+			{
+				Status = 200,
+				Message = "Reset password thành công",
+				Data = true
+			};
+		}
 
-        public async Task<bool> VerifyOTP(VerifyOTPRequest request)
+        public async Task<ApiResponse<bool>> VerifyOTP(VerifyOTPRequest request)
         {
             var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
 
             if (account == null) {
-                throw new NotFoundException("Không tìm thấy account by email : " + request.Email);
+				return new ApiResponse<bool>()
+				{
+					Status = 404,
+					Message = "Không tìm thấy account",
+					Data = false
+				};
             }
 
             var userToken = _context.AppUserTokens.FirstOrDefault(x => x.Type == request.Type
@@ -204,14 +307,45 @@ namespace Kitchen_Appliances_Backend.Repositores
 
             if(userToken.Token != request.OTP)
             {
-                throw new InvalidRequestException("OTP is invalid");
+				return new ApiResponse<bool>()
+				{
+					Status = 400,
+					Message = "YOTP is invalid",
+					Data = false
+				};
             }
 
             if (userToken.ExpiredAt <= DateTime.Now)
             {
-                throw new InvalidRequestException("OTP is expired");
+				return new ApiResponse<bool>()
+				{
+					Status = 400,
+					Message = "OTP is expired",
+					Data = false
+				};
             }
-            return true;
+			return new ApiResponse<bool>()
+			{
+				Status = 200,
+				Message = "Verify OTP thành công",
+				Data = true
+			};
+		}
+
+        public async Task<ApiResponse<string>> validateExpiredJwt(string token)
+        {
+            if(token == null)
+            {
+                throw new InvalidRequestException("");
+            }    
+            var claims = _jwtService.validateExpiredJwt(token);
+            return new ApiResponse<string>()
+            {
+                Status = 200,
+                Message = "validate expired jwt",
+                //Data = claims.FindFirstValue("Email")
+                Data = claims.FindFirstValue(ClaimTypes.Role)
+			};
         }
     }
 }

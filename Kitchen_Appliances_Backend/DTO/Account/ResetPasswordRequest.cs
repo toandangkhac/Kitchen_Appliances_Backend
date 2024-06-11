@@ -13,8 +13,5 @@ namespace Kitchen_Appliances_Backend.DTO.Account
         public string? Password { get; set; }
         [Required]
         public string? OTP { get; set; }
-        [Required]
-        [JsonIgnore]
-        public string? Type { get; set; }
     }
 }

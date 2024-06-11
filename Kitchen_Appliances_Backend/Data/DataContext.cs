@@ -182,7 +182,7 @@ public partial class DataContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd().UseIdentityColumn();
             entity.Property(e => e.Url)
-                .HasMaxLength(200)
+                .HasMaxLength(100)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Product).WithMany(p => p.Images)
@@ -238,7 +238,7 @@ public partial class DataContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.Status).HasDefaultValue(true);
-
+            entity.Property(e => e.Quantity).IsRequired();
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("FK_PRODUCT_CATEGORY");
@@ -250,8 +250,9 @@ public partial class DataContext : DbContext
 
             entity.HasIndex(e => new { e.AppliedDate, e.ProductId }, "UK_PRODUCTPRICE").IsUnique();
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.AppliedDate)
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+			entity.Property(e => e.AppliedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");

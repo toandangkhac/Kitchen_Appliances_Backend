@@ -12,6 +12,25 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 
 builder.Services.AddScoped<IEmployeeClient, EmployeeClientService>();
 builder.Services.AddScoped<IAccountClient, AccountClientService>();
+builder.Services.AddScoped<ICustomerServiceClient, CustomerClientService>();
+builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
+builder.Services.AddScoped<ICategoryServiceClient, CategoryClientService>();
+builder.Services.AddScoped<IProductPriceServiceClient, ProductPricesServiceClient>();
+builder.Services.AddScoped<IImageServiceClient, ImageServiceClient>();
+builder.Services.AddScoped<ICartDetailServiceClient, CartDetailServiceClient>();
+builder.Services.AddScoped<IRoleServiceClient, RoleServiceClient>();
+builder.Services.AddScoped<IBillServiceClient, BillServiceClient>();
+builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
+
+builder.Services.AddScoped<IVNPayClientService, VNPayServiceClient>();
+
+builder.Services.AddSession(options =>
+{
+    // Configure session options here
+    options.Cookie.Name = "YourSessionCookieName";
+    options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+    // Add other session options as needed
+});
 
 var app = builder.Build();
 
@@ -27,7 +46,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(

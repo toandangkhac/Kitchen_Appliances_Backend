@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Kitchen_Appliances_Backend.Models;
+﻿namespace Kitchen_Appliances_Backend.Models;
 
 public partial class Image
 {
     public int Id { get; set; }
 
-    public string? Url { get; set; }
+    public string Url { get; set; }
 
     public int ProductId { get; set; }
 

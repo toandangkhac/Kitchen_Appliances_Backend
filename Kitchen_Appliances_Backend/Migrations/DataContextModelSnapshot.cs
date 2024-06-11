@@ -85,7 +85,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Bill", b =>
                 {
                     b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
                     b.Property<DateTime>("PaymentTime")
                         .ValueGeneratedOnAdd()
@@ -121,7 +124,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Category", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -138,7 +144,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(100)
@@ -218,15 +227,19 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Image", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("Url")
-                        .HasMaxLength(200)
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -238,7 +251,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Order", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreateAt")
                         .ValueGeneratedOnAdd()
@@ -270,7 +286,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -297,7 +316,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Product", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -312,6 +334,9 @@ namespace Kitchen_Appliances_Backend.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("money");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<bool?>("Status")
                         .ValueGeneratedOnAdd()
@@ -328,9 +353,10 @@ namespace Kitchen_Appliances_Backend.Migrations
                     b.ToTable("PRODUCT", (string)null);
                 });
 
-            modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Productprice", b =>
+            modelBuilder.Entity("Kitchen_Appliances_Backend.Models.ProductPrice", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AppliedDate")
@@ -363,7 +389,10 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Role", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -518,16 +547,16 @@ namespace Kitchen_Appliances_Backend.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Productprice", b =>
+            modelBuilder.Entity("Kitchen_Appliances_Backend.Models.ProductPrice", b =>
                 {
                     b.HasOne("Kitchen_Appliances_Backend.Models.Employee", "Employee")
-                        .WithMany("Productprices")
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .IsRequired()
-                        .HasConstraintName("FK_PRODUCTPRICE_EMPLOYEE");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Kitchen_Appliances_Backend.Models.Product", "Product")
-                        .WithMany("Productprices")
+                        .WithMany("ProductPrices")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -562,8 +591,6 @@ namespace Kitchen_Appliances_Backend.Migrations
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Employee", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("Productprices");
                 });
 
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Order", b =>
@@ -581,7 +608,7 @@ namespace Kitchen_Appliances_Backend.Migrations
 
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("Productprices");
+                    b.Navigation("ProductPrices");
                 });
 
             modelBuilder.Entity("Kitchen_Appliances_Backend.Models.Role", b =>

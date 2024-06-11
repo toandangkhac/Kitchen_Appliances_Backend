@@ -22,7 +22,7 @@ namespace Kitchen_Appliances_Backend.Controllers
             return Ok(await _accountRepository.listAccount());
         }
 
-        [Authorize(Roles = "Quản trị viên")]
+        //[Authorize(Roles = "Quản trị viên")]
         [HttpGet("find-email/{email}")]
         public async Task<IActionResult> findAccount(string email) 
         {
@@ -70,6 +70,12 @@ namespace Kitchen_Appliances_Backend.Controllers
         {
             var res = await _accountRepository.ResendOTP(request);
             return Ok(res);
+        }
+
+        [HttpPost("validate-token")]
+        public async Task<IActionResult> validateExpiredJwt (string token)
+        {
+            return Ok(await _accountRepository.validateExpiredJwt(token));
         }
 
     }

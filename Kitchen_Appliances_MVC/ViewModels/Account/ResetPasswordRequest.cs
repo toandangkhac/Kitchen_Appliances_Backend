@@ -8,12 +8,11 @@ namespace Kitchen_Appliances_MVC.ViewModels.Account
         [Required]
         public string Email { get; set; }
 
+        //Mật khẩu mới
         [Required]
         public string Password { get; set; }
 
         [Required]
         public string OTP { get; set; }
-        [JsonIgnore]    
-        public string Type { get; set; }
     }
 }

@@ -4,13 +4,15 @@ using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.DTO.Account;
 using Kitchen_Appliances_Backend.DTO.Employee;
 using Kitchen_Appliances_Backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+
+   
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _repo;
@@ -27,17 +29,17 @@ namespace Kitchen_Appliances_Backend.Controllers
         {
             request.Type = TOKEN_TYPE.REGISTER_OTP;
             return Ok(await _repo.ActiveAccount(request));
-        }
-
-        [HttpGet]
+		}
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
         public async Task<IActionResult> GetListAll()
         {
-            var employees = _mapper.Map<List<EmployeeDTO>>(_repo.ListEmployee());
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(employees);
+            var res = await _repo.ListEmployee();
+            return Ok(res);
         }
         [HttpPost]
         public async Task<IActionResult> CreateEmployee([FromQuery] CreateEmployeeRequest request)
@@ -49,13 +51,13 @@ namespace Kitchen_Appliances_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeById([FromRoute] int id)
         {
-            var employee = await _repo.GetEmployeeById(id);
-            var employeeDTO = _mapper.Map<EmployeeDTO>(employee);
-            return Ok(new ApiResponse<EmployeeDTO>(status: 200, message : "Success", employeeDTO));
+            var res = await _repo.GetEmployeeById(id);
+            //return Ok(new ApiResponse<EmployeeDTO>(status: 200, message : "Success", employeeDTO));
+            return Ok(res);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee([FromRoute] int id, [FromQuery] UpdateEmployeeRequest request)
+        public async Task<IActionResult> UpdateEmployee([FromRoute] int id,  UpdateEmployeeRequest request)
         {
             return Ok(await _repo.UpdateEmployee(id, request));
         }

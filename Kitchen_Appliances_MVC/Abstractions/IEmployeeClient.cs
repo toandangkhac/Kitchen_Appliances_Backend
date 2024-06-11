@@ -1,17 +1,18 @@
-﻿using Kitchen_Appliances_MVC.DTO;
+﻿using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_MVC.ViewModels.Employee;
 
 namespace Kitchen_Appliances_MVC.Abstractions
 {
     public interface IEmployeeClient
     {
-        Task<List<EmployeeDTO>> GetListAll();
+        Task<APIResponse<List<EmployeeDTO>>> GetListAll();
 
-        Task<EmployeeDTO> GetEmployeeById(int id);
+        //Task<EmployeeDTO> GetEmployeeById(int id);
+        Task<APIResponse<EmployeeDTO>> GetEmployeeById(int id);
 
-        Task<bool> CreateEmployee(CreateEmployeeRequest request);
+        Task<APIResponse<bool>> CreateEmployee(CreateEmployeeRequest request);
 
-        Task<bool> UpdateEmployee(int productId, UpdateEmployeeRequest request);
+        Task<APIResponse<bool>> UpdateEmployee(int productId, UpdateEmployeeRequest request);
 
         Task<bool> DeleteEmployee(int id);
 

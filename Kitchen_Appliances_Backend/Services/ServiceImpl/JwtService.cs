@@ -28,9 +28,22 @@ namespace Kitchen_Appliances_Backend.Services.ServiceImpl
 
             var role = _context.Roles.FirstOrDefault(x => x.Id == account.RoleId);
 
+            var customer = _context.Customers.FirstOrDefault(x => x.Email == email);
+            var employee = _context.Employees.FirstOrDefault(x => x.Email == email);
+            string FullName = "";
+            if(customer == null)
+            {
+                FullName = employee.Fullname;
+            }
+            else if(employee == null)
+            {
+                FullName = customer.Fullname;
+            }
             var claims = new List<Claim>()
             {
                 new ("Email", account.Email),
+                new ("Password", account.Password),
+                new ("FullName", FullName)
             };
 
             claims.Add(new Claim(ClaimTypes.Role, role.Name));

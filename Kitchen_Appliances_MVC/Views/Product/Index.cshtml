@@ -1,0 +1,169 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "View Search Product";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	 string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	 string RoleId = HttpContextAccessor.HttpContext.Session.GetString("RoleId");
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+@model Kitchen_Appliances_MVC.ViewModelData.Product.SearchProductViewModel
+<!-- Sidebar ================================================== -->
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3">
+				<div class="well well-small">
+					<a id="myOrder" asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">
+						<img src="~/themes/images/ico-cart.png" alt="cart"> View your Order  <span class="badge badge-warning pull-right">
+							VIEW
+						</span>
+					</a>
+				</div>
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<!-- Main show  =============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
+					<li class="active">Search Products</li>
+				</ul>
+				<h3> Products <small class="pull-right"> @Model.Products.Count products are available </small></h3>
+				<hr class="soft" />
+				<p>
+					Chúng tôi gửi đến bạn những sản phẩm theo yêu cầu thìm kiếm!
+				</p>
+				<hr class="soft" />
+				<form class="form-horizontal span6">
+					<div class="control-group">
+						<label class="control-label alignL">Sort By </label>
+						<select id="sortOptions" name="sortOptions">
+							<option value="az">Priduct name A - Z</option>
+							<option value="za">Priduct name Z - A</option>
+							<option value="stock">Priduct Stock</option>
+							<option value="price">Price Lowest first</option>
+						</select>
+					</div>
+				</form>
+				<div id="myTab" class="pull-right">
+					<a href="#listView" data-toggle="tab"><span class="btn btn-large"><i class="icon-list"></i></span></a>
+					<a href="#blockView" data-toggle="tab"><span class="btn btn-large btn-primary"><i class="icon-th-large"></i></span></a>
+				</div>
+				<br class="clr" />
+				<div class="tab-content">
+					@Html.Partial("_ProductList", Model)
+				</div>
+				<br class="clr" />
+				<!-- Main show end =============================================== -->
+			</div>
+		</div>
+	</div>
+</div>
+<!--scripts-->
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$(".ajax-add-to-cart").click(function () {
+				var customerId = $(this).data("customerid");
+				if (customerId) {
+					$.ajax({
+						url: '@Url.Action("AddToCart", "Cart")',
+						type: 'POST',
+						data: {
+							ProductId: $(this).data("productid"),
+							CustomerId: $(this).data("customerid"),
+							Quantity: 1
+						},
+						success: function (data) {
+							console.log(data);
+							Swal.fire({
+								position: "center",
+								icon: "success",
+								title: "Thêm vào giỏ hàng thành công",
+								showConfirmButton: false,
+								timer: 1500
+							});
+							$("#Cart_count").html("[ " + data.count + "] in your cart");
+						},
+						error: function () {
+							Swal.fire({
+								icon: "error",
+								title: "Oops...",
+								text: "Thêm vào giỏ hàng thất bại",
+								footer: '<a href="#">Reload lại trang?</a>'
+							});
+						}
+					});
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+				}
+
+			});
+			//chang dropdown
+			document.getElementById('sortOptions').addEventListener('change', function () {
+				var selectedOption = this.value;
+				var products = @Html.Raw(Json.Serialize(Model.Products));
+				console.log('Sending data:', JSON.stringify({ sortOption: selectedOption, productDTOs: products }));
+				fetch('/Product/GetSortedProducts', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ sortOption: selectedOption, products: products })
+				})
+					.then(response => response.text())
+					.then(html => {
+						document.getElementById('listView').innerHTML = html;
+					});
+			});
+			document.getElementById('myOrder').addEventListener('click', function (event) {
+				var Id = '@IdUser';
+				var roleId = '@RoleId';
+				console.log(Id);
+				if (!Id) {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Bạn cần đăng nhập để xem thông tin này",
+						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
+					});
+					event.preventDefault();
+				} else {
+					if (roleId === "1") {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Addmin không thể truy cập ",
+							//timer: 1500
+						});
+						event.preventDefault();
+					}
+				}
+			});
+		});
+	</script>
+}
