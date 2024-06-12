@@ -14,19 +14,22 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			_httpClient = httpClient;
 		}
-		public Task<APIResponse<bool>> CancelOrder(int orderId)
+		public async Task<APIResponse<bool>> CancelOrder(int orderId)
 		{
-			throw new NotImplementedException();
+			HttpResponseMessage response = await _httpClient.PutAsync(BaseUrl + $"/cancel-order/{orderId}",null);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
 		}
 
-		public Task<APIResponse<bool>> ConfirmOrderDeliverySucess(int orderId)
+		public async Task<APIResponse<bool>> ConfirmOrderDeliverySucess(int orderId)
 		{
-			throw new NotImplementedException();
+			HttpResponseMessage response = await _httpClient.PutAsync(BaseUrl + $"/confirm-delivery-success/{orderId}", null);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
 		}
 
-		public Task<APIResponse<bool>> CreateOrder(CreateOrderRequest request)
+		public async Task<APIResponse<int>> CreateOrder(CreateOrderRequest request)
 		{
-			throw new NotImplementedException();
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(BaseUrl + $"/create-order-by-customer", request);
+			return await response.Content.ReadFromJsonAsync<APIResponse<int>>();
 		}
 
 		public Task<APIResponse<bool>> DeleteOrder(int orderId)
@@ -39,21 +42,21 @@ namespace Kitchen_Appliances_MVC.ApiServices
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/get-order-by-customer/{customerId}");
 		}
 
-
-		public Task<APIResponse<List<OrderDTO>>> ListOrderNotConfirm()
+		public async Task<APIResponse<List<OrderDTO>>> ListOrderNotConfirm()
 		{
-			throw new NotImplementedException();
+			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + "/list-order-not-confirm");
 		}
 
-        public Task<APIResponse<List<OrderDTO>>> ListAllOrders()
+        public async Task<APIResponse<List<OrderDTO>>> ListAllOrders()
         {
-            throw new NotImplementedException();
-        }
+			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/list-all-order");
+		}
 
-        public Task<APIResponse<bool>> ConfirmOrder(ConfirmOrderRequest request)
+		public async Task<APIResponse<bool>> ConfirmOrder(ConfirmOrderRequest request)
         {
-            throw new NotImplementedException();
-        }
+			HttpResponseMessage response = await _httpClient.PutAsJsonAsync(BaseUrl + $"/confirm-order-by-employee", request);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+		}
 
         public Task<APIResponse<bool>> ThanhToanKhiNhanHang(int orderId)
         {

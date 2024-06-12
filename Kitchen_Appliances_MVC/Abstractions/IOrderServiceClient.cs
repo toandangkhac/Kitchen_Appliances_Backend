@@ -14,7 +14,7 @@ namespace Kitchen_Appliances_MVC.Abstractions
         Task<APIResponse<List<OrderDTO>>> ListAllOrders();
 
         //Tạo order lấy tất cả CartDetail của Customer Tạo đơn hàng {trạng thái chờ thanh toán(1) }
-        Task<APIResponse<bool>> CreateOrder(CreateOrderRequest request);
+        Task<APIResponse<int>> CreateOrder(CreateOrderRequest request);
 
 
         //Xác nhận đơn hành tưf trạng thái chờ xác nhận(2) -> đang giao(3)

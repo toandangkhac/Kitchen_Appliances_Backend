@@ -425,6 +425,32 @@
       "UpstreamPathTemplate": "/gateway/order/get-order-by-customer/{id}",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    //Lấy danh sách đơn hàng chưa được nhân viên xác nhận
+    {
+      "DownstreamPathTemplate": "/api/order/list-order-not-confirm",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/list-order-not-confirm",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    //Lấy danh sách đơn hàng
+    {
+      "DownstreamPathTemplate": "/api/order/list-all-order",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/list-all-order",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     // Chuyển tất cả Cart Detail của customer sang Order
     {
       "DownstreamPathTemplate": "/api/order/create-order-by-customer",
@@ -452,6 +478,32 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
 
+    //Đã nhận đơn hàng
+    {
+      "DownstreamPathTemplate": "/api/order/confirm-delivery-success/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/confirm-delivery-success/{orderId}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    // Xác nhận từ nhân viên
+    {
+      "DownstreamPathTemplate": "/api/order/confirm-order-by-employee",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/confirm-order-by-employee",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
     //THANH TOÁN VNPAY
     {
       "DownstreamPathTemplate": "/api/vnpay/{orderId}",
@@ -476,9 +528,35 @@
       ],
       "UpstreamPathTemplate": "/gateway/vnpay/call-back",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    //ORDER DETAIL SERVICE
+    // lấy Order Detail theo id
+    {
+      "DownstreamPathTemplate": "/get-order-detail/{orderDetailId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/orderdetail/get-order-detail/{orderDetailId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+
+    // lấy list Order Detail theo OrderId
+    {
+      "DownstreamPathTemplate": "/list-order-detail/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/orderdetail/list-order-detail/{orderId}",
+      "UpstreamHttpMethod": [ "Get" ]
     }
-
-
   ],
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:7178"

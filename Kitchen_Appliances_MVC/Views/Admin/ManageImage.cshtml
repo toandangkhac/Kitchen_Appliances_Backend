@@ -1,0 +1,64 @@
+﻿@using Kitchen_Appliances_MVC.ViewModelData.Image
+
+@section Header {
+    @Html.Partial("SideBar")
+}
+@model AddImageViewModel
+
+<div id="mainBody">
+    <div class="container">
+        <div class="row">
+            <div id="sidebar" class="span3" style="background-color: #474242;">
+                <ul id="sideManu" class="nav nav-tabs nav-stacked">
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+                    </li>
+                </ul>
+                <br />
+
+            </div>
+            <div class="span9" style="display:flex; justify-content:center;">
+                <form method="post" modelAttribute="user" asp-action="ManageImage" asp-controller="Admin" enctype="multipart/form-data">
+                    <div class="row my-3" style="margin-bottom:30px; ">
+                        <p style="font-size: 20px;">
+                            Thêm Ảnh Cho Sản Phẩm
+                        </p>
+                    </div>
+                    <div class="row my-3">
+                        <label asp-for="request.ProductId">Product:</label>
+                        <select asp-for="request.ProductId" asp-items="@(new SelectList(Model.Products, "Id", "Name"))">
+                        </select>
+                    </div>
+                    <div class="row my-3">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Chọn file ảnh
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="file" asp-for="request.Url" class="form-control" required="true" />
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button type="submit"
+                                class="btn btn-primary bg-gradient text-white">
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,243 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+*@
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "Manage Order";
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	//int IdUser = int.Parse(Ir);
+}
+@section Header {
+	@Html.Partial("SideBar")
+	
+}
+@using Kitchen_Appliances_MVC.ViewModels.Customer;
+@using Kitchen_Appliances_MVC.ViewModels.Employee;
+@using Kitchen_Appliances_MVC.ViewModelData.Order
+@model ManageOrderViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<meta name="author" content="" />
+	<title>Trang Admin</title>
+	<style>
+		th, td {
+			padding: 5px 20px;
+		}
+
+		td {
+			text-align: center;
+		}
+	</style>>
+</head>
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3" style="background-color: #474242;">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+					</li>
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+					</li>
+				</ul>
+				<br />
+
+			</div>
+			<div class="span9">
+				@* <div>
+				<a asp-action="AddCustomer" asp-controller="Admin" class="btn btn-primary">Thêm Customer</a>
+				</div> *@
+				<div class="well well-small">
+					<div class="row-fluid">
+						<div id="featured" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<ul class="thumbnails">
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="card-header">
+							<strong>Danh sách Order chưa duyệt</strong>
+						</div>
+						<div class="card-body">
+							<table id="datatablesSimple">
+								<thead>
+									<tr>
+										<th>Mã Đơn Hàng</th>
+										<th>Ngày tạo</th>
+										<th>Tên Khách Hàng</th>
+										<th>Địa chỉ</th>
+										<th>Trạng Thái</th>
+										<th>Nhân Viên Duyệt</th>
+										@* <th>Chi tiết</th>
+										<th>Delete</th> *@
+									</tr>
+								</thead>
+
+								<tbody>
+									@for (int i = 0; i < Model.Orders.Count; i++)
+									{
+										<tr>
+											<td>@Model.Orders[i].Id</td>
+											<td>@Model.Orders[i].CreateAt</td>
+											@foreach (CustomerDTO order in Model.Customer)
+											{
+												if(order.Id == Model.Orders[i].CustomerId)
+												{
+													<td>@order.Fullname</td>
+												}
+											}
+											<td>@Model.Orders[i].AddressShipping</td>
+											@switch (Model.OrdersConfirm[i].Status)
+											{
+												case 0:
+													<td style="color:red;">Đã hủy</td>
+													break;
+												case 1:
+													<td style="color:orange;">Đang chờ xác nhận</td>
+													break;
+												case 2:
+													<td style="color:forestgreen;">Đang giao</td>
+													break;
+												case 3:
+													<td style="color:forestgreen;">Đã nhận</td>
+													break;
+												default:
+													<td style="color:red;">Đã hủy</td>
+													break;
+											}
+											@{
+												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).FirstOrDefault();
+											}
+											@if (employee1 != null)
+											{
+												<td>@employee1.Fullname</td>
+											}
+											else
+											{
+												<td>Chưa xác  nhận</td>
+											}
+											<td><a asp-action="OrderDetail" asp-controller="Order" asp-route-id="@Model.Orders[i].Id" asp-route-idcustomer="@Model.Orders[i].CustomerId.ToString()">Chi tiết</a></td>
+											@if (Model.Orders[i].Status == 1)
+											{
+												<td><a asp-controller="Admin" asp-action="ConfirmByEmployee" asp-route-orderid="@Model.Orders[i].Id" asp-route-employeeid="@IdUser">
+													<span class="btn btn-success">Xác nhận</span></a></td>
+											}else{
+												<td>Không thể tương tác</td>
+											}
+
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+						<hr class="soft" />
+						<hr class="soft" />
+						<div class="card-header">
+							<strong>Danh sách Order đã duyệt</strong>
+						</div>
+						<div class="card-body">
+							<table id="datatablesSimple">
+								<thead>
+									<tr>
+										<th>Mã Đơn Hàng</th>
+										<th>Ngày tạo</th>
+										<th>Tên Khách Hàng</th>
+										<th>Địa chỉ</th>
+										<th>Trạng Thái</th>
+										<th>Nhân Viên Duyệt</th>
+										@* <th>Chi tiết</th>
+										<th>Delete</th> *@
+									</tr>
+								</thead>
+
+								<tbody>
+									@for (int i = 0; i < Model.OrdersConfirm.Count; i++)
+									{
+										<tr>
+											<td>@Model.OrdersConfirm[i].Id</td>
+											<td>@Model.OrdersConfirm[i].CreateAt</td>
+											@foreach (CustomerDTO order in Model.Customer)
+											{
+												if (order.Id == Model.OrdersConfirm[i].CustomerId)
+												{
+													<td>@order.Fullname</td>
+												}
+											}
+											<td>@Model.OrdersConfirm[i].AddressShipping</td>
+											@switch (Model.OrdersConfirm[i].Status)
+											{
+												case 0:
+													<td style="color:red;">Đã hủy</td>
+													break;
+												case 1:
+													<td style="color:orange;">Đang chờ xác nhận</td>
+													break;
+												case 2:
+													<td style="color:forestgreen;">Đang giao</td>
+													break;
+												case 3:
+													<td style="color:forestgreen;">Đã nhận</td>
+													break;
+												default:
+													<td style="color:red;">Đã hủy</td>
+													break;
+											}											
+											@{
+												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).FirstOrDefault();
+											}									
+												@if (employee1!=null)
+												{
+													<td>@employee1.Fullname</td>
+												}
+												else
+												{
+													<td>Chưa xác  nhận</td>
+												}
+											<td><a asp-action="OrderDetail" asp-controller="Order" asp-route-id="@Model.OrdersConfirm[i].Id.ToString()" asp-route-idcustomer="@Model.OrdersConfirm[i].CustomerId.ToString()">Chi tiết</a></td>
+											@* @if (Model.Orders[i].Status == 1)
+											{
+												<td>
+													<a asp-controller="Admin" asp-action="ConfirmByEmployee" asp-route-orderid="@Model.Orders[i].Id" asp-route-employeeid="@IdUser">
+														<span class="btn btn-success">Xác nhận</span>
+													</a>
+												</td>
+											}
+											else
+											{
+												<td>Không thể tương tác</td>
+											} *@
+
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

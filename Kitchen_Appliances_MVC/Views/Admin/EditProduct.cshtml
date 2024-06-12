@@ -1,0 +1,85 @@
+﻿@section Header {
+    @Html.Partial("SideBar")
+}
+@using Kitchen_Appliances_MVC.ViewModelData.Admin;
+
+@model EditProductViewModel
+
+<div id="mainBody">
+    <div class="container">
+        <div class="row">
+            <div id="sidebar" class="span3" style="background-color: #474242; width:auto;">
+                <ul id="sideManu" class="nav nav-tabs nav-stacked">
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+                    </li>
+                </ul>
+                <br />
+
+            </div>
+            <div class="span9" style="display:flex; justify-content:center;">
+                <form method="post" modelAttribute="user" asp-action="EditProduct" asp-route-id="@Model.Product.Id" asp-controller="Admin" enctype="multipart/form-data">
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Mã sản phẩm
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" required="true" value="@Model.Product.Id" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Tên sản phẩm
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" asp-for="request.Name" required="true" value="@Model.Product.Name" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Mô tả sản phẩm
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" asp-for="request.Description" required="true" value="@Model.Product.Description" />
+                        </div>
+                    </div>
+
+                    <div class="row my-3">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Giá bán
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" asp-for="request.Price" required="true" value="@Model.Product.Price" />
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Số lượng
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" asp-for="request.Quantity" required="true" value="@Model.Product.Quantity" />
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button type="submit"
+                                class="btn btn-primary bg-gradient text-white">
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

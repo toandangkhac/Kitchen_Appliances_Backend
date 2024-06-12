@@ -106,7 +106,8 @@
 						{
 							<tr>
 								<td> <img width="60" src=@Model.Images[@pr.Id] alt="" /></td>
-								<td>@pr.Name <br/>@pr.Description.Substring(0,20)</td>
+								<td>@pr.Name <br/>
+									@(pr.Description.Length>20?pr.Description.Substring(0, 20):pr.Description)</td>
 								<td>
 									<div class="input-append"><input class="span1" style="max-width:34px" placeholder="1" id="appendedInputButtons" size="16" type="text">
 										<button class="btn btn-danger ajax-remove" data-productId=@pr.Id data-customerid=@IdUser type="button"><i class="icon-remove icon-white"></i></button>
@@ -118,8 +119,14 @@
 						}
 						<tr>
 							<td colspan="6" style="text-align:right"><strong>TOTAL = @totalPrice</strong></td>
-							<td class="label label-important btn" style="display:block" id="buyBtn"><a asp-controller="Order" asp-action="CompleteOrder" asp-route-id="@Model.Customer.Id"><strong> BUY </strong></a></td>
-						</tr>
+							<td>
+								<select class="srchTxt" name="option" id="paymentOption">
+									<option value="1">Thanh toán khi trả hàng</option>@*  option 1 *@
+									<option value="2">Thanh toán bằng ví VNPAY</option>@*  option 2 *@
+								</select>
+							</td>
+							<td class="label label-important btn" style="display:block" id="buyBtn"><a href="#" onclick="completeOrder('@Model.Customer.Id');"><strong> BUY </strong></a></td>
+						</td>
 					</tbody>
 
 				</table>
@@ -168,7 +175,7 @@
 			var customerId = $(this).data("customerid");
 			if (customerId) {
 				$.ajax({
-					url: '@Url.Action("DeleteCart", "Cart")',
+					url: '@Url.Action("DeleteCartDetail", "CartDetail")',
 					type: 'POST',
 					data: {
 						ProductId: $(this).data("productid"),
@@ -207,5 +214,10 @@
 			}
 
 		});
+		function completeOrder(customerId) {
+			var paymentOption = document.getElementById('paymentOption').value;
+			var url = `/Order/CompleteOrder/${customerId}?option=${paymentOption}`;
+			window.location.href = url;
+		}
 	</script>
 }

@@ -86,7 +86,7 @@
 				var customerId = $(this).data("customerid");
 				if (customerId) {
 					$.ajax({
-						url: '@Url.Action("AddToCart", "Cart")',
+						url: '@Url.Action("AddToCart", "CartDetail")',
 						type: 'POST',
 						data: {
 							ProductId: $(this).data("productid"),

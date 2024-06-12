@@ -1,5 +1,7 @@
 using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.ApiServices;
+using Kitchen_Appliances_MVC.Services;
+using Kitchen_Appliances_MVC.Services.ServiceImpl;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7178") });
-
+builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IEmployeeClient, EmployeeClientService>();
 builder.Services.AddScoped<IAccountClient, AccountClientService>();
 builder.Services.AddScoped<ICustomerServiceClient, CustomerClientService>();
@@ -21,7 +23,7 @@ builder.Services.AddScoped<ICartDetailServiceClient, CartDetailServiceClient>();
 builder.Services.AddScoped<IRoleServiceClient, RoleServiceClient>();
 builder.Services.AddScoped<IBillServiceClient, BillServiceClient>();
 builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
-
+builder.Services.AddScoped<IOrderDetailServiceClient, OrderDetailServiceClient>();
 builder.Services.AddScoped<IVNPayClientService, VNPayServiceClient>();
 
 builder.Services.AddSession(options =>

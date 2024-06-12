@@ -18,9 +18,11 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		// đã test phần get listimage, getbyid, deletebyId
 		//phần tạo và update chưa tìm ra giải pháp
 
-		public Task<APIResponse<bool>> CreateImage(CreateImageRequest request)
+		public async Task<APIResponse<bool>> CreateImage(CreateImageRequest request)
 		{
-			throw new NotImplementedException();
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/gateway/image", request);
+			APIResponse<bool> result = await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+			return result;
 		}
 
 		public async Task<APIResponse<bool>> DeleteImage(int id)
