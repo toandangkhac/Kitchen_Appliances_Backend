@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Kitchen_Appliances_MVC.ViewModelData.Admin;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "Manage Product";
+	string Fullname = HttpContextAccessor.HttpContext.Session.GetString("Fullname");
+}
+
+@* Trang Admin *@
+
+@section Header {
+	@Html.Partial("SideBar")
+}
+
+@model ManageProductViewModel
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<meta name="author" content="" />
+	<title>Trang Admin</title>
+	<style>
+		th, td {
+			padding: 5px 10px;
+		} 
+		td{
+			text-align: center;
+		}
+	</style>>
+</head>
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3" style="background-color: #474242;">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+					</li>
+				</ul>
+				<br />
+
+			</div>
+			<div class="span9">
+				<div>
+					<a asp-action="AddProduct" asp-controller="Admin" class="btn btn-primary">Thêm Sản Phẩm</a>
+				</div>
+				
+				<div class="well well-small">
+					<div class="row-fluid">
+						<div id="featured" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">					
+								</div>
+							</div>
+						</div>
+						<div class="card-header">
+							Danh sách sản phẩm
+						</div>
+						<div class="card-body">
+							<table id="datatablesSimple">
+								<thead>
+									<tr>
+										<th>Mã sản phẩm</th>
+										<th>Name</th>
+										<th>Status</th>
+										<th>Category</th>
+										<th>Quantity</th>
+										<th>Price</th>
+										<th>Edit</th>
+										<th>Delete</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									@for (int i = 0; i < Model.Products.Count; i++)
+									{
+										<tr>
+											<td>@Model.Products[i].Id</td>
+											<td>@Model.Products[i].Name</td>
+											<td>@Model.Products[i].Status</td>
+											<td>@Model.Products[i].CategoryId</td>
+											<td>@Model.Products[i].Quantity</td>
+											<td>@Model.Products[i].Price</td>
+											<td><a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@Model.Products[i].Id"><i class="fa-regular fa-pen-to-square"></i></a></td>
+											<td><a asp-controller="Admin" asp-action="DeleteProduct" asp-route-id="@Model.Products[i].Id">Xóa</a></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

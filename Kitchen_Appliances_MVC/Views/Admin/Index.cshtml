@@ -1,0 +1,60 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+	ViewData["Title"] = "Home Page Admin";
+	string Fullname = HttpContextAccessor.HttpContext.Session.GetString("Fullname");
+}
+@section Header {
+	@Html.Partial("SideBar")
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3" style="background-color: #474242;">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+					</li>
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+					</li>
+				</ul>
+				<br />
+
+			</div>
+			<div class="span9">
+				<div class="well well-small">
+					<div class="row-fluid">
+						<div id="featured" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<ul class="thumbnails">
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="card-header">
+							<i class="fas fa-table me-1"></i>
+							Chào mừng đến trang admin
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

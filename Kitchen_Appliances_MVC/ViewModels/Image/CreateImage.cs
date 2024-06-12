@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Kitchen_Appliances_Backend.DTO.Image
+namespace Kitchen_Appliances_MVC.ViewModels.Image
 {
-    public class CreateImageRequest
+    public class CreateImage
     {
         [Required]
-        public string? Url { get; set; }
+        public IFormFile? Url { get; set; }
         [Required]
         public int ProductId { get; set; }
     }

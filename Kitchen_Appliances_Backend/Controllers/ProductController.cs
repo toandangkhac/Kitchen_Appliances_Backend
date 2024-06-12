@@ -28,7 +28,7 @@ namespace Kitchen_Appliances_Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromQuery] CreateProductRequest request)
+        public async Task<IActionResult> CreateProduct( CreateProductRequest request)
         {
             return Ok( await _productRepository.CreateProduct(request));
         }

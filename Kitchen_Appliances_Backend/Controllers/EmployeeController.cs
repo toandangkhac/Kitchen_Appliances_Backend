@@ -30,7 +30,7 @@ namespace Kitchen_Appliances_Backend.Controllers
             request.Type = TOKEN_TYPE.REGISTER_OTP;
             return Ok(await _repo.ActiveAccount(request));
 		}
-		[Authorize(Roles = "Admin")]
+		//[Authorize(Roles = "Admin")]
 		[HttpGet]
         public async Task<IActionResult> GetListAll()
         {

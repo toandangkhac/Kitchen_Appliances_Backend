@@ -14,14 +14,28 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			_httpClient = httpClient;
 		}
-		public Task<APIResponse<bool>> CancelOrder(int orderId)
+		public async Task<APIResponse<bool>> CancelOrder(int orderId)
 		{
-			throw new NotImplementedException();
+			HttpResponseMessage response = await _httpClient.PutAsync(BaseUrl + $"/cancel-order/{orderId}",null);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
 		}
 
-		public Task<APIResponse<bool>> ConfirmOrderDeliverySucess(int orderId)
+		public async Task<APIResponse<bool>> ConfirmOrder(int employeeId, int orderId)
 		{
-			throw new NotImplementedException();
+			var request = new ConfirmOrderRequest()
+			{
+				EmployeeId = employeeId,
+				OrderId = orderId
+			};
+			HttpResponseMessage response = await _httpClient.PutAsJsonAsync(BaseUrl + $"/confirm-order-by-employee", request);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+			//throw new NotImplementedException();
+		}
+
+		public async Task<APIResponse<bool>> ConfirmOrderDeliverySucess(int orderId)
+		{
+			HttpResponseMessage response = await _httpClient.PutAsync(BaseUrl + $"/confirm-delivery-success/{orderId}", null);
+			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
 		}
 
 		public Task<APIResponse<bool>> CreateOrder(CreateOrderRequest request)
@@ -38,11 +52,14 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/get-order-by-customer/{customerId}");
 		}
-
-
-		public Task<APIResponse<List<OrderDTO>>> ListOrderNotConfirm()
+		public async Task<APIResponse<List<OrderDTO>>> ListOrderConfirmed()
 		{
-			throw new NotImplementedException();
+			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/list-order-confirm");
+		}
+
+		public async Task<APIResponse<List<OrderDTO>>> ListOrderNotConfirm()
+		{
+			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + "/list-order-not-confirm");
 		}
 
         public Task<APIResponse<List<OrderDTO>>> ListAllOrders()

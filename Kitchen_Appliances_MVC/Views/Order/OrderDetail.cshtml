@@ -1,0 +1,122 @@
+﻿@using Kitchen_Appliances_MVC.ViewModels.OrderDetail
+@using Kitchen_Appliances_MVC.ViewModels.Product
+@inject IHttpContextAccessor HttpContextAccessor
+@model Kitchen_Appliances_MVC.ViewModelData.Order.OrderDetailViewModel
+@{
+	ViewData["Title"] = "Order Detail";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	int totalPrice = 0;
+	foreach (OrderDetailDTO od in Model.OrderDetails)
+	{
+		totalPrice += (int)od.Price * od.Quantity;
+	}
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<!-- Sidebar ================================================== -->
+			<div id="sidebar" class="span3">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">Home</a> <span class="divider">/</span></li>
+					<li class="active"> ORDER Detail</li>
+				</ul>
+				<h3>  ORDER DETAIL [ <small>@Model.OrderDetails.Count Item(s) </small>]<a asp-controller="Home" asp-action="index" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>
+				<hr class="soft" />
+				<table class="table table-bordered">
+					<tr><th> THÔNG TIN KHÁCH HÀNG  </th></tr>
+					<tr>
+						<td>
+							<div class="control-group">
+								<label class="control-label" for="inputUsername">FullName</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Fullname</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">PhoneNumber</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.PhoneNumber</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">Address</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Address</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="inputPassword1">Email</label>
+								<div class="controls">
+									<span type="text">@Model.Customer.Email</span>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="controls">
+									<a asp-controller="Account" asp-action="ChangeInfo" asp-route-id="@IdUser" class="btn">Change Your Info</a>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<!-- show table product=============================================== -->
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Description</th>
+							<th>Quantity</th>
+							<th>Price</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (ProductDTO pr in Model.Products)
+						{
+							<tr>
+								<td> <img width="60" src=@Model.Images[@pr.Id] alt="" /></td>
+								<td>@pr.Name <br />@pr.Description.Substring(0, 20)</td>
+								@{
+									int quantity = @Model.OrderDetails.FirstOrDefault(od => od.ProductId == pr.Id).Quantity;
+									int price = (int)@Model.OrderDetails.FirstOrDefault(od => od.ProductId == pr.Id).Price;
+								}
+								<td>@quantity</td>
+								<td>$@price</td>
+								<td>$@(quantity * price)</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="6" style="text-align:right"><strong>TOTAL = @totalPrice</strong></td>
+						</tr>
+					</tbody>
+
+				</table>
+				<!-- show table product end=============================================== -->
+			</div>
+		</div>
+	</div>
+</div>

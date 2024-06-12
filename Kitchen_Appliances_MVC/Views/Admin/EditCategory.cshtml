@@ -1,0 +1,65 @@
+﻿@using Kitchen_Appliances_MVC.ViewModels.Category;
+
+@using Kitchen_Appliances_MVC.ViewModelData.Admin;
+
+@section Header {
+    @Html.Partial("SideBar")
+}
+@model EditCategoryViewModel
+
+<div id="mainBody">
+    <div class="container">
+        <div class="row">
+            <div id="sidebar" class="span3" style="background-color: #474242;">
+                <ul id="sideManu" class="nav nav-tabs nav-stacked">
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+                    </li>
+                </ul>
+                <br />
+
+            </div>
+            <div class="span9" style="display:flex; justify-content:center;">
+                <form method="post" modelAttribute="user" asp-action="EditCategory" asp-route-id="@Model.Category.Id" asp-controller="Admin" enctype="multipart/form-data">
+                    <div class="row my-3">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Mã loại sản phẩm
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" required="true" value="@Model.Category.Id" readonly />
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <label class="col-sm-3 col-form-label text-end">
+                            Tên loại sản phẩm
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" asp-for="request.Name" required="true" value="@Model.Category.Name" />
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button type="submit"
+                                class="btn btn-primary bg-gradient text-white">
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+

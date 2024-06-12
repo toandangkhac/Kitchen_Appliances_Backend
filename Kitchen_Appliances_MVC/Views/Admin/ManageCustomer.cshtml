@@ -1,0 +1,109 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@section Header {
+	@Html.Partial("SideBar")
+}
+@using Kitchen_Appliances_MVC.ViewModelData.Customer
+@model ManageCustomerViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<meta name="author" content="" />
+	<title>Trang Admin</title>
+	<style>
+		th, td {
+			padding: 5px 20px;
+		}
+
+		td {
+			text-align: center;
+		}
+	</style>>
+</head>
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div id="sidebar" class="span3" style="background-color: #474242;">
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageProduct"> Quản lý Sản Phẩm </a>
+					</li>
+
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCategory"> Quản lý Category </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageCustomer"> Quản lý Customer </a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageOrder"> Quản lý Order</a>
+					</li>
+					<li>
+						<a asp-controller="Admin" asp-action="ManageImage"> Quản lý Ảnh Sản Phẩm</a>
+					</li>
+				</ul>
+				<br />
+
+			</div>
+			<div class="span9">
+				@* <div>
+					<a asp-action="AddCustomer" asp-controller="Admin" class="btn btn-primary">Thêm Customer</a>
+				</div> *@
+				<div class="well well-small">
+					<div class="row-fluid">
+						<div id="featured" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<ul class="thumbnails">
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="card-header">
+
+							Danh sách Customer
+						</div>
+						<div class="card-body">
+							<table id="datatablesSimple">
+								<thead>
+									<tr>
+										<th>Mã Khách Hàng</th>
+										<th>FullName</th>
+										<th>PhoneNumber</th>
+										<th class="">Address</th>
+										<th>Email</th>
+										<th>Xóa</th> 
+									</tr>
+								</thead>
+
+								<tbody>
+									@for (int i = 0; i < Model.CustomerDTOs.Count; i++)
+									{
+										<tr>
+											<td>@Model.CustomerDTOs[i].Id</td>
+											<td>@Model.CustomerDTOs[i].Fullname</td>
+											<td>@Model.CustomerDTOs[i].PhoneNumber</td>
+											<td>@Model.CustomerDTOs[i].Address</td>
+											<td>@Model.CustomerDTOs[i].Email</td>
+											<td style="color:orangered;"><a asp-controller="Admin" asp-action="DeleteCustomer" asp-route-id="@Model.CustomerDTOs[i].Id">Xóa</a></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

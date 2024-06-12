@@ -6,6 +6,7 @@
 	string Username = HttpContextAccessor.HttpContext.Session.GetString("Username");
 	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
 	string Cartcount = HttpContextAccessor.HttpContext.Session.GetString("Cartcount");
+	string roleId = HttpContextAccessor.HttpContext.Session.GetString("RoleId");
 	string cartDisplay = string.IsNullOrEmpty(Fullname) ? "[ 0 ] in your cart" : $"[ {Cartcount} ] in your cart";
 }
 ﻿@using Kitchen_Appliances_MVC.ViewModels.Category
@@ -14,16 +15,16 @@
 <div id="header">
 	<div class="container">
 		<div id="welcomeLine" class="row">
-			<div class="span6">Welcome!<strong> @Fullname</strong></div>
+			<div class="span6">Welcome!<strong> @Fullname @IdUser</strong></div>
 			<div class="span6">
 				<div class="pull-right">
 					<a href="product_summary.html"><span class="">Fr</span></a>
 					<a href="product_summary.html"><span class="">Es</span></a>
 					<span class="btn btn-mini">En</span>
 					<a href="product_summary.html"><span>&pound;</span></a>
-					<span class="btn btn-mini">$0.00</span>
+					<span class="btn btn-mini">@roleId</span>
 					<a href="product_summary.html"><span class="">$</span></a>
-					<a id="cartLink" data-iduser="@IdUser" href="@Url.Action("Index", "Cart", new { id = IdUser })"><span class="btn btn-mini btn-primary" id="Cart_count"><i class="icon-shopping-cart icon-white"></i> @cartDisplay </span> </a>
+					<a id="cartLink" data-iduser="@IdUser" href="@Url.Action("Index", "CartDetail", new { id = IdUser })"><span class="btn btn-mini btn-primary" id="Cart_count"><i class="icon-shopping-cart icon-white"></i> @cartDisplay </span> </a>
 				</div>
 			</div>
 		</div>
@@ -67,13 +68,12 @@
 </div>
 <!-- Header End====================================================================== -->
 <script>
-	<script>
 		document.addEventListener("DOMContentLoaded", function () {
 			var cartLink = document.getElementById("cartLink");
 			var idUser = cartLink.getAttribute("data-iduser");
-			var roleId = cartLink.getAttribute("data-roleid");
+			var roleId = @Html.Raw(Json.Serialize(roleId));
 			cartLink.addEventListener("click", function (event) {
-				if (!idUser||idUser==="") {
+				if (!idUser) {
 					event.preventDefault(); // Ngăn chặn điều hướng nếu IdUser là null hoặc rỗng
 					Swal.fire({
 						icon: "error",
@@ -102,7 +102,7 @@
 					Swal.fire({
 						icon: "error",
 						title: "Oops...",
-						text: "Bạn cần đăng nhập để truy cập vào giỏ hàng",
+						text: "Bạn cần đăng nhập để truy cập vào phần chỉnh sửa",
 						footer: '<a href="/Account/Login">Đăng nhập ngay</a>'
 					});
 				} else {
