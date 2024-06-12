@@ -38,17 +38,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
 			return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
 		}
 
-		public Task<APIResponse<bool>> ConfirmPaymentOrder(int orderId)
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<APIResponse<bool>> CreateOrder(CreateOrderRequest request)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<APIResponse<bool>> CreateOrderByListId(CreateOrderByListId request)
 		{
 			throw new NotImplementedException();
 		}
@@ -62,7 +52,6 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/get-order-by-customer/{customerId}");
 		}
-
 		public async Task<APIResponse<List<OrderDTO>>> ListOrderConfirmed()
 		{
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + $"/list-order-confirm");
@@ -72,5 +61,20 @@ namespace Kitchen_Appliances_MVC.ApiServices
 		{
 			return await _httpClient.GetFromJsonAsync<APIResponse<List<OrderDTO>>>(BaseUrl + "/list-order-not-confirm");
 		}
-	}
+
+        public Task<APIResponse<List<OrderDTO>>> ListAllOrders()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<APIResponse<bool>> ConfirmOrder(ConfirmOrderRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<APIResponse<bool>> ThanhToanKhiNhanHang(int orderId)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

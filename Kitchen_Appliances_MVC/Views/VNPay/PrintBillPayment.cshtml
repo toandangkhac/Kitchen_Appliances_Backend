@@ -1,0 +1,21 @@
+﻿@model Kitchen_Appliances_MVC.ViewModels.Bill.BillDto
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="display:flex; justify-content:center; align-content:center;">
+        <p>Mã đơn hàng:@Model.OrderId</p>
+        <p>Ngày đặt hàng : @Model.PaymentTime</p>
+        <p>Tên khách hàng : @Model.CustomerName</p>
+        <p>Tổng Thanh toán @Model.Total</p>
+    </div>
+</body>
+</html>
+
+

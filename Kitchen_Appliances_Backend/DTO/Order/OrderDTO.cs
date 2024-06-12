@@ -14,5 +14,7 @@
 		public bool PaymentStatus { get; set; }
 
         public int? EmployeeId { get; set; }
+
+        public string AddressShipping { get; set; }
     }
 }

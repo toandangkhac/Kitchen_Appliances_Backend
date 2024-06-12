@@ -16,6 +16,8 @@ public partial class Order
 
     public bool PaymentStatus { get; set; }
 
+    public string AddressShipping { get; set; }
+
     public int? EmployeeId { get; set; }
 
     public virtual Bill? Bill { get; set; }
