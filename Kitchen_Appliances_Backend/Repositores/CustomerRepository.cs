@@ -8,7 +8,6 @@ using Kitchen_Appliances_Backend.DTO.Mail;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
 using Kitchen_Appliances_Backend.Services;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {

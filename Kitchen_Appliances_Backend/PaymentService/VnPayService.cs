@@ -18,7 +18,8 @@ namespace Kitchen_Appliances_Backend.PaymentService
             _configuration.GetSection(nameof(VNPayOptions)).Bind(vnpayOptions);
             var tick = DateTime.Now.Ticks.ToString();
             var vnpay = new VnPayLibrary();
-            vnpay.AddRequestData("vnp_TxnRef", $"{request.OrderId}_{tick}"); //Mã tham chiếu giao dịch
+            //vnpay.AddRequestData("vnp_TxnRef", $"{request.OrderId}_{tick}"); //Mã tham chiếu giao dịch
+            vnpay.AddRequestData("vnp_TxnRef", $"{request.OrderId}");
             vnpay.AddRequestData("vnp_TmnCode", vnpayOptions.TmnCode);
             vnpay.AddRequestData("vnp_Version", vnpayOptions.Version);
             vnpay.AddRequestData("vnp_Command", vnpayOptions.Command);
@@ -64,8 +65,6 @@ namespace Kitchen_Appliances_Backend.PaymentService
             }
             var payTime = vnPay.GetResponseData("vnp_PayDate");
             var amount = vnPay.GetResponseData("vnp_Amount");
-
-
             return new VnPaymentResponseModel()
             {
                 Success = true,

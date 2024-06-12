@@ -426,9 +426,9 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
 
-    //THANH TOÁN
+    //THANH TOÁN VNPAY
     {
-      "DownstreamPathTemplate": "/api/VNPay",
+      "DownstreamPathTemplate": "/api/vnpay/{orderId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -436,7 +436,19 @@
           "Port": 7161
         }
       ],
-      "UpstreamPathTemplate": "/gateway/VNPay",
+      "UpstreamPathTemplate": "/gateway/vnpay/{orderId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vnpay/call-back",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/vnpay/call-back",
       "UpstreamHttpMethod": [ "Get" ]
     }
 
