@@ -94,6 +94,32 @@
       "UpstreamPathTemplate": "/gateway/account/reset-password",
       "UpstreamHttpMethod": [ "Put" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/account/active-account",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/active-account",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/resend-otp",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/resend-otp",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
 
     //Category API
     {

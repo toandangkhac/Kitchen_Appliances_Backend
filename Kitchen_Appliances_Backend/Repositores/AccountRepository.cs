@@ -34,8 +34,16 @@ namespace Kitchen_Appliances_Backend.Repositores
 
         public async Task<ApiResponse<AuthDTO>> Authenticate(LoginAuthRequest request)
         {
-            var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email)
-                ?? throw new NotFoundException("Not find account by email, try again!!!");
+            var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
+            if(account == null)
+            {
+                return new ApiResponse<AuthDTO>()
+                {
+                    Status = 404,
+                    Message = "Email không tồn tại",
+                    Data = null
+                };
+            }
 
             if (!account.Password.Equals(request.Password))
             {
@@ -141,7 +149,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 			}
 			return new ApiResponse<AccountDTO>()
 			{
-				Status = 404,
+				Status = 200,
 				Message = "Lấy tài khoản thành công",
 				Data = _mapper.Map<AccountDTO>(account)
 		    };
@@ -303,7 +311,16 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
 
             var userToken = _context.AppUserTokens.FirstOrDefault(x => x.Type == request.Type
-                    && x.AccountId == request.Email) ?? throw new NotFoundException();
+                    && x.AccountId == request.Email);
+            if(userToken == null)
+            {
+                return new ApiResponse<bool>()
+                {
+                    Status = 404,
+                    Message = "Không tìm thấy OTP, Bạn hãy thử lại",
+                    Data = false
+                };
+            }    
 
             if(userToken.Token != request.OTP)
             {
@@ -346,6 +363,30 @@ namespace Kitchen_Appliances_Backend.Repositores
                 //Data = claims.FindFirstValue("Email")
                 Data = claims.FindFirstValue(ClaimTypes.Role)
 			};
+        }
+
+        public async Task<ApiResponse<bool>> ActiveAccount(ActiveAccountRequest request)
+        {
+            var result = await VerifyOTP(new VerifyOTPRequest()
+            {
+                Email = request.Email,
+                OTP = request.OTP,
+                Type = TOKEN_TYPE.REGISTER_OTP
+            });
+            if (result.Data == false)
+            {
+                return result;
+            }
+            var account = _context.Accounts.FirstOrDefault(x => x.Email == request.Email);
+            account.Status = true;// cập nhật tài khoản
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+            return new ApiResponse<bool>()
+            {
+                Status = 200,
+                Message = "Active account thành công",
+                Data = true
+            };
         }
     }
 }
