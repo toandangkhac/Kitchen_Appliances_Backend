@@ -412,6 +412,19 @@
       "UpstreamPathTemplate": "/gateway/order/list-order-not-confirm",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    //Lấy danh sách đơn hàng đã được nhân viên xác nhận
+    {
+      "DownstreamPathTemplate": "/api/order/list-order-confirm",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/list-order-confirm",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     // Chuyển tất cả Cart Detail của customer sang Order
     {
       "DownstreamPathTemplate": "/api/order/create-order-by-customer",

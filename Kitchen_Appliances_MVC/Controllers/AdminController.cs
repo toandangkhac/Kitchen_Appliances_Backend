@@ -219,6 +219,12 @@ namespace Kitchen_Appliances_MVC.Controllers
 				Console.WriteLine(dataorderDtos.Message);
 			}
 			List<OrderDTO> orders = dataorderDtos.Data;
+			var dataorderConfirm = await _orderServiceClient.ListOrderConfirmed();
+			if (dataorderConfirm.Status != 200)
+			{
+				Console.WriteLine(dataorderConfirm.Message);
+			}
+			List<OrderDTO> ordersConfirm = dataorderConfirm.Data;
 			var dataCustomer = await _customerServiceClient.ListCustomer();
 			if (dataCustomer.Status != 200)
 			{
@@ -235,11 +241,21 @@ namespace Kitchen_Appliances_MVC.Controllers
 			{
 				Orders = orders,
 				Customer = customers,
+				OrdersConfirm = ordersConfirm,
 				Employees = employees
 			};
 			return View(viewModel);
 		}
-
+		public async Task<IActionResult> ConfirmByEmployee(int orderid, int employeeid)
+		{
+			var checkConfirm = await _orderServiceClient.ConfirmOrder(employeeid, orderid);
+			if(checkConfirm.Status != 200)
+			{
+				Console.WriteLine(checkConfirm.Message);
+			}
+			return RedirectToAction("ManageOrder");
+		}
+		
 		//Image
 		[HttpGet]
 		public async Task<IActionResult> ManageImage()

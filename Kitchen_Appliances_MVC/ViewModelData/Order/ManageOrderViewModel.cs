@@ -8,6 +8,7 @@ namespace Kitchen_Appliances_MVC.ViewModelData.Order
 	{
 		public List<CustomerDTO> Customer { get; set; }
 		public List<OrderDTO> Orders { get; set; }
+		public List<OrderDTO> OrdersConfirm { get; set; }
 		public List<EmployeeDTO> Employees { get; set; }
 	}
 }

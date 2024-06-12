@@ -241,6 +241,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                 CreateAt = DateTime.Now,
                 CustomerId = request.CustomerId,
                 Status = 1,
+				AddressShipping = customer.Address,
                 Customer = customer,
                 //edit
                 PaymentStatus = false,

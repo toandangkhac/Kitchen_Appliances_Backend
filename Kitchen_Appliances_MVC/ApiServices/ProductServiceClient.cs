@@ -44,8 +44,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
 
         public async Task<APIResponse<List<ProductDTO>>> ListProductByCategory(int categoryId)
         {
-            return await _httpClient
-                .GetFromJsonAsync<APIResponse<List<ProductDTO>>>(BaseUrl + $"/category/{categoryId}");
+            return await _httpClient.GetFromJsonAsync<APIResponse<List<ProductDTO>>>(BaseUrl + $"/category/{categoryId}");
         }
 
         public async Task<APIResponse<bool>> UpdateProduct(int id, UpdateProductRequest request)
