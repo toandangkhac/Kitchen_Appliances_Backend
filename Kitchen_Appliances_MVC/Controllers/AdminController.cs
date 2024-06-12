@@ -219,24 +219,24 @@ namespace Kitchen_Appliances_MVC.Controllers
 				Console.WriteLine(dataorderDtos.Message);
 			}
 			List<OrderDTO> orders = dataorderDtos.Data;
-			var dataorderConfirm = await _orderServiceClient.ListOrderConfirmed();
-			if (dataorderConfirm.Status != 200)
+			var dataorder = await _orderServiceClient.ListAllOrders();
+			if (dataorder.Status != 200)
 			{
-				Console.WriteLine(dataorderConfirm.Message);
+				Console.WriteLine(dataorder.Message);
 			}
-			List<OrderDTO> ordersConfirm = dataorderConfirm.Data;
+			List<OrderDTO> ordersConfirm = dataorder.Data;
 			var dataCustomer = await _customerServiceClient.ListCustomer();
 			if (dataCustomer.Status != 200)
 			{
 				Console.WriteLine(dataCustomer.Message);
 			}
 			List<CustomerDTO> customers = dataCustomer.Data;
-			var dataEmployee = await _employeeServiceClient.GetListAll();
-			if (dataEmployee.Status != 200)
+			var dataEmployees = await _employeeServiceClient.GetListAll();
+			if (dataEmployees.Status != 200)
 			{
-				Console.WriteLine(dataEmployee.Message);
+				Console.WriteLine(dataEmployees.Message);
 			}
-			List<EmployeeDTO> employees = dataEmployee.Data;
+			List<EmployeeDTO> employees = dataEmployees.Data;
 			var viewModel = new ManageOrderViewModel()
 			{
 				Orders = orders,
@@ -246,9 +246,16 @@ namespace Kitchen_Appliances_MVC.Controllers
 			};
 			return View(viewModel);
 		}
-		public async Task<IActionResult> ConfirmByEmployee(int orderid, int employeeid)
+		public async Task<IActionResult> ConfirmByEmployee(int orderid, string employeeid)
 		{
-			var checkConfirm = await _orderServiceClient.ConfirmOrder(employeeid, orderid);
+			int idUser = int.Parse(employeeid);
+			Console.WriteLine(idUser + "  " + orderid);
+			var request = new ConfirmOrderRequest()
+			{
+				EmployeeId = idUser,
+				OrderId = orderid
+			};
+			var checkConfirm = await _orderServiceClient.ConfirmOrder(request);
 			if(checkConfirm.Status != 200)
 			{
 				Console.WriteLine(checkConfirm.Message);

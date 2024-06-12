@@ -11,12 +11,10 @@ namespace Kitchen_Appliances_Backend.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ICartDetailRepository _cartDetailRepository;
 
-        public OrderController(IOrderRepository orderRepository, ICartDetailRepository cartDetailRepository)
+        public OrderController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _cartDetailRepository = cartDetailRepository;
         }
 
         [HttpGet("get-order-by-customer/{id}")]
@@ -52,18 +50,30 @@ namespace Kitchen_Appliances_Backend.Controllers
 			return Ok(res);
 		}
 
-        [HttpGet("list-order-confirm")]
-        public async Task<IActionResult> ListOrderConfirmed()
+        //      [HttpGet("list-order-confirm")]
+        //      public async Task<IActionResult> ListOrderConfirmed()
+        //      {
+        //          var res = await _orderRepository.ListOrderConfirmed();
+        //          return Ok(res);
+        //      }
+
+        [HttpGet("list-order-not-confirm")]
+        public async Task<IActionResult> ListOrderNotConfirm()
         {
-            var res = await _orderRepository.ListOrderConfirmed();
+            var res = await _orderRepository.ListOrderNotConfirm();
             return Ok(res);
         }
 
-		[HttpGet("list-order-not-confirm")]
-		public async Task<IActionResult> ListOrderNotConfirm()
-		{
-			var res = await _orderRepository.ListOrderNotConfirm();
-			return Ok(res);
-		}
+        [HttpGet("list-all-order")]
+        public async Task<IActionResult> ListAllOrders()
+        {
+            return Ok(await _orderRepository.ListAllOrders());
+        }
+
+        [HttpGet("thanh-toan-khi-nhan-hang/{orderId}")]
+        public async Task<IActionResult> ThanhToanKhiNhanHang(int orderId)
+        {
+            return Ok(await _orderRepository.ThanhToanKhiNhanHang(orderId));
+        }
 	}
 }

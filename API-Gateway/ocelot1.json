@@ -412,9 +412,9 @@
       "UpstreamPathTemplate": "/gateway/order/list-order-not-confirm",
       "UpstreamHttpMethod": [ "Get" ]
     },
-    //Lấy danh sách đơn hàng đã được nhân viên xác nhận
+    //Lấy danh sách đơn hàng
     {
-      "DownstreamPathTemplate": "/api/order/list-order-confirm",
+      "DownstreamPathTemplate": "/api/order/list-all-order",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -422,7 +422,7 @@
           "Port": 7161
         }
       ],
-      "UpstreamPathTemplate": "/gateway/order/list-order-confirm",
+      "UpstreamPathTemplate": "/gateway/order/list-all-order",
       "UpstreamHttpMethod": [ "Get" ]
     },
     // Chuyển tất cả Cart Detail của customer sang Order
@@ -451,6 +451,7 @@
       "UpstreamPathTemplate": "/gateway/order/cancel-order/{orderId}",
       "UpstreamHttpMethod": [ "Put" ]
     },
+
     //Đã nhận đơn hàng
     {
       "DownstreamPathTemplate": "/api/order/confirm-delivery-success/{orderId}",
@@ -477,6 +478,31 @@
       "UpstreamPathTemplate": "/gateway/order/confirm-order-by-employee",
       "UpstreamHttpMethod": [ "Put" ]
     },
+    //THANH TOÁN VNPAY
+    {
+      "DownstreamPathTemplate": "/api/vnpay/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/vnpay/{orderId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vnpay/call-back",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/vnpay/call-back",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     //ORDER DETAIL SERVICE
     // lấy Order Detail theo id
     {
@@ -491,6 +517,7 @@
       "UpstreamPathTemplate": "/gateway/orderdetail/get-order-detail/{orderDetailId}",
       "UpstreamHttpMethod": [ "Get" ]
     },
+
     // lấy list Order Detail theo OrderId
     {
       "DownstreamPathTemplate": "/list-order-detail/{orderId}",

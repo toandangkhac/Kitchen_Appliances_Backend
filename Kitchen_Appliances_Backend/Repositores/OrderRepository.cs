@@ -4,6 +4,7 @@ using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Order;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
+using Kitchen_Appliances_Backend.PaymentService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,58 +14,41 @@ namespace Kitchen_Appliances_Backend.Repositores
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+		private readonly IVnPayService _pay;
 
-        public OrderRepository(DataContext context, IMapper mapper)
+
+        // 0: Đã hủy, 1: Chờ thanh toán --thanh toán --> 2: Chờ xác nhận, 3: Đang giao, 4: Đã nhận hàng
+
+        public OrderRepository(DataContext context, IMapper mapper, IVnPayService pay)
         {
             _context = context;
             _mapper = mapper;
+			_pay = pay;
         }
-		public async Task<ApiResponse<bool>> ConfirmPaymentOrder(int orderId)
+		//Người dùng nhấn vào Thanh toán khi nhận hàng
+		public async Task<ApiResponse<bool>> ThanhToanKhiNhanHang(int orderId)
 		{
-			try
+			var order = await _context.Orders.FindAsync(orderId);
+			if(order == null)
 			{
-				var order = await _context.Orders.FindAsync(orderId);
-				if(order.Status == 0)
+                return new ApiResponse<bool>()
                 {
-					return new ApiResponse<bool>()
-					{
-						Status = 500,
-						Message = "Đơn hàng đã bị hủy, không thể thanh toán",
-						Data = false
-					};
-				}  
-                else if(order.Status == 3) 
-                {
-					return new ApiResponse<bool>()
-					{
-						Status = 500,
-						Message = "Đơn hàng này đã giao rồi,không thể thanh toán",
-						Data = false
-					};
-				}
-                //chỉ có đơn hàng bị hủy, đã giao thành công mới không thể thanh toán được
-                //đơn hàng khi chưa xác nhận thì có thể có thanh toán online
-                //đơn hàng đang giao thì là thanh toán khi nhận hàng
-				_context.Orders.Update(order);
-				await _context.SaveChangesAsync();
-				return new ApiResponse<bool>()
-				{
-					Status = 200,
-					Message = "Cập nhật đơn hàng đã giao thành công",
-					Data = true
-				};
-			}
-			catch (Exception)
-			{
-				return new ApiResponse<bool>()
-				{
-					Status = 500,
-					Message = "Cập nhât đơn hàng đã giao thất bại",
-					Data = false
-				};
-			}
-		}
-
+                    Status = 404,
+                    Message = "Không tìm thấy đơn hàng",
+                    Data = false
+                };
+            }
+            order.Status = 2;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return new ApiResponse<bool>()
+            {
+                Status = 200,
+                Message = "Cập nhật đơn hàng đã giao thành công",
+                Data = true
+            };
+        }
+		//Khách hàng xác nhận Giao Hàng Thành Công set order status == 4
 		public async Task<ApiResponse<bool>> ConfirmOrderDeliverySucess(int orderId)
 		{
 			try
@@ -79,7 +63,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 						Data = false
 					};
 				}
-                order.Status = 3;
+                order.Status = 4;
 				_context.Orders.Update(order);
 				await _context.SaveChangesAsync();
 				return new ApiResponse<bool>()
@@ -99,22 +83,33 @@ namespace Kitchen_Appliances_Backend.Repositores
 				};
 			}
 		}
-
+		//Nhân viên hủy đơn hàng khi người dùng boom hàng khi đơn hàng đang ở trạng thái giao hàng(3) --> hủy đơn hàng(0)
+		//Hoặc người dùng thanh toán online thất bại hệ thống sẻ hủy đơn hàng
 		public async Task<ApiResponse<bool>> CancelOrder(int orderId)
         {
             try
             {
                 var order = await _context.Orders.FindAsync(orderId);
-				if(order.Status == 2 || order.Status == 3)
+				if(order.Status == 4) // khi người dùng boom hàng sẻ ta tiến hàng cập nhật đơn hàng Đang giao(3) -> Hủy đơn hàng(0) 
 				{
 					return new ApiResponse<bool>()
 					{
 						Status = 400,
-						Message = "Không thể hủy đơn hàng, do đơn hàng đang được giao hoặc đã hoàn thành",
+						Message = "Không thể hủy đơn hàng, do đơn hàng đã hoàn thành",
 						Data = false
 					};
 				}	
                 order.Status = 0;
+
+				//cập nhật lại số lượng sản phẩm
+				var orderDetails = _context.Orderdetails.Where(x => x.OrderId == order.Id).ToList();
+				for (int i = 0; i < orderDetails.Count; i++)
+				{
+                    Product p = _context.Products.Where(x => x.Id == orderDetails[i].ProductId).FirstOrDefault();
+					p.Quantity += orderDetails[i].Quantity;
+					_context.Products.Update(p);
+				}
+
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync();
 				return new ApiResponse<bool>()
@@ -135,6 +130,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 			}
         }
 
+		//Nhân viên xác nhận đơn hàng Từ trạng thái chờ xác nhận(2) sang trạng thái giao hàng(3)
         public async Task<ApiResponse<bool>> ConfirmOrder(ConfirmOrderRequest request)
         {
             var employee = _context.Employees.Where(x => x.Id == request.EmployeeId).FirstOrDefault();
@@ -190,10 +186,23 @@ namespace Kitchen_Appliances_Backend.Repositores
 			//             p.Quantity -= orderDetails[i].Quantity;
 			//             _context.Products.Update(p);
 			//         }
-			order.Employee = employee; //lưu nhân viên cập nhật các trạng thái của đơn hàng
-            order.Status = 2;// 0: Đã hủy, 1: Chờ xác nhận, 2: Đang giao, 3: Đã nhận hàng
-            _context.Orders.Update(order);
-            _context.SaveChanges();
+			if (order.Status == 1) //Đơn hàng đã thanh toán , chờ nhân viên xác nhận
+			{
+                order.Employee = employee; //lưu nhân viên cập nhật các trạng thái của đơn hàng
+                order.Status = 2;// Trạng thái đang giao hàng
+                _context.Orders.Update(order);
+                _context.SaveChanges();
+            }
+			else // Trạng thái đơn hàng không tương thích
+			{
+                return new ApiResponse<bool>()
+                {
+                    Status = 500,
+                    Message = "Trạng thái đơn hàng lỗi, kiểm tra lại",
+                    Data = false
+                };
+            }
+			
 
             return new ApiResponse<bool>()
             {
@@ -203,50 +212,56 @@ namespace Kitchen_Appliances_Backend.Repositores
             };
 
         }
-
-		public async Task<ApiResponse<bool>> CreateOrder(CreateOrderRequest request)
+		//Tạo đơn hàng khách hàng sẻ tạo đơn hàng, đơn hàng tạo ra ở trạng thái chờ xác nhận(1)
+		public async Task<ApiResponse<int>> CreateOrder(CreateOrderRequest request)
         {
             var cartDetails = _context.CartDetails.Where(x => x.CustomerId == request.CustomerId).ToList();
             if (cartDetails.IsNullOrEmpty())
             {
-                return new ApiResponse<bool>()
+                return new ApiResponse<int>()
                 {
                     Status = 404,
                     Message = "Không tìm thấy cart detail",
-                    Data = false
+                    Data = 0
                 };
             }
-            var employee = await _context.Employees.FindAsync(request.EmployeeId);
-            if (employee == null)
-            {
-				return new ApiResponse<bool>()
-				{
-					Status = 404,
-					Message = "Không tìm thấy employee",
-					Data = false
-				};
-			}
+			// employee chỉ sử dụng để lưu thông tin xác nhận đơn hàng nên hiện tại sẽ để null
+			//var employee = await _context.Employees.FindAsync(request.EmployeeId);
+			//if (employee == null)
+			//{
+			//	return new ApiResponse<bool>()
+			//	{
+			//		Status = 404,
+			//		Message = "Không tìm thấy employee",
+			//		Data = false
+			//	};
+			//}
             var customer = _context.Customers.Where(x => x.Id == request.CustomerId).FirstOrDefault();
 			if(customer == null)
             {
-				return new ApiResponse<bool>()
+				return new ApiResponse<int>()
 				{
 					Status = 404,
 					Message = "Không tìm thấy customer",
-					Data = false
+					Data = 0
 				};
 			}
+			//Thanh toán online
+
+
+
 			var order = new Order
             {
                 CreateAt = DateTime.Now,
                 CustomerId = request.CustomerId,
-                Status = 1,
-				AddressShipping = customer.Address,
+				//Tạo đơn hàng này sẻ có 
+                Status = 1, // Trạng thái chờ thanh toán
                 Customer = customer,
                 //edit
                 PaymentStatus = false,
-                Employee = employee,
-                EmployeeId = employee.Id,
+				AddressShipping = request.AddressShipping
+                //Employee = employee,
+                //EmployeeId = employee.Id,
             };
             _context.Add(order);
             _context.SaveChanges();
@@ -271,13 +286,15 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
             _context.SaveChanges();
 
-            return new ApiResponse<bool>()
+            return new ApiResponse<int>()
             {
                 Status = 200,
                 Message = "Đặt hàng thành công",
-                Data = true
+                Data = newOrder.Id
             };
         }
+
+		//Sau khi đặt hàng xong sẻ trả về trang chọn phương thức thanh toán (Trả tiền khi nhận hàng , Thanh toán Online) ở phần đầu
 
         public async Task<ApiResponse<List<OrderDTO>>> ListOrderByCustomer(int customerId)
         {
@@ -303,31 +320,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             };
         }
 
-        public async Task<ApiResponse<List<OrderDTO>>> ListOrderConfirmed()
-        {
-            try
-            {
-				var orders = _context.Orders.Where(x => x.Status == 2 ).ToList();
-				var orderDtos = _mapper.Map<List<OrderDTO>>(orders);
-
-				return new ApiResponse<List<OrderDTO>>()
-				{
-					Status = 200,
-					Message = "Lấy danh sách Detail Order đã xác nhận đã thành công",
-					Data = orderDtos
-				};
-			}
-            catch(Exception)
-            {
-				return new ApiResponse<List<OrderDTO>>()
-				{
-					Status = 500,
-					Message = "Lấy danh sách Detail Order đã xác nhận thất bại",
-					Data = null
-				};
-			}
-        }
-
+		//Danh sách đơn hàng đã thanh toán chờ xác nhận
         public async Task<ApiResponse<List<OrderDTO>>> ListOrderNotConfirm()
         {
 			try
@@ -431,6 +424,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 			}
 		}
 
+		//Nhân Viên Xóa đơn Hàng khi đã xong
 		public async Task<ApiResponse<bool>> DeleteOrder(int orderId)
 		{
 			try
@@ -459,5 +453,30 @@ namespace Kitchen_Appliances_Backend.Repositores
 				};
 			}
 		}
-	}
+		//Lấy tất cả các Order để nhân viên quản lý
+        public async Task<ApiResponse<List<OrderDTO>>> ListAllOrders()
+        {
+            try
+            {
+                var orders = _context.Orders.ToList();
+                var orderDtos = _mapper.Map<List<OrderDTO>>(orders);
+
+                return new ApiResponse<List<OrderDTO>>()
+                {
+                    Status = 200,
+                    Message = "Lấy danh sách Order thành công",
+                    Data = orderDtos
+                };
+            }
+            catch (Exception)
+            {
+                return new ApiResponse<List<OrderDTO>>()
+                {
+                    Status = 500,
+                    Message = "Lấy danh sách Order thất bại",
+                    Data = null
+                };
+            }
+        }
+    }
 }
