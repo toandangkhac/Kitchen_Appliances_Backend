@@ -4,7 +4,6 @@ using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Bill;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -32,36 +31,44 @@ namespace Kitchen_Appliances_Backend.Repositores
 
 		public async Task<ApiResponse<BillDto>> GetBillInformation(int billId)
 		{
-            
-            var bill = await _context.Bills.FindAsync(billId);
-			if (bill == null)
-			{
-				return new ApiResponse<BillDto>()
-				{
-					Status = 404,
-					Message = "Không tìm hóa đơn",
-					Data = null
-				};
-			}
-            var order = await _context.Orders.FindAsync(bill.OrderId);
-            var customer = await _context.Customers.FindAsync(order.CustomerId);
-            var employee = await _context.Employees.FindAsync(order.EmployeeId);
-            var billDto = new BillDto()
+            try
             {
-                OrderId = billId,
-                PaymentTime = bill.PaymentTime,
-                CustomerId = order.CustomerId,
-                CustomerName = customer.Fullname,
-                EmployeeId = employee.Id,
-                EmployeeName = employee.Fullname,
-                Total = bill.Total,
-            };
-			return new ApiResponse<BillDto>()
-			{
-				Status = 200,
-				Message = "In hóa đơn thành công",
-				Data = billDto
-			};
+                var bill = await _context.Bills.FindAsync(billId);
+                if (bill == null)
+                {
+                    return new ApiResponse<BillDto>()
+                    {
+                        Status = 404,
+                        Message = "Không tìm hóa đơn",
+                        Data = null
+                    };
+                }
+                var order = await _context.Orders.FindAsync(bill.OrderId);
+                var customer = await _context.Customers.FindAsync(order.CustomerId);
+                var billDto = new BillDto()
+                {
+                    OrderId = billId,
+                    PaymentTime = bill.PaymentTime,
+                    CustomerId = order.CustomerId,
+                    CustomerName = customer.Fullname,
+                    Total = bill.Total,
+                };
+                return new ApiResponse<BillDto>()
+                {
+                    Status = 200,
+                    Message = "In hóa đơn thành công",
+                    Data = billDto
+                };
+            }
+            catch (Exception )
+            {
+                return new ApiResponse<BillDto>()
+                {
+                    Status = 500,
+                    Message = "Lỗi khi In hóa đơn",
+                    Data = null
+                };
+            }
 		}
 
 		public async Task<ApiResponse<bool>> savePaymentInfor(int orderId)
@@ -77,12 +84,12 @@ namespace Kitchen_Appliances_Backend.Repositores
                     Data = false
                 };
             }
-            if (order.PaymentStatus == true)
+            if (order.PaymentStatus == false)
             {
                 return new ApiResponse<bool>()
                 {
                     Status = 400,
-                    Message = "Đơn hàng đã được thanh toán",
+                    Message = "Đơn hàng chưa được thanh toán",
                     Data = false
                 };
             }
@@ -111,7 +118,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             {
                 Status = 200,
                 Message = "Lưu thông tin thanh toán thành công",
-                Data = false
+                Data = true
             };
         }
     }
