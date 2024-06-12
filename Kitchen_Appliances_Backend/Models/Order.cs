@@ -12,6 +12,7 @@ public partial class Order
     public int CustomerId { get; set; }
 
     public int Status { get; set; }
+    public string AddressShipping {  get; set; }
 
     public bool PaymentStatus { get; set; }
 

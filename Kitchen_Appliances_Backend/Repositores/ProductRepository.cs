@@ -25,6 +25,7 @@ namespace Kitchen_Appliances_Backend.Repositores
         {
             try
             {
+                Console.WriteLine(request.Name + "|" + request.Quantity + "|" + request.Price + "|" + request.Description + "|" + request.CategoryId);
                 var product = _mapper.Map<Product>(request);
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
@@ -182,25 +183,26 @@ namespace Kitchen_Appliances_Backend.Repositores
                 }
 
                 //check mapper
-                product = _mapper.Map<Product>(request);
+                //Product product = _mapper.Map<Product>(request);
                 if(request.Name != null)
                 {
                     product.Name = request.Name;
                 }    
-                else if(request.Description != null)
+                if(request.Description != null)
                 {
                     product.Description = request.Description;
                 }
-                else if(request.Price != null)
+                if(request.Price != null)
                 {
                     product.Price = request.Price;
                 }
-                else if(request.Quantity != null)
+                if(request.Quantity != null)
                 {
-                    product.Quantity += request.Quantity;
-                }    
+                    product.Quantity = request.Quantity;
+                }
 
                 _context.Products.Update(product);
+                Console.WriteLine(product.Id +"|" + product.Name + "|"+ product.CategoryId);
                 await _context.SaveChangesAsync();
                 return new ApiResponse<bool>()
                 {

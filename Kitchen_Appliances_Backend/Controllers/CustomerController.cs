@@ -44,7 +44,7 @@ namespace Kitchen_Appliances_Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer([FromRoute] int id,[FromForm] UpdateCustomerRequest request)
+        public async Task<IActionResult> UpdateCustomer([FromRoute] int id, UpdateCustomerRequest request)
         {
             return Ok(await _customerRepository.UpdateCustomer(id,request));
         }

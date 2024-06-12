@@ -106,7 +106,7 @@
 							<div class="thumbnail">
 								<a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"><img src=@Model.Images[i].Url alt="" /></a>
 								<div class="caption">
-									@* @{
+									@{
 								string truncatedName = Model.Products[i].Name.Length > 22
 								? Model.Products[i].Name.Substring(0, 22) + "..."
 								: Model.Products[i].Name;
@@ -117,7 +117,7 @@
 								<h5>@truncatedName</h5>
 								<p>
 								@truncatedDes
-								</p> *@
+								</p>
 
 									<h4 style="text-align:center">
 										<a class="btn" asp-controller="Product" asp-action="ProductDetail" asp-route-id="@Model.Products[i].Id"> <i class="icon-zoom-in"></i></a>
@@ -142,7 +142,7 @@
 				var customerId = $(this).data("customerid");
 				if (customerId) {
 					$.ajax({
-						url: '@Url.Action("AddToCart", "Cart")',
+						url: '@Url.Action("AddToCart", "CartDetail")',
 						type: 'POST',
 						data: {
 							ProductId: $(this).data("productid"),

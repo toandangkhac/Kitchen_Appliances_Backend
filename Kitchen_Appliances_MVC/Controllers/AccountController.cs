@@ -2,7 +2,9 @@
 using Kitchen_Appliances_MVC.Options;
 using Kitchen_Appliances_MVC.ViewModels.Account;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
+using Kitchen_Appliances_MVC.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -16,11 +18,17 @@ namespace Kitchen_Appliances_MVC.Controllers
     {
         private readonly IAccountClient _accountClient;
         private readonly IConfiguration _configuration;
-
-        public AccountController(IAccountClient accountClient, IConfiguration configuration)
+        private readonly ICustomerServiceClient _customerServiceClient;
+        private readonly IEmployeeClient _employeeClient;
+        private readonly ICartDetailServiceClient _cartDetailServiceClient;
+        public AccountController(IAccountClient accountClient, IConfiguration configuration, 
+            ICustomerServiceClient customerServiceClient, IEmployeeClient employeeClient, ICartDetailServiceClient cartDetailServiceClient)
         {
             _accountClient = accountClient;
             _configuration = configuration;
+            _customerServiceClient = customerServiceClient;
+            _employeeClient = employeeClient;
+            _cartDetailServiceClient = cartDetailServiceClient;
         }
 
         [HttpGet]
@@ -47,15 +55,40 @@ namespace Kitchen_Appliances_MVC.Controllers
             string username = claims.FindFirstValue("Email");
             string role = claims.FindFirstValue(ClaimTypes.Role);
             string FullName = claims.FindFirstValue("FullName");
-            
+
             HttpContext.Session.SetString("Username", username);
             HttpContext.Session.SetString("Fullname", FullName);
             if (role == "Quản trị viên")
             {
-                return View();
+                var user = await _employeeClient.GetListAll();
+                if(user.Status != 200)
+                {
+                    Console.WriteLine(user.Message);
+                }
+                List<EmployeeDTO> employees = user.Data;
+                int UserId = employees.Where(e => e.Email == username).FirstOrDefault().Id;
+                HttpContext.Session.SetString("IdUser", UserId.ToString());
+				HttpContext.Session.SetString("RoleId", "1");
+				return RedirectToAction("Index", "Admin");
             }  
             else if(role == "Khách hàng")
             {
+                var user = await _customerServiceClient.ListCustomer();
+                if (user.Status != 200)
+                {
+                    Console.WriteLine(user.Message);
+                }
+                List<CustomerDTO> customers = user.Data;
+                int UserId = customers.Where(c => c.Email == username).FirstOrDefault().Id;
+                HttpContext.Session.SetString("IdUser", UserId.ToString());
+                HttpContext.Session.SetString("RoleId", "2");
+                var dataCart = await _cartDetailServiceClient.GetCartDetailByCustomer(UserId);
+                if (dataCart.Status != 200)
+                {
+                    Console.WriteLine(dataCart.Message);
+                }
+                int CartCount = dataCart.Data.Count;
+                HttpContext.Session.SetString("Cartcount", CartCount.ToString());
                 return RedirectToAction("Index", "Home");
             }
             return null;
@@ -82,8 +115,9 @@ namespace Kitchen_Appliances_MVC.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             Response.Cookies.Delete("jwt-token");
-            return View();
+            return RedirectToAction("Index", "Home");
         }
         
         //Get data from token

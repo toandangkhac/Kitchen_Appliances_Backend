@@ -22,12 +22,12 @@ namespace Kitchen_Appliances_Backend.Repositores
             _upload = upload;
         }
 
-        public async Task<ApiResponse<bool>> CreateImage(CreateImageRequest request)
-        {
-            try
+		public async Task<ApiResponse<bool>> CreateImage(CreateImageRequest request)
+		{
+			try
             {
                 var product = await _context.Products.FindAsync(request.ProductId);
-                if(product == null)
+                if (product == null)
                 {
                     return new ApiResponse<bool>()
                     {
@@ -40,12 +40,18 @@ namespace Kitchen_Appliances_Backend.Repositores
                 {
                     ProductId = request.ProductId,
                     Product = product,
+                    Url = request.Url
                 };
-                
-                if(request.Url != null)
+
+                if (request.Url == null)
                 {
-                    image.Url = await _upload.UploadFile(request.Url);
-                }
+					return new ApiResponse<bool>()
+					{
+						Status = 501,
+						Message = "Url không thể tìm thấy",
+						Data = false
+					};
+				}
 
                 _context.Images.Add(image);
                 _context.SaveChanges();
@@ -68,7 +74,53 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
         }
 
-        public async Task<ApiResponse<bool>> DeleteImage(int id)
+		//public async Task<ApiResponse<bool>> CreateImage(CreateImageRequest request)
+		//{
+		//    try
+		//    {
+		//        var product = await _context.Products.FindAsync(request.ProductId);
+		//        if(product == null)
+		//        {
+		//            return new ApiResponse<bool>()
+		//            {
+		//                Status = 404,
+		//                Message = "Không tìm thấy product",
+		//                Data = false
+		//            };
+		//        }
+		//        var image = new Image()
+		//        {
+		//            ProductId = request.ProductId,
+		//            Product = product,
+		//        };
+
+			//        if(request.Url != null)
+			//        {
+			//            image.Url = await _upload.UploadFile(request.Url);
+			//        }
+
+			//        _context.Images.Add(image);
+			//        _context.SaveChanges();
+
+			//        return new ApiResponse<bool>()
+			//        {
+			//            Status = 200,
+			//            Message = "Thêm product image thành công",
+			//            Data = true
+			//        };
+			//    }
+			//    catch (Exception)
+			//    {
+			//        return new ApiResponse<bool>()
+			//        {
+			//            Status = 400,
+			//            Message = "Thêm product image thất bại",
+			//            Data = false
+			//        };
+			//    }
+			//}
+
+		public async Task<ApiResponse<bool>> DeleteImage(int id)
         {
             try
             {

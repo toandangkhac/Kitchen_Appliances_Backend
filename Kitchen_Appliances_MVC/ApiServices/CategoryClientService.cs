@@ -2,6 +2,7 @@
 using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.ViewModels.Category;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
 
 namespace Kitchen_Appliances_MVC.ApiServices
@@ -39,7 +40,7 @@ namespace Kitchen_Appliances_MVC.ApiServices
 			return result;
 		}
 
-		public async Task<APIResponse<bool>> DeleteCategory(int id)
+        public async Task<APIResponse<bool>> DeleteCategory(int id)
 		{
 			HttpResponseMessage response = await _httpClient.DeleteAsync(BaseUrl + $"/{id}");
 			APIResponse<bool> result = await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
