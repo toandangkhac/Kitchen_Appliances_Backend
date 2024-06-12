@@ -1,6 +1,9 @@
 ﻿using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.Options;
+using Kitchen_Appliances_MVC.ViewModelData.Customer;
+using Kitchen_Appliances_MVC.ViewModelData.Header;
 using Kitchen_Appliances_MVC.ViewModels.Account;
+using Kitchen_Appliances_MVC.ViewModels.Category;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
 using Kitchen_Appliances_MVC.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +24,16 @@ namespace Kitchen_Appliances_MVC.Controllers
         private readonly ICustomerServiceClient _customerServiceClient;
         private readonly IEmployeeClient _employeeClient;
         private readonly ICartDetailServiceClient _cartDetailServiceClient;
+        private readonly ICategoryServiceClient _categoryServiceClient;
         public AccountController(IAccountClient accountClient, IConfiguration configuration, 
-            ICustomerServiceClient customerServiceClient, IEmployeeClient employeeClient, ICartDetailServiceClient cartDetailServiceClient)
+            ICustomerServiceClient customerServiceClient, IEmployeeClient employeeClient, ICartDetailServiceClient cartDetailServiceClient, ICategoryServiceClient categoryServiceClient)
         {
             _accountClient = accountClient;
             _configuration = configuration;
             _customerServiceClient = customerServiceClient;
             _employeeClient = employeeClient;
             _cartDetailServiceClient = cartDetailServiceClient;
+            _categoryServiceClient = categoryServiceClient;
         }
 
         [HttpGet]
@@ -212,6 +217,53 @@ namespace Kitchen_Appliances_MVC.Controllers
             
             return View();
         }
-
-    }
+		public async Task<ActionResult> ChangeInfo(String id)
+		{
+			int IdUser = int.Parse(id);
+			var dataCategories = await _categoryServiceClient.GetAllCategories();
+			if (dataCategories.Status != 200)
+			{
+				Console.WriteLine(dataCategories.Message);
+			}
+			List<CategoryDTO> categories = dataCategories.Data;
+			var dataCustomer = await _customerServiceClient.GetCustomerById(IdUser);
+			if (dataCustomer.Status != 200)
+			{
+				Console.WriteLine(dataCustomer.Message);
+			}
+			CustomerDTO customer = dataCustomer.Data;
+			var headerViewModel = new HeaderViewModel()
+			{
+				Categories = categories
+			};
+			ViewBag.HeaderData = headerViewModel;
+			ChangeInfoViewModel Model = new ChangeInfoViewModel()
+			{
+				Categories = categories,
+				Customer = customer
+			};
+			return View(Model);
+		}
+		[HttpPost]
+		public async Task<ActionResult> CompleteChange(string Id, string Fullname, string PhoneNumber, string Address)
+		{
+			int IdCustomer = int.Parse(Id);
+			Console.WriteLine(IdCustomer);
+			UpdateCustomerRequest request = new UpdateCustomerRequest()
+			{
+				Fullname = Fullname,
+				PhoneNumber = PhoneNumber,
+				Address = Address
+			};
+            var checkUpdate = await _customerServiceClient.UpdateCustomer(IdCustomer, request);
+			if (checkUpdate.Status != 200)
+			{
+				Console.WriteLine(checkUpdate.Message);
+			}
+			return Json(new
+			{
+				IdCustomer
+			});
+		}
+	}
 }
