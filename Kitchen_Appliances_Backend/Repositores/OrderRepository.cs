@@ -186,10 +186,10 @@ namespace Kitchen_Appliances_Backend.Repositores
 			//             p.Quantity -= orderDetails[i].Quantity;
 			//             _context.Products.Update(p);
 			//         }
-			if (order.Status == 2) //Đơn hàng đã thanh toán , chờ nhân viên xác nhận
+			if (order.Status == 1) //Đơn hàng đã thanh toán , chờ nhân viên xác nhận
 			{
                 order.Employee = employee; //lưu nhân viên cập nhật các trạng thái của đơn hàng
-                order.Status = 3;// Trạng thái đang giao hàng
+                order.Status = 2;// Trạng thái đang giao hàng
                 _context.Orders.Update(order);
                 _context.SaveChanges();
             }
@@ -213,16 +213,16 @@ namespace Kitchen_Appliances_Backend.Repositores
 
         }
 		//Tạo đơn hàng khách hàng sẻ tạo đơn hàng, đơn hàng tạo ra ở trạng thái chờ xác nhận(1)
-		public async Task<ApiResponse<bool>> CreateOrder(CreateOrderRequest request)
+		public async Task<ApiResponse<int>> CreateOrder(CreateOrderRequest request)
         {
             var cartDetails = _context.CartDetails.Where(x => x.CustomerId == request.CustomerId).ToList();
             if (cartDetails.IsNullOrEmpty())
             {
-                return new ApiResponse<bool>()
+                return new ApiResponse<int>()
                 {
                     Status = 404,
                     Message = "Không tìm thấy cart detail",
-                    Data = false
+                    Data = 0
                 };
             }
 			// employee chỉ sử dụng để lưu thông tin xác nhận đơn hàng nên hiện tại sẽ để null
@@ -239,11 +239,11 @@ namespace Kitchen_Appliances_Backend.Repositores
             var customer = _context.Customers.Where(x => x.Id == request.CustomerId).FirstOrDefault();
 			if(customer == null)
             {
-				return new ApiResponse<bool>()
+				return new ApiResponse<int>()
 				{
 					Status = 404,
 					Message = "Không tìm thấy customer",
-					Data = false
+					Data = 0
 				};
 			}
 			//Thanh toán online
@@ -286,11 +286,11 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
             _context.SaveChanges();
 
-            return new ApiResponse<bool>()
+            return new ApiResponse<int>()
             {
                 Status = 200,
                 Message = "Đặt hàng thành công",
-                Data = true
+                Data = newOrder.Id
             };
         }
 
@@ -325,7 +325,7 @@ namespace Kitchen_Appliances_Backend.Repositores
         {
 			try
 			{
-				var orders = _context.Orders.Where(x => x.Status == 2).ToList();
+				var orders = _context.Orders.Where(x => x.Status == 1).ToList();
 				var orderDtos = _mapper.Map<List<OrderDTO>>(orders);
 
 				return new ApiResponse<List<OrderDTO>>()

@@ -50,19 +50,19 @@ namespace Kitchen_Appliances_Backend.Controllers
 			return Ok(res);
 		}
 
-  //      [HttpGet("list-order-confirm")]
-  //      public async Task<IActionResult> ListOrderConfirmed()
-  //      {
-  //          var res = await _orderRepository.ListOrderConfirmed();
-  //          return Ok(res);
-  //      }
+        //      [HttpGet("list-order-confirm")]
+        //      public async Task<IActionResult> ListOrderConfirmed()
+        //      {
+        //          var res = await _orderRepository.ListOrderConfirmed();
+        //          return Ok(res);
+        //      }
 
-		//[HttpGet("list-order-not-confirm")]
-		//public async Task<IActionResult> ListOrderNotConfirm()
-		//{
-		//	var res = await _orderRepository.ListOrderNotConfirm();
-		//	return Ok(res);
-		//}
+        [HttpGet("list-order-not-confirm")]
+        public async Task<IActionResult> ListOrderNotConfirm()
+        {
+            var res = await _orderRepository.ListOrderNotConfirm();
+            return Ok(res);
+        }
 
         [HttpGet("list-all-order")]
         public async Task<IActionResult> ListAllOrders()

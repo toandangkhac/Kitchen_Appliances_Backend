@@ -24,10 +24,11 @@ namespace Kitchen_Appliances_MVC.Controllers
 		private readonly ICategoryServiceClient _categoryServiceClient;
 		private readonly IEmployeeClient _employeeClient;
 		private readonly IImageServiceClient _imageServiceClient;
+		private readonly IVNPayClientService _vNPayClientService;
 		public OrderController(ICartDetailServiceClient cartDetailServiceClient, IOrderServiceClient orderServiceClient
 			, IOrderDetailServiceClient orderDetailServiceClient, IProductServiceClient productServiceClient
 			, ICustomerServiceClient customerServiceClient, ICategoryServiceClient categoryServiceClient
-			, IEmployeeClient employeeClient, IImageServiceClient imageServiceClient)
+			, IEmployeeClient employeeClient, IImageServiceClient imageServiceClient, IVNPayClientService vNPayClientService)
 		{
 			_cartDetailServiceClient = cartDetailServiceClient;
 			_orderServiceClient = orderServiceClient;
@@ -37,6 +38,7 @@ namespace Kitchen_Appliances_MVC.Controllers
 			_categoryServiceClient = categoryServiceClient;
 			_employeeClient = employeeClient;
 			_imageServiceClient = imageServiceClient;
+			_vNPayClientService = vNPayClientService;
 		}
 
 
@@ -170,6 +172,55 @@ namespace Kitchen_Appliances_MVC.Controllers
 				Images = images
 			};
 			return View(Model);
+		}
+		public async Task<IActionResult> CompleteOrder(int id, int option)// customerId , option
+		{
+			Console.WriteLine(option+"  "+id);
+			var dataCusstomer = await _customerServiceClient.GetCustomerById(id);
+			if(dataCusstomer.Status != 200)
+			{
+				Console.WriteLine(dataCusstomer.Message);
+			}
+			CustomerDTO customer = dataCusstomer.Data;
+			if (customer==null)
+			{
+				return RedirectToAction("Index", "CartDetail", new { id = id.ToString() });
+			}
+			var request = new CreateOrderRequest()
+			{
+				CustomerId = id,
+				AddressShipping = customer.Address
+			};
+			if (option == 1)
+			{
+				var checkCreate = await _orderServiceClient.CreateOrder(request);
+				if (checkCreate.Status != 200)
+				{
+					Console.WriteLine(checkCreate.Message);
+				}
+			}
+			else
+			{
+				var checkCreate = await _orderServiceClient.CreateOrder(request);
+				if (checkCreate.Status != 200)
+				{
+					Console.WriteLine(checkCreate.Message);
+				}
+				int orderId = checkCreate.Data;
+				var dataPayment = await _vNPayClientService.CreatePaymentUrl(orderId);
+				if (dataPayment.Status != 200)
+				{
+					ViewBag.error = dataPayment.Message;
+					return View("PaymentErrorView");
+				}
+				else
+				{
+					HttpContext.Session.SetString("Cartcount", "0");
+					return Redirect(dataPayment.Data);
+				}
+			}
+			HttpContext.Session.SetString("Cartcount", "0");
+			return RedirectToAction("Index", "CartDetail", new { id = id.ToString() });
 		}
 	}
 }

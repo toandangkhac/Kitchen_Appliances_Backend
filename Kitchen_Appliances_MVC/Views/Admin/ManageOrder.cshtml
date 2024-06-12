@@ -5,8 +5,8 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
 	ViewData["Title"] = "Manage Order";
-	string Ir = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
-	int IdUser = int.Parse(Ir);
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+	//int IdUser = int.Parse(Ir);
 }
 @section Header {
 	@Html.Partial("SideBar")
@@ -109,20 +109,26 @@
 												}
 											}
 											<td>@Model.Orders[i].AddressShipping</td>
-											@if(Model.Orders[i].Status == 0)
+											@switch (Model.OrdersConfirm[i].Status)
 											{
-												<td style="color:forestgreen;">Chưa xác nhận</td>
-											}
-											else if(Model.Orders[i].Status == 1)
-											{
-												<td style="color:orange;">Đã hoàn thành</td>
-											}
-											else
-											{
-												<td style="color:red;">Đã hủy</td>
+												case 0:
+													<td style="color:red;">Đã hủy</td>
+													break;
+												case 1:
+													<td style="color:orange;">Đang chờ xác nhận</td>
+													break;
+												case 2:
+													<td style="color:forestgreen;">Đang giao</td>
+													break;
+												case 3:
+													<td style="color:forestgreen;">Đã nhận</td>
+													break;
+												default:
+													<td style="color:red;">Đã hủy</td>
+													break;
 											}
 											@{
-												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).First();
+												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).FirstOrDefault();
 											}
 											@if (employee1 != null)
 											{
@@ -180,20 +186,26 @@
 												}
 											}
 											<td>@Model.OrdersConfirm[i].AddressShipping</td>
-											@if (Model.OrdersConfirm[i].Status == 0)
+											@switch (Model.OrdersConfirm[i].Status)
 											{
-												<td style="color:forestgreen;">Chưa xác nhận</td>
-											}
-											else if (Model.OrdersConfirm[i].Status == 1)
-											{
-												<td style="color:orange;">Đã hoàn thành</td>
-											}
-											else
-											{
-												<td style="color:red;">Đã hủy</td>
-											}
+												case 0:
+													<td style="color:red;">Đã hủy</td>
+													break;
+												case 1:
+													<td style="color:orange;">Đang chờ xác nhận</td>
+													break;
+												case 2:
+													<td style="color:forestgreen;">Đang giao</td>
+													break;
+												case 3:
+													<td style="color:forestgreen;">Đã nhận</td>
+													break;
+												default:
+													<td style="color:red;">Đã hủy</td>
+													break;
+											}											
 											@{
-												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).First();
+												EmployeeDTO employee1 = Model.Employees.Where(e => e.Id == Model.OrdersConfirm[i].EmployeeId).FirstOrDefault();
 											}									
 												@if (employee1!=null)
 												{
@@ -203,7 +215,7 @@
 												{
 													<td>Chưa xác  nhận</td>
 												}
-											<td><a asp-action="OrderDetail" asp-controller="Order" asp-route-id="@Model.OrdersConfirm[i].Id.ToString()" asp-route-idcustomer="@Model.Orders[i].CustomerId.ToString()">Chi tiết</a></td>
+											<td><a asp-action="OrderDetail" asp-controller="Order" asp-route-id="@Model.OrdersConfirm[i].Id.ToString()" asp-route-idcustomer="@Model.OrdersConfirm[i].CustomerId.ToString()">Chi tiết</a></td>
 											@* @if (Model.Orders[i].Status == 1)
 											{
 												<td>

@@ -24,7 +24,7 @@ builder.Services.AddScoped<IRoleServiceClient, RoleServiceClient>();
 builder.Services.AddScoped<IBillServiceClient, BillServiceClient>();
 builder.Services.AddScoped<IOrderServiceClient, OrderServiceClient>();
 builder.Services.AddScoped<IOrderDetailServiceClient, OrderDetailServiceClient>();
-//builder.Services.AddScoped<IVNPayClientService, VNPayServiceClient>();
+builder.Services.AddScoped<IVNPayClientService, VNPayServiceClient>();
 
 builder.Services.AddSession(options =>
 {
