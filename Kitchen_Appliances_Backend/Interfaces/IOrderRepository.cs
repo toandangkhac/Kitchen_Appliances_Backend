@@ -15,7 +15,7 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<List<OrderDTO>>> ListAllOrders();
 
         //Tạo order lấy tất cả CartDetail của Customer Tạo đơn hàng {trạng thái chờ thanh toán(1) }
-        Task<ApiResponse<bool>> CreateOrder(CreateOrderRequest request);
+        Task<ApiResponse<int>> CreateOrder(CreateOrderRequest request);
 
         //Xác nhận đơn hành tưf trạng thái chờ xác nhận(2) -> đang giao(3)
         Task<ApiResponse<bool>> ConfirmOrder(ConfirmOrderRequest request);
