@@ -9,8 +9,9 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<ImageDTO>> GetImageById(int id);
 
         Task<ApiResponse<bool>> CreateImage(CreateImageRequest request);
+		//Task<ApiResponse<bool>> CreateImage(ImageDTO request);
 
-        Task<ApiResponse<bool>> UpdateImage(int id, UpdateImageRequest request);
+		Task<ApiResponse<bool>> UpdateImage(int id, UpdateImageRequest request);
         
         Task<ApiResponse<bool>> SetImageDefault(int id);
 

@@ -83,9 +83,11 @@
 						<tr>
 							<th>ID</th>
 							<th>Create At</th>
+							<th>Address</th>
 							<th>Status</th>
 							<th>Price State</th>
-							@* <th>Employee</th> *@
+							<th>Employee</th>
+							<th>Confirmation</th>
 							<th> Order Info</th>
 						</tr>
 					</thead>
@@ -95,13 +97,24 @@
 							<tr>
 								<td> <strong> @o.Id </strong> </td>
 								<td> @o.CreateAt </td>
-								@if (o.Status == 9)
+								<td>@o.AddressShipping</td>
+								@switch (o.Status)
 								{
-									<td>Chưa xác nhận</td>
-								}
-								else
-								{
-									<td>Đã xác nhận</td>
+									case 0:
+										<td>Đã hủy đơn</td>
+										break;
+									case 1:
+										<td>Đang chờ thanh toán</td>
+										break;
+									case 2:
+										<td>Đang giao</td>
+										break;
+									case 3:
+										<td>Đã nhận hàng đơn</td>
+										break;
+									default:
+										<td>Chưa thể truy cập</td>
+										break;
 								}
 								@if (o.PaymentStatus == true)
 								{
@@ -111,14 +124,36 @@
 								{
 									<td>Chưa thanh toán</td>
 								}
-								@* @if (o.EmployeeId == null)
+								@if (o.EmployeeId == null)
 								{
 									<td>Chưa xác thực</td>
 								}
 								else
 								{
 									<td>@Model.Employees.Where(e => e.Id == o.EmployeeId).FirstOrDefault().Fullname</td>
-								} *@
+								}
+								@switch (o.Status)
+								{
+									case 0:
+										<td>Không thể tương tác</td>
+										break;
+									case 1:
+										<td class="label label-important btn-info">
+											<a asp-controller="Order" asp-action="ChangeOrder" class="ajax-change" asp-route-id="@o.Id" asp-route-status="@o.Status" asp-route-userid="@IdUser"><strong> Cancle </strong></a>
+										</td>
+										break;
+									case 2:
+										<td class="label label-important btn-info">
+											<a asp-controller="Order" asp-action="ChangeOrder" class="ajax-change" asp-route-id="@o.Id" asp-route-status="@o.Status" asp-route-userid="@IdUser"><strong> Confirm </strong></a>
+										</td>
+										break;
+									case 3:
+										<td>Không thể tương tác</td>
+										break;
+									default:
+										<td>Chưa thể truy cập</td>
+										break;
+								}
 								<td class="label label-important btn-info">
 									<a asp-controller="Order" asp-action="OrderDetail" asp-route-id="@o.Id" asp-route-idcustomer="@IdUser"><strong> View </strong></a>
 								</td>
