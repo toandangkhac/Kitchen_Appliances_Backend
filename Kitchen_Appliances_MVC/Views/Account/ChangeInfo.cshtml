@@ -47,32 +47,32 @@
 					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
 					<li class="active"> CHANGE YOUR INFO</li>
 				</ul>
-				<h3 style="text-align:center;"> CHANGE MY INFORMATION</h3>
+				<h3 style="text-align:center;">MY INFORMATION</h3>
 				<div class="well">
 					<form class="form-horizontal" >
 						<h4>Your personal information</h4>
 						<div class="control-group">
 							<label class="control-label" for="inputFname">Full name <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="inputFname" placeholder="Full Name" value=@Model.Customer.Fullname>
+								<input type="text" id="inputFname" placeholder="Full Name" value="@Model.Customer.Fullname">
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label" for="inputNumP">Phone Number <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="inputNumP" placeholder="Phone Number" value=@Model.Customer.PhoneNumber>
+								<input type="text" id="inputNumP" placeholder="Phone Number" value="@Model.Customer.PhoneNumber">
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label" for="input_email">Email <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email>
+								<input type="text" id="input_email" placeholder="Email" value="@Model.Customer.Email" readonly>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label" for="input_addr">Address <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="input_addr" placeholder="Address" value=@Model.Customer.Address>
+								<input type="text" id="input_addr" placeholder="Address" value="@Model.Customer.Address">
 							</div>
 						</div>
 						<div class="control-group">
