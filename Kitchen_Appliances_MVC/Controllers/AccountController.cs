@@ -246,17 +246,20 @@ namespace Kitchen_Appliances_MVC.Controllers
 			return View(Model);
 		}
 		[HttpPost]
-		public async Task<ActionResult> CompleteChange(string Id, string Fullname, string PhoneNumber, string Address)
+		public async Task<ActionResult> CompleteChange([FromBody] CompleteChangeRequest request)
 		{
-			int IdCustomer = int.Parse(Id);
+			int IdCustomer = int.Parse(request.Id);
 			Console.WriteLine(IdCustomer);
-			UpdateCustomerRequest request = new UpdateCustomerRequest()
+			Console.WriteLine(request.Fullname);
+			Console.WriteLine(request.PhoneNumber);
+			Console.WriteLine(request.Address);
+			UpdateCustomerRequest requestU = new UpdateCustomerRequest()
 			{
-				Fullname = Fullname,
-				PhoneNumber = PhoneNumber,
-				Address = Address
+				Fullname = request.Fullname,
+				PhoneNumber = request.PhoneNumber,
+				Address = request.Address
 			};
-            var checkUpdate = await _customerServiceClient.UpdateCustomer(IdCustomer, request);
+            var checkUpdate = await _customerServiceClient.UpdateCustomer(IdCustomer, requestU);
 			if (checkUpdate.Status != 200)
 			{
 				Console.WriteLine(checkUpdate.Message);

@@ -49,7 +49,7 @@
 				</ul>
 				<h3 style="text-align:center;"> CHANGE MY INFORMATION</h3>
 				<div class="well">
-					<form class="form-horizontal" method="post" asp-action="CompleteChange" asp-controller="Account">
+					<form class="form-horizontal" >
 						<h4>Your personal information</h4>
 						<div class="control-group">
 							<label class="control-label" for="inputFname">Full name <sup>*</sup></label>
@@ -66,7 +66,7 @@
 						<div class="control-group">
 							<label class="control-label" for="input_email">Email <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email readonly>
+								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email>
 							</div>
 						</div>
 						<div class="control-group">
@@ -87,8 +87,8 @@
 		</div>
 	</div>
 </div>
-		@section Scripts {
-			<script>
+@section Scripts {
+	<script>
 				document.getElementById('submitBtn').addEventListener('click', function (event) {
 					var fullname = document.getElementById('inputFname').value;
 					var phoneNumber = document.getElementById('inputNumP').value;
