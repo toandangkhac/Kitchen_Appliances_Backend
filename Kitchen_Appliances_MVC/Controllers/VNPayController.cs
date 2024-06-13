@@ -57,5 +57,9 @@ namespace Kitchen_Appliances_MVC.Controllers
             }
             return View();
         }
+        public IActionResult ThanhToanThanhCong()
+        {
+            return View();
+        }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Kitchen_Appliances_Backend.DependencyInjection.Options;
 using Microsoft.Extensions.Configuration;
-using Kitchen_Appliances_Backend.PaymentService;
+using Kitchen_Appliances_Backend.PaymentService.VnPay;
 
 namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
 {

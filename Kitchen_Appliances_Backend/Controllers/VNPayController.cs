@@ -2,7 +2,7 @@
 using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.Interfaces;
-using Kitchen_Appliances_Backend.PaymentService;
+using Kitchen_Appliances_Backend.PaymentService.VnPay;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers
@@ -87,12 +87,12 @@ namespace Kitchen_Appliances_Backend.Controllers
                 if (response == null || response.VnPayResponseCode != "00")
                 {
                     //roll back order , rollback số lượng sản phẩm
-                    return Ok(new ApiResponse<VnPaymentResponseModel>()
-                    {
-                        Status = 500,
-                        Message = "Thanh toán bị lỗi",
-                        Data = null
-                    });
+                    //return Ok(new ApiResponse<VnPaymentResponseModel>()
+                    //{
+                    //    Status = 500,
+                    //    Message = "Thanh toán bị lỗi",
+                    //    Data = null
+                    //});
                 }
                 else
                 {
@@ -109,12 +109,13 @@ namespace Kitchen_Appliances_Backend.Controllers
                     _context.Orders.Update(order);
                     _context.SaveChanges();
                 }
-                return Ok(new ApiResponse<VnPaymentResponseModel>()
-                {
-                    Status = 200,
-                    Message = "Thanh toán thành công",
-                    Data = response
-                });
+                //return Ok(new ApiResponse<VnPaymentResponseModel>()
+                //{
+                //    Status = 200,
+                //    Message = "Thanh toán thành công",
+                //    Data = response
+                //});
+                return Redirect("https://localhost:7260/VNPay/ThanhToanThanhCong");
             }
             catch(Exception )
             {

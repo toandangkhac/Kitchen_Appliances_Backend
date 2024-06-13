@@ -1,4 +1,4 @@
-﻿namespace Kitchen_Appliances_Backend.PaymentService
+﻿namespace Kitchen_Appliances_Backend.PaymentService.VnPay
 {
     public interface IVnPayService
     {

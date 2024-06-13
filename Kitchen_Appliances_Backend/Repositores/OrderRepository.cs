@@ -4,7 +4,7 @@ using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.DTO.Order;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
-using Kitchen_Appliances_Backend.PaymentService;
+using Kitchen_Appliances_Backend.PaymentService.VnPay;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 

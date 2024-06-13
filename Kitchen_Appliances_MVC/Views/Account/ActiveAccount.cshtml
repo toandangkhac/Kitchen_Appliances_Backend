@@ -130,6 +130,15 @@
                                     <p class="text-danger">@ViewBag.error</p>
                                     <div class="form-group">
                                         <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="text-center">
+                                                    <a href="@Url.Action("ResendOTP", "Account")" class="forgot-password">Gửi lại mã xác nhận</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
                                             <div class="col-sm-6 col-sm-offset-3">
                                                 <input type="submit" name="login-submit" id="login-submit" class="form-control btn btn-login" value="Submit">
                                             </div>
