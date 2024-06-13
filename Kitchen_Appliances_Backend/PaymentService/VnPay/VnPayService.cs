@@ -1,9 +1,8 @@
-﻿
-using Kitchen_Appliances_Backend.DependencyInjection.Options;
+﻿using Kitchen_Appliances_Backend.DependencyInjection.Options;
 using Kitchen_Appliances_Backend.Helper;
 using Org.BouncyCastle.Asn1.X9;
 
-namespace Kitchen_Appliances_Backend.PaymentService
+namespace Kitchen_Appliances_Backend.PaymentService.VnPay
 {
     public class VnPayService : IVnPayService
     {
@@ -40,9 +39,9 @@ namespace Kitchen_Appliances_Backend.PaymentService
         public VnPaymentResponseModel PaymentExecute(IQueryCollection collection)
         {
             var vnPay = new VnPayLibrary();
-            foreach(var (key, value) in collection)
+            foreach (var (key, value) in collection)
             {
-                if(!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
                 {
                     vnPay.AddResponseData(key, value.ToString());
                 }
@@ -55,8 +54,8 @@ namespace Kitchen_Appliances_Backend.PaymentService
             var vnp_orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
 
             var checkSignature =
-                vnPay.ValidateSignature(vnp_SecureHash, _configuration["VNPayOptions:HashSecret"]); 
-            if(!checkSignature)
+                vnPay.ValidateSignature(vnp_SecureHash, _configuration["VNPayOptions:HashSecret"]);
+            if (!checkSignature)
             {
                 return new VnPaymentResponseModel()
                 {

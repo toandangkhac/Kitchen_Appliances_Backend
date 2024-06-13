@@ -47,9 +47,9 @@
 					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
 					<li class="active"> CHANGE YOUR INFO</li>
 				</ul>
-				<h3> Registration</h3>
+				<h3 style="text-align:center;"> CHANGE MY INFORMATION</h3>
 				<div class="well">
-					<form class="form-horizontal" >
+					<form class="form-horizontal" method="post" asp-action="CompleteChange" asp-controller="Account">
 						<h4>Your personal information</h4>
 						<div class="control-group">
 							<label class="control-label" for="inputFname">Full name <sup>*</sup></label>
@@ -66,7 +66,7 @@
 						<div class="control-group">
 							<label class="control-label" for="input_email">Email <sup>*</sup></label>
 							<div class="controls">
-								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email>
+								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email readonly>
 							</div>
 						</div>
 						<div class="control-group">
@@ -87,14 +87,16 @@
 		</div>
 	</div>
 </div>
-@section Scripts {
-	<script>
+		@section Scripts {
+			<script>
 				document.getElementById('submitBtn').addEventListener('click', function (event) {
 					var fullname = document.getElementById('inputFname').value;
 					var phoneNumber = document.getElementById('inputNumP').value;
 					var address = document.getElementById('input_addr').value;
 					var id = '@IdUser';
 					console.log(id); // In ra console để kiểm tra
+					console.log(fullname);
+
 					if (!fullname || !phoneNumber || !address) {
 						Swal.fire({
 							icon: 'error',
@@ -105,7 +107,7 @@
 						return;
 					}
 
-					// Dữ liệu hợp lệ, gửi thông tin tới Account/CompleteChange
+					// Dữ liệu hợp lệ, gửi thông tin tới /Account/CompleteChange
 					var data = {
 						Id: id,
 						Fullname: fullname,
@@ -120,7 +122,12 @@
 						},
 						body: JSON.stringify(data)
 					})
-						.then(response => response.json())
+						.then(response => {
+							if (!response.ok) {
+								throw new Error('Network response was not ok');
+							}
+							return response.json();
+						})
 						.then(data => {
 							Swal.fire({
 								position: 'center',
@@ -129,7 +136,6 @@
 								showConfirmButton: false,
 								timer: 1500
 							}).then(() => {
-								// Reload lại trang hoặc chuyển hướng sau khi thành công
 								location.reload();
 							});
 						})
@@ -142,5 +148,5 @@
 							});
 						});
 				});
-	</script>
-}
+			</script>
+		}

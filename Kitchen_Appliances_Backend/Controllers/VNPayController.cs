@@ -2,7 +2,7 @@
 using Kitchen_Appliances_Backend.Commons.Responses;
 using Kitchen_Appliances_Backend.Data;
 using Kitchen_Appliances_Backend.Interfaces;
-using Kitchen_Appliances_Backend.PaymentService;
+using Kitchen_Appliances_Backend.PaymentService.VnPay;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kitchen_Appliances_Backend.Controllers

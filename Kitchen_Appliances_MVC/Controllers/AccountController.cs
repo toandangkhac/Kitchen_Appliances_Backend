@@ -217,16 +217,17 @@ namespace Kitchen_Appliances_MVC.Controllers
             
             return View();
         }
-		public async Task<ActionResult> ChangeInfo(String id)
+		public async Task<ActionResult> ChangeInfo()
 		{
-			int IdUser = int.Parse(id);
+			string IdUser = HttpContext.Session.GetString("IdUser");
+
 			var dataCategories = await _categoryServiceClient.GetAllCategories();
 			if (dataCategories.Status != 200)
 			{
 				Console.WriteLine(dataCategories.Message);
 			}
 			List<CategoryDTO> categories = dataCategories.Data;
-			var dataCustomer = await _customerServiceClient.GetCustomerById(IdUser);
+			var dataCustomer = await _customerServiceClient.GetCustomerById(int.Parse(IdUser));
 			if (dataCustomer.Status != 200)
 			{
 				Console.WriteLine(dataCustomer.Message);
@@ -265,7 +266,7 @@ namespace Kitchen_Appliances_MVC.Controllers
 				IdCustomer
 			});
 		}
-	}
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -275,24 +276,25 @@ namespace Kitchen_Appliances_MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(CreateCustomerRequest request)
         {
+
             if (!ModelState.IsValid)
             {
                 ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
                 return View();
             }
             var checkEmail = await _accountClient.findAccount(request.Email);
-            if(checkEmail.Status == 200)
+            if (checkEmail.Status == 200)
             {
                 ViewBag.error = "Đã tồn tại tài khoản này";
                 return View();
             }
-            
+
             var response = await _customerServiceClient.CreateCustomer(request);
-            if(response.Status != 200)
+            if (response.Status != 200)
             {
                 ViewBag.error = response.Message;
                 return View();
-            } 
+            }
             //hướng tới trang active tài khoản 
             return RedirectToAction("ActiveAccount", "Account");
         }
@@ -306,23 +308,30 @@ namespace Kitchen_Appliances_MVC.Controllers
         public async Task<IActionResult> ActiveAccount(ActiveAccountRequest request)
         {
             var response = await _accountClient.ActiveAccount(request);
-            if(response.Status != 200)
+            if (response.Status != 200)
             {
                 ViewBag.error = response.Message;
             }
             return RedirectToAction("Login", "Account");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ResendOTP()
-        {
-            return View();
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ResendOTP(string email)
+        //{
+        //    var request = new ResendOTPRequest()
+        //    {
+        //        Email = email,
+        //        Type = "REGISTER_OTP"
+        //    };
+        //    var response = await _accountClient.ResendOTP(request);
+        //    if (response.Status != 200)
+        //    return RedirectToAction("ActiveAccount", "Account");
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> ResendOTP(ResendOTPRequest resend)
-        {
-            return View();
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ResendOTP(ResendOTPRequest resend)
+        //{
+        //    return View();
+        //}
     }
 }
