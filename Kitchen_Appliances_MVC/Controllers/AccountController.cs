@@ -27,6 +27,8 @@ namespace Kitchen_Appliances_MVC.Controllers
             _accountClient = accountClient;
             _configuration = configuration;
             _customerServiceClient = customerServiceClient;
+            _employeeClient = employeeClient;
+            _cartDetailServiceClient = cartDetailServiceClient;
         }
 
         [HttpGet]

@@ -40,7 +40,7 @@ namespace Kitchen_Appliances_Backend.Repositores
                     Password = request.Password,
                     Role = roleEmployee,
                     RoleId = roleEmployee.Id,
-                    Status = false
+                    Status = true
                 };
 
                
