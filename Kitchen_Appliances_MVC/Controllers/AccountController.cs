@@ -121,7 +121,7 @@ namespace Kitchen_Appliances_MVC.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            Response.Cookies.Delete("jwt-token");
+
             return RedirectToAction("Index", "Home");
         }
         
@@ -193,7 +193,7 @@ namespace Kitchen_Appliances_MVC.Controllers
                 ViewBag.error = resetPassword.Message;
                 return View();
             }
-            return View();
+            return RedirectToAction("Login", "Account");
         }
 
         // muốn change password phải đăng nhập login trước , phải xử lý đăng nhập 
@@ -266,4 +266,63 @@ namespace Kitchen_Appliances_MVC.Controllers
 			});
 		}
 	}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(CreateCustomerRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
+                return View();
+            }
+            var checkEmail = await _accountClient.findAccount(request.Email);
+            if(checkEmail.Status == 200)
+            {
+                ViewBag.error = "Đã tồn tại tài khoản này";
+                return View();
+            }
+            
+            var response = await _customerServiceClient.CreateCustomer(request);
+            if(response.Status != 200)
+            {
+                ViewBag.error = response.Message;
+                return View();
+            } 
+            //hướng tới trang active tài khoản 
+            return RedirectToAction("ActiveAccount", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult ActiveAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ActiveAccount(ActiveAccountRequest request)
+        {
+            var response = await _accountClient.ActiveAccount(request);
+            if(response.Status != 200)
+            {
+                ViewBag.error = response.Message;
+            }
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResendOTP()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResendOTP(ResendOTPRequest resend)
+        {
+            return View();
+        }
+    }
 }

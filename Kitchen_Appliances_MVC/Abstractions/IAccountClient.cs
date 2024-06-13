@@ -18,5 +18,9 @@ namespace Kitchen_Appliances_MVC.Abstractions
         Task<APIResponse<bool>> ChangePassword(ChangePasswordRequest request);
 
         Task<APIResponse<bool>> CheckEmail(string Email);
+
+        Task<APIResponse<bool>> ActiveAccount(ActiveAccountRequest request);
+
+        Task<APIResponse<bool>> ResendOTP(ResendOTPRequest request);
     }
 }

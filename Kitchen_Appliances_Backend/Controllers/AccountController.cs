@@ -78,5 +78,10 @@ namespace Kitchen_Appliances_Backend.Controllers
             return Ok(await _accountRepository.validateExpiredJwt(token));
         }
 
+        [HttpPut("active-account")]
+        public async Task<IActionResult> ActiveAccount(ActiveAccountRequest request)
+        {
+            return Ok(await _accountRepository.ActiveAccount(request));
+        }
     }
 }
