@@ -10,32 +10,22 @@ namespace Kitchen_Appliances_MVC.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IBillServiceClient test;
-
-        public EmployeeController(IBillServiceClient cartDetailServiceClient)
+        private readonly IBillServiceClient _billServiceClient;
+        public EmployeeController(IBillServiceClient billServiceClient)
         {
-            test = cartDetailServiceClient;
+            _billServiceClient = billServiceClient;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            //Khi check luôn nhớ async await
-            var cart = new GetCartDetailRequest()
-            {
-                CustomerId = 2,
-                ProductId = 14,
-            };
-            var res = await test.GetAllBill();
-            Console.WriteLine(res.Message);
             return View();
         }
 
         //ContentResult , ViewResult, JsonResult
         public async Task<IActionResult> Detail(int id)
         {
-            var res = await test.GetBillInformation(id);
-            var a = res.Data;
-            Console.WriteLine("Mã hóa đơn : " + a.OrderId + " Total: " + a.Total);
+            var response = await _billServiceClient.GetBillInformation(id);
+            Console.WriteLine(response.Data.CustomerName);
             return View();
         }
 

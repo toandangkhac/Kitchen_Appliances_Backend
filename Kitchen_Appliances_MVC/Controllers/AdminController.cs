@@ -210,6 +210,25 @@ namespace Kitchen_Appliances_MVC.Controllers
 			};
 			return View(Model);
 		}
+		public async Task<IActionResult> DeleteCustomer(int id)
+		{
+			var checkDelete = await _customerServiceClient.DeleteCustomer(id);
+			if (checkDelete.Status != 200)
+			{
+				Console.WriteLine(checkDelete.Message);
+			}
+			var dataCustomer = await _customerServiceClient.ListCustomer();
+			if (dataCustomer.Status != 200)
+			{
+				Console.WriteLine(dataCustomer.Message);
+			}
+			List<CustomerDTO> customers = dataCustomer.Data;
+			ManageCustomerViewModel Model = new ManageCustomerViewModel()
+			{
+				CustomerDTOs = customers
+			};
+			return View(Model);
+		}
 		//Order
 		public async Task<IActionResult> ManageOrder()
 		{
@@ -219,27 +238,50 @@ namespace Kitchen_Appliances_MVC.Controllers
 				Console.WriteLine(dataorderDtos.Message);
 			}
 			List<OrderDTO> orders = dataorderDtos.Data;
+			var dataorder = await _orderServiceClient.ListAllOrders();
+			if (dataorder.Status != 200)
+			{
+				Console.WriteLine(dataorder.Message);
+			}
+			List<OrderDTO> ordersConfirm = dataorder.Data;
 			var dataCustomer = await _customerServiceClient.ListCustomer();
 			if (dataCustomer.Status != 200)
 			{
 				Console.WriteLine(dataCustomer.Message);
 			}
 			List<CustomerDTO> customers = dataCustomer.Data;
-			var dataEmployee = await _employeeServiceClient.GetListAll();
-			if (dataEmployee.Status != 200)
+			var dataEmployees = await _employeeServiceClient.GetListAll();
+			if (dataEmployees.Status != 200)
 			{
-				Console.WriteLine(dataEmployee.Message);
+				Console.WriteLine(dataEmployees.Message);
 			}
-			List<EmployeeDTO> employees = dataEmployee.Data;
+			List<EmployeeDTO> employees = dataEmployees.Data;
 			var viewModel = new ManageOrderViewModel()
 			{
 				Orders = orders,
 				Customer = customers,
+				OrdersConfirm = ordersConfirm,
 				Employees = employees
 			};
 			return View(viewModel);
 		}
-
+		public async Task<IActionResult> ConfirmByEmployee(int orderid, string employeeid)
+		{
+			int idUser = int.Parse(employeeid);
+			Console.WriteLine(idUser + "  " + orderid);
+			var request = new ConfirmOrderRequest()
+			{
+				EmployeeId = idUser,
+				OrderId = orderid
+			};
+			var checkConfirm = await _orderServiceClient.ConfirmOrder(request);
+			if(checkConfirm.Status != 200)
+			{
+				Console.WriteLine(checkConfirm.Message);
+			}
+			return RedirectToAction("ManageOrder");
+		}
+		
 		//Image
 		[HttpGet]
 		public async Task<IActionResult> ManageImage()

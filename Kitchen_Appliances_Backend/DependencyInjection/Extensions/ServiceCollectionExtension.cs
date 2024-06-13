@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Kitchen_Appliances_Backend.DependencyInjection.Options;
 using Microsoft.Extensions.Configuration;
+using Kitchen_Appliances_Backend.PaymentService.VnPay;
 
 namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
 {
@@ -27,7 +28,8 @@ namespace Kitchen_Appliances_Backend.DependencyInjection.Extensions
                     .AddScoped<IUploadService, UploadService>()
                     .AddScoped<IOtpService, OtpService>()
                     .AddScoped<IMailService, MailService>()
-                    .AddScoped<ICurrentUserService, CurrentUserService>();
+                    .AddScoped<ICurrentUserService, CurrentUserService>()
+                    .AddScoped<IVnPayService, VnPayService>();
 
             services.AddTransient<IRoleRepository, RoleRepository>()
                     .AddTransient<IAccountRepository, AccountRepository>()

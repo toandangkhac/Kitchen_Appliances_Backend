@@ -12,7 +12,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/employee",
-      "UpstreamHttpMethod": [ "Post", "Get" ]
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/employee/{id}",
@@ -25,7 +28,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/employee/{id}",
-      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     //Account API
@@ -40,7 +46,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/account/find-email/{email}",
-      "UpstreamHttpMethod": [ "Post", "Get" ]
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/account/login",
@@ -53,7 +62,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/account/login",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/account/forgot-password",
@@ -66,7 +78,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/account/forgot-password",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/account/change-password",
@@ -79,7 +94,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/account/change-password",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/account/reset-password",
@@ -92,7 +110,42 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/account/reset-password",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/active-account",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/active-account",
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/resend-otp",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+
+      "UpstreamPathTemplate": "/gateway/account/resend-otp",
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     //Category API
@@ -107,7 +160,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/category",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/category/{id}",
@@ -119,7 +175,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/category/{id}",
-      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     //Product API
@@ -134,7 +193,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/product",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/product/{id}",
@@ -146,7 +208,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/product/{id}",
-      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/product/category/{id}",
@@ -158,7 +223,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/product/category/{id}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //Role API
     {
@@ -172,7 +240,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/role",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //Customer API
     {
@@ -186,7 +257,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/customer",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/customer/{id}",
@@ -198,7 +272,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/customer/{id}",
-      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ]
+      "UpstreamHttpMethod": [ "Get", "Delete", "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     // Product price
     {
@@ -212,7 +289,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/productprice",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/productprice/{id}",
@@ -225,7 +305,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/productprice/{id}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     // Image APi
@@ -240,7 +323,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/image",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/image/{id}",
@@ -253,7 +339,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/image/{id}",
-      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/image/product/{productId}",
@@ -266,7 +355,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/image/product/{productId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     //CART DETAIL
@@ -281,7 +373,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/cartdetail/delete",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
       //vì tôi muốn truyền một object request gồm hai thuộc tính customerId, productId từ client về server không nên sử dụng phương thức post để truyền object request
     },
     {
@@ -295,7 +390,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/cartdetail/find-by-id",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
       //muốn truyền một object request 
     },
     {
@@ -309,7 +407,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/cartdetail/{customerId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
       //muốn truyền một object request 
     },
     //Tạo cart detail
@@ -324,7 +425,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/cartdetail",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     // Sửa số lượng cart detail
     {
@@ -338,7 +442,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/cartdetail/update",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
       //vì tôi muốn truyền một object request gồm hai thuộc tính customerId, productId từ client về server không nên sử dụng phương thức post để truyền object request
     },
     //BILL SERVICE
@@ -354,7 +461,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/bill/save/{orderId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     // xuất dữ liệu 1 hóa đơn
     {
@@ -368,7 +478,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/bill/get/{billId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //Xuất dữ liệu danh sách hóa đơn
     {
@@ -382,7 +495,10 @@
       ],
 
       "UpstreamPathTemplate": "/gateway/bill/list",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
 
     //ORDER SERVICE
@@ -397,7 +513,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/get-order-by-customer/{id}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //Lấy danh sách đơn hàng chưa được nhân viên xác nhận
     {
@@ -410,7 +529,26 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/list-order-not-confirm",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    //Lấy danh sách đơn hàng
+    {
+      "DownstreamPathTemplate": "/api/order/list-all-order",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/order/list-all-order",
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     // Chuyển tất cả Cart Detail của customer sang Order
     {
@@ -423,7 +561,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/create-order-by-customer",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //Hủy đơn hàng
     {
@@ -436,8 +577,12 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/cancel-order/{orderId}",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
+
     //Đã nhận đơn hàng
     {
       "DownstreamPathTemplate": "/api/order/confirm-delivery-success/{orderId}",
@@ -449,7 +594,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/confirm-delivery-success/{orderId}",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     // Xác nhận từ nhân viên
     {
@@ -462,7 +610,41 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/order/confirm-order-by-employee",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Put" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    //THANH TOÁN VNPAY
+    {
+      "DownstreamPathTemplate": "/api/vnpay/{orderId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/vnpay/{orderId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/vnpay/call-back",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7161
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/vnpay/call-back",
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     //ORDER DETAIL SERVICE
     // lấy Order Detail theo id
@@ -476,8 +658,12 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/orderdetail/get-order-detail/{orderDetailId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
+
     // lấy list Order Detail theo OrderId
     {
       "DownstreamPathTemplate": "/list-order-detail/{orderId}",
@@ -489,7 +675,10 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/orderdetail/list-order-detail/{orderId}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     }
   ],
   "GlobalConfiguration": {

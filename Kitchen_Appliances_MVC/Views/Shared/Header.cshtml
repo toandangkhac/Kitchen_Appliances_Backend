@@ -1,5 +1,5 @@
 
-﻿ @using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http;
 @inject IHttpContextAccessor HttpContextAccessor
 @{
 	string Fullname = HttpContextAccessor.HttpContext.Session.GetString("Fullname");
@@ -15,7 +15,7 @@
 <div id="header">
 	<div class="container">
 		<div id="welcomeLine" class="row">
-			<div class="span6">Welcome!<strong> @Fullname @IdUser</strong></div>
+			<div class="span6">Welcome!<strong><a href="@Url.Action("ChangeInfo", "Account")"> @Fullname @IdUser</a></strong></div>
 			<div class="span6">
 				<div class="pull-right">
 					<a href="product_summary.html"><span class="">Fr</span></a>
@@ -61,32 +61,6 @@
 					{
 						<li class=""><a href="@Url.Action("Login", "Account")" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a></li>
 					}
-						@* <div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-								<h3>Login Block</h3>
-							</div>
-							<a href="@Url.Action("Login", "Account")">Login</a>
-							<div class="modal-body">
-								
-								<form class="form-horizontal loginFrm" asp-controller="Account" method="get" asp-action="Login">
-									<div class="control-group">
-										<input type="text" id="inputEmail" placeholder="Email">
-									</div>
-									<div class="control-group">
-										<input type="password" id="inputPassword" placeholder="Password">
-									</div>
-									<div class="control-group">
-										<label class="checkbox">
-											<input type="checkbox"> Remember me
-										</label>
-									</div>
-									<button type="submit" class="btn btn-success">Sign in</button>
-									<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-								</form>
-								
-							</div>
-						</div> *@
 				</ul>
 			</div>
 		</div>

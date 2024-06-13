@@ -8,7 +8,6 @@ using Kitchen_Appliances_Backend.DTO.Mail;
 using Kitchen_Appliances_Backend.Interfaces;
 using Kitchen_Appliances_Backend.Models;
 using Kitchen_Appliances_Backend.Services;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Kitchen_Appliances_Backend.Repositores
 {
@@ -59,7 +58,7 @@ namespace Kitchen_Appliances_Backend.Repositores
 				};
 
 				_dataContext.AppUserTokens.Add(userToken);
-
+                //customer.EmailNavigation = account;
 				account.Customers.Add(customer);
 				_dataContext.Accounts.Add(account);
 				_dataContext.Customers.Add(customer);

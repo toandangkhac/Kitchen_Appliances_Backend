@@ -30,5 +30,7 @@ namespace Kitchen_Appliances_Backend.Interfaces
         Task<ApiResponse<bool>> ResetPassword(ResetPasswordRequest request);
 
         Task<ApiResponse<bool>> ChangePassword(ChangePasswordRequest request);
+
+        Task<ApiResponse<bool>> ActiveAccount(ActiveAccountRequest request);
     }
 }
