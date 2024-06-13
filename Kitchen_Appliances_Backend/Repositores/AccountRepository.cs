@@ -341,6 +341,8 @@ namespace Kitchen_Appliances_Backend.Repositores
 					Data = false
 				};
             }
+            _context.AppUserTokens.Remove(userToken);
+            await _context.SaveChangesAsync();
 			return new ApiResponse<bool>()
 			{
 				Status = 200,
