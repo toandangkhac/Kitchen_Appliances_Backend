@@ -91,16 +91,6 @@ namespace Kitchen_Appliances_MVC.ApiServices
         {
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync<ChangePasswordRequest>(Api + "/change-password", request);
             return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    Console.WriteLine($"Gửi HTTP thành công !!!");
-            //    return true;
-            //}
-            //else
-            //{
-            //    Console.WriteLine($"Lỗi HTTP: ");
-            //    return false;
-            //}
         }
 
 		public Task<APIResponse<bool>> CheckEmail(string Email)
@@ -108,5 +98,17 @@ namespace Kitchen_Appliances_MVC.ApiServices
 
 			throw new NotImplementedException();
 		}
-	}
+
+        public async Task<APIResponse<bool>> ActiveAccount(ActiveAccountRequest request)
+        {
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(Api + "/active-account", request);
+            return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+        }
+
+        public async Task<APIResponse<bool>> ResendOTP(ResendOTPRequest request)
+        {
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(Api + "/resend-otp", request);
+            return await response.Content.ReadFromJsonAsync<APIResponse<bool>>();
+        }
+    }
 }
