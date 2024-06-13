@@ -1,0 +1,146 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@model Kitchen_Appliances_MVC.ViewModelData.Customer.ChangeInfoViewModel
+@{
+	ViewData["Title"] = "Change Info";
+	Kitchen_Appliances_MVC.ViewModelData.Header.HeaderViewModel headerData = ViewBag.HeaderData;
+	string IdUser = HttpContextAccessor.HttpContext.Session.GetString("IdUser");
+
+}
+@section Header {
+	@Html.Partial("Header", headerData)
+}
+@section Footer {
+	@Html.Partial("Footer")
+}
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<!-- Sidebar ================================================== -->
+			<div id="sidebar" class="span3">
+				<div class="well well-small">
+					<a id="myOrder" asp-controller="Order" asp-action="Index" asp-route-id="@IdUser">
+						<img src="~/themes/images/ico-cart.png" alt="cart"> View your Order  <span class="badge badge-warning pull-right">
+							VIEW
+						</span>
+					</a>
+				</div>
+				<ul id="sideManu" class="nav nav-tabs nav-stacked">
+					@foreach (var categories in @Model.Categories)
+					{
+						<li>
+							<a asp-controller="Home" asp-action="ByCategory" asp-route-id="@categories.Id"> @categories.Name </a>
+						</li>
+					}
+				</ul>
+				<br />
+				<div class="thumbnail">
+					<img src="~/themes/images/payment_methods.png" title="Bootshop Payment Methods" alt="Payments Methods">
+					<div class="caption">
+						<h5>Payment Methods</h5>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar end=============================================== -->
+			<!-- Main show=============================================== -->
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a href="~/Home/Index">Home</a> <span class="divider">/</span></li>
+					<li class="active"> CHANGE YOUR INFO</li>
+				</ul>
+				<h3> Registration</h3>
+				<div class="well">
+					<form class="form-horizontal" >
+						<h4>Your personal information</h4>
+						<div class="control-group">
+							<label class="control-label" for="inputFname">Full name <sup>*</sup></label>
+							<div class="controls">
+								<input type="text" id="inputFname" placeholder="Full Name" value=@Model.Customer.Fullname>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="inputNumP">Phone Number <sup>*</sup></label>
+							<div class="controls">
+								<input type="text" id="inputNumP" placeholder="Phone Number" value=@Model.Customer.PhoneNumber>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="input_email">Email <sup>*</sup></label>
+							<div class="controls">
+								<input type="text" id="input_email" placeholder="Email" value=@Model.Customer.Email>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="input_addr">Address <sup>*</sup></label>
+							<div class="controls">
+								<input type="text" id="input_addr" placeholder="Address" value=@Model.Customer.Address>
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="controls">
+								<button class="btn btn-large btn-success" type="button" id="submitBtn">Submit</button>
+							</div>
+						</div>
+					</form>
+				</<div>
+			</div>
+			<!-- Main show end=============================================== -->
+		</div>
+	</div>
+</div>
+@section Scripts {
+	<script>
+				document.getElementById('submitBtn').addEventListener('click', function (event) {
+					var fullname = document.getElementById('inputFname').value;
+					var phoneNumber = document.getElementById('inputNumP').value;
+					var address = document.getElementById('input_addr').value;
+					var id = '@IdUser';
+					console.log(id); // In ra console để kiểm tra
+					if (!fullname || !phoneNumber || !address) {
+						Swal.fire({
+							icon: 'error',
+							title: 'Oops...',
+							text: 'Vui lòng điền đầy đủ thông tin'
+						});
+						event.preventDefault();
+						return;
+					}
+
+					// Dữ liệu hợp lệ, gửi thông tin tới Account/CompleteChange
+					var data = {
+						Id: id,
+						Fullname: fullname,
+						PhoneNumber: phoneNumber,
+						Address: address
+					};
+
+					fetch('/Account/CompleteChange', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(data)
+					})
+						.then(response => response.json())
+						.then(data => {
+							Swal.fire({
+								position: 'center',
+								icon: 'success',
+								title: 'Thông tin đã được cập nhật thành công',
+								showConfirmButton: false,
+								timer: 1500
+							}).then(() => {
+								// Reload lại trang hoặc chuyển hướng sau khi thành công
+								location.reload();
+							});
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau.'
+							});
+						});
+				});
+	</script>
+}
