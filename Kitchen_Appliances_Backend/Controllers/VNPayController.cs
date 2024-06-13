@@ -99,7 +99,7 @@ namespace Kitchen_Appliances_Backend.Controllers
                     //Cập nhật trạng thái đơn hàng từ chờ thanh toán sang chờ giao hàng
                     var order = _context.Orders.Find(int.Parse(response.OrderId));
                     order.PaymentStatus = true;
-                    order.Status = 2;
+                    order.Status = 1;
                     //Tạo bill hóa đơn
                     var bill = await _billRepository.savePaymentInfor(order.Id);
                     if (bill.Status != 200)

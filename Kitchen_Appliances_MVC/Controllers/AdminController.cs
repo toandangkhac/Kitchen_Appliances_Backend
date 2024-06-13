@@ -210,6 +210,25 @@ namespace Kitchen_Appliances_MVC.Controllers
 			};
 			return View(Model);
 		}
+		public async Task<IActionResult> DeleteCustomer(int id)
+		{
+			var checkDelete = await _customerServiceClient.DeleteCustomer(id);
+			if (checkDelete.Status != 200)
+			{
+				Console.WriteLine(checkDelete.Message);
+			}
+			var dataCustomer = await _customerServiceClient.ListCustomer();
+			if (dataCustomer.Status != 200)
+			{
+				Console.WriteLine(dataCustomer.Message);
+			}
+			List<CustomerDTO> customers = dataCustomer.Data;
+			ManageCustomerViewModel Model = new ManageCustomerViewModel()
+			{
+				CustomerDTOs = customers
+			};
+			return View(Model);
+		}
 		//Order
 		public async Task<IActionResult> ManageOrder()
 		{

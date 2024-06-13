@@ -1,6 +1,9 @@
 ﻿using Kitchen_Appliances_MVC.Abstractions;
 using Kitchen_Appliances_MVC.Options;
+using Kitchen_Appliances_MVC.ViewModelData.Customer;
+using Kitchen_Appliances_MVC.ViewModelData.Header;
 using Kitchen_Appliances_MVC.ViewModels.Account;
+using Kitchen_Appliances_MVC.ViewModels.Category;
 using Kitchen_Appliances_MVC.ViewModels.Customer;
 using Kitchen_Appliances_MVC.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +24,16 @@ namespace Kitchen_Appliances_MVC.Controllers
         private readonly ICustomerServiceClient _customerServiceClient;
         private readonly IEmployeeClient _employeeClient;
         private readonly ICartDetailServiceClient _cartDetailServiceClient;
+        private readonly ICategoryServiceClient _categoryServiceClient;
         public AccountController(IAccountClient accountClient, IConfiguration configuration, 
-            ICustomerServiceClient customerServiceClient, IEmployeeClient employeeClient, ICartDetailServiceClient cartDetailServiceClient)
+            ICustomerServiceClient customerServiceClient, IEmployeeClient employeeClient, ICartDetailServiceClient cartDetailServiceClient, ICategoryServiceClient categoryServiceClient)
         {
             _accountClient = accountClient;
             _configuration = configuration;
             _customerServiceClient = customerServiceClient;
             _employeeClient = employeeClient;
             _cartDetailServiceClient = cartDetailServiceClient;
+            _categoryServiceClient = categoryServiceClient;
         }
 
         [HttpGet]
@@ -116,7 +121,7 @@ namespace Kitchen_Appliances_MVC.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            Response.Cookies.Delete("jwt-token");
+
             return RedirectToAction("Index", "Home");
         }
         
@@ -188,7 +193,7 @@ namespace Kitchen_Appliances_MVC.Controllers
                 ViewBag.error = resetPassword.Message;
                 return View();
             }
-            return View();
+            return RedirectToAction("Login", "Account");
         }
 
         // muốn change password phải đăng nhập login trước , phải xử lý đăng nhập 
@@ -212,6 +217,115 @@ namespace Kitchen_Appliances_MVC.Controllers
             
             return View();
         }
+		public async Task<ActionResult> ChangeInfo(String id)
+		{
+			int IdUser = int.Parse(id);
+			var dataCategories = await _categoryServiceClient.GetAllCategories();
+			if (dataCategories.Status != 200)
+			{
+				Console.WriteLine(dataCategories.Message);
+			}
+			List<CategoryDTO> categories = dataCategories.Data;
+			var dataCustomer = await _customerServiceClient.GetCustomerById(IdUser);
+			if (dataCustomer.Status != 200)
+			{
+				Console.WriteLine(dataCustomer.Message);
+			}
+			CustomerDTO customer = dataCustomer.Data;
+			var headerViewModel = new HeaderViewModel()
+			{
+				Categories = categories
+			};
+			ViewBag.HeaderData = headerViewModel;
+			ChangeInfoViewModel Model = new ChangeInfoViewModel()
+			{
+				Categories = categories,
+				Customer = customer
+			};
+			return View(Model);
+		}
+		[HttpPost]
+		public async Task<ActionResult> CompleteChange([FromBody] CompleteChangeRequest request)
+		{
+			int IdCustomer = int.Parse(request.Id);
+			Console.WriteLine(IdCustomer);
+			Console.WriteLine(request.Fullname);
+			Console.WriteLine(request.PhoneNumber);
+			Console.WriteLine(request.Address);
+			UpdateCustomerRequest requestU = new UpdateCustomerRequest()
+			{
+				Fullname = request.Fullname,
+				PhoneNumber = request.PhoneNumber,
+				Address = request.Address
+			};
+            var checkUpdate = await _customerServiceClient.UpdateCustomer(IdCustomer, requestU);
+			if (checkUpdate.Status != 200)
+			{
+				Console.WriteLine(checkUpdate.Message);
+			}
+			return Json(new
+			{
+				IdCustomer
+			});
+		}
+	}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> Register(CreateCustomerRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.error = "Không được để trống dữ liệu.Try again !!!";
+                return View();
+            }
+            var checkEmail = await _accountClient.findAccount(request.Email);
+            if(checkEmail.Status == 200)
+            {
+                ViewBag.error = "Đã tồn tại tài khoản này";
+                return View();
+            }
+            
+            var response = await _customerServiceClient.CreateCustomer(request);
+            if(response.Status != 200)
+            {
+                ViewBag.error = response.Message;
+                return View();
+            } 
+            //hướng tới trang active tài khoản 
+            return RedirectToAction("ActiveAccount", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult ActiveAccount()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ActiveAccount(ActiveAccountRequest request)
+        {
+            var response = await _accountClient.ActiveAccount(request);
+            if(response.Status != 200)
+            {
+                ViewBag.error = response.Message;
+            }
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ResendOTP()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResendOTP(ResendOTPRequest resend)
+        {
+            return View();
+        }
     }
 }
