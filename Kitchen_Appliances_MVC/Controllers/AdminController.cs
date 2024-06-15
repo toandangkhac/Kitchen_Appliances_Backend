@@ -184,9 +184,10 @@ namespace Kitchen_Appliances_MVC.Controllers
 			{
 				Console.WriteLine(products.Message);
 			}
-            if (products.Data.Count==0)
+            if (products.Data.Count!=0)
             {
-                return RedirectToAction("ManageCategory", "Admin");
+				ViewBag.error = "Đã có sản phẩm";
+				return RedirectToAction("ManageCategory", "Admin");
             }
             var checkDelete = await _categoryServiceClient.DeleteCategory(id);
             if (checkDelete.Status != 200)

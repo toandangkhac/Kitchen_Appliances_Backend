@@ -134,7 +134,7 @@ namespace Kitchen_Appliances_Backend.Repositores
             }
             catch( Exception )
             {
-                return new ApiResponse<List<CustomerDTO>>(200, "Lấy danh sách thành công", new List<CustomerDTO>());
+                return new ApiResponse<List<CustomerDTO>>(400, "Lấy danh sách thất bại", new List<CustomerDTO>());
             }
         }
 
